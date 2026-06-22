@@ -1,9 +1,10 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { laptops } from "../laptop-data";
 import modelGalleryReport from "../model-gallery-report.json";
+import { formatMoney, splitList } from "../catalog";
 
 type GalleryReport = {
   generatedAt: string;
@@ -19,33 +20,6 @@ type GalleryReport = {
 };
 
 const galleryData = modelGalleryReport as GalleryReport;
-const publishedModels = laptops.map((item) => item.model);
-const publishedModelSet = new Set(publishedModels.map(normalize));
-const publishedModelRank = [...publishedModels].sort((a, b) => b.length - a.length);
-const unmatchedGalleryModels = galleryData.report
-  .filter((item) => item.matched === 0)
-  .map((item) => item.model);
-
-const money = new Intl.NumberFormat("zh-TW", {
-  style: "currency",
-  currency: "TWD",
-  maximumFractionDigits: 0,
-});
-
-function normalize(value: string) {
-  return value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-}
-
-function splitModels(value: string) {
-  return Array.from(
-    new Set(
-      value
-        .split(/[\n,\t]+/)
-        .map((item) => item.trim())
-        .filter(Boolean),
-    ),
-  );
-}
 
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -53,46 +27,45 @@ function formatBytes(bytes: number) {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
-function inferModelName(path: string) {
-  const normalized = normalize(path);
-  return (
-    publishedModelRank.find((model) => normalized.includes(normalize(model))) ?? null
+function splitModels(text: string) {
+  return Array.from(
+    new Set(
+      text
+        .split(/[\n,，；;]+/)
+        .map((item) => item.trim())
+        .filter(Boolean),
+    ),
   );
 }
 
-function formatMoney(value: number) {
-  return money.format(value);
-}
-
-function pillClass(kind: "good" | "warn" | "muted" | "danger") {
-  return `update-pill ${kind}`;
+function normalize(value: string) {
+  return value.toUpperCase().replace(/[^A-Z0-9]/g, "");
 }
 
 export default function UpdatePage() {
   const [excelFile, setExcelFile] = useState<File | null>(null);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const [excelModelsText, setExcelModelsText] = useState(publishedModels.join("\n"));
+  const [stagedModelsText, setStagedModelsText] = useState(laptops.map((item) => item.model).join("\n"));
   const [archiveModelsText, setArchiveModelsText] = useState("");
 
-  const stagedModels = useMemo(() => splitModels(excelModelsText), [excelModelsText]);
+  const stagedModels = useMemo(() => splitModels(stagedModelsText), [stagedModelsText]);
   const archiveModels = useMemo(() => splitModels(archiveModelsText), [archiveModelsText]);
-  const stagedSet = useMemo(
-    () => new Set(stagedModels.map((model) => normalize(model))),
-    [stagedModels],
-  );
-  const archiveSet = useMemo(
-    () => new Set(archiveModels.map((model) => normalize(model))),
-    [archiveModels],
+  const stagedSet = useMemo(() => new Set(stagedModels.map(normalize)), [stagedModels]);
+  const archiveSet = useMemo(() => new Set(archiveModels.map(normalize)), [archiveModels]);
+
+  const publishedModelSet = useMemo(
+    () => new Set(laptops.map((item) => normalize(item.model))),
+    [],
   );
 
-  const imageMatches = useMemo(() => {
+  const imageMap = useMemo(() => {
     const map = new Map<string, File[]>();
 
     for (const file of imageFiles) {
       const path =
         (file as File & { webkitRelativePath?: string }).webkitRelativePath || file.name;
-      const matchedModel = inferModelName(path);
-
+      const normalizedPath = normalize(path);
+      const matchedModel = stagedModels.find((model) => normalizedPath.includes(normalize(model)));
       if (!matchedModel) continue;
 
       const list = map.get(matchedModel) ?? [];
@@ -101,65 +74,53 @@ export default function UpdatePage() {
     }
 
     return map;
-  }, [imageFiles]);
+  }, [imageFiles, stagedModels]);
 
   const currentCount = laptops.length;
-  const matchedGalleryCount = galleryData.matchedModels;
-  const unmatchedGalleryCount = galleryData.totalModels - galleryData.matchedModels;
   const newModels = stagedModels.filter((model) => !publishedModelSet.has(normalize(model)));
-  const retainedModels = stagedModels.filter((model) =>
-    publishedModelSet.has(normalize(model)),
-  );
-  const removedModels = publishedModels.filter(
-    (model) => !stagedSet.has(normalize(model)) || archiveSet.has(normalize(model)),
-  );
-  const missingImages = stagedModels.filter((model) => !imageMatches.has(model));
-  const extraImages = [...imageMatches.keys()].filter(
-    (model) => !stagedSet.has(normalize(model)),
-  );
+  const retainedModels = stagedModels.filter((model) => publishedModelSet.has(normalize(model)));
+  const removedModels = laptops
+    .map((item) => item.model)
+    .filter((model) => !stagedSet.has(normalize(model)) || archiveSet.has(normalize(model)));
+  const missingImages = stagedModels.filter((model) => !imageMap.has(model));
+  const extraImages = [...imageMap.keys()].filter((model) => !stagedSet.has(normalize(model)));
 
-  const stagedMarketValue = stagedModels
-    .map((model) => laptops.find((item) => item.model === model)?.marketPrice ?? 0)
-    .reduce((sum, value) => sum + value, 0);
-  const stagedEduValue = stagedModels
-    .map((model) => laptops.find((item) => item.model === model)?.eduPrice ?? 0)
-    .reduce((sum, value) => sum + value, 0);
-
-  const summary = useMemo(
-    () => ({
+  const summary = useMemo(() => {
+    const bestDiscount = laptops.reduce((best, item) => (item.discount > best.discount ? item : best), laptops[0]);
+    return {
       generatedAt: new Date().toISOString(),
       sourceExcel: excelFile?.name ?? null,
-      currentCount,
-      stagedCount: stagedModels.length,
-      retainedCount: retainedModels.length,
-      newCount: newModels.length,
-      removedCount: removedModels.length,
-      missingImageCount: missingImages.length,
-      extraImageCount: extraImages.length,
       stagedModels,
-      newModels,
-      removedModels,
+      archiveModels,
+      counts: {
+        current: currentCount,
+        staged: stagedModels.length,
+        retained: retainedModels.length,
+        new: newModels.length,
+        removed: removedModels.length,
+        missingImages: missingImages.length,
+        extraImages: extraImages.length,
+      },
+      finance: {
+        bestDiscountModel: bestDiscount.model,
+        bestDiscountValue: bestDiscount.discount,
+        totalMarketPrice: stagedModels.reduce(
+          (sum, model) => sum + (laptops.find((item) => item.model === model)?.marketPrice ?? 0),
+          0,
+        ),
+        totalEducationPrice: stagedModels.reduce(
+          (sum, model) => sum + (laptops.find((item) => item.model === model)?.eduPrice ?? 0),
+          0,
+        ),
+      },
+      files: {
+        imageCount: imageFiles.length,
+        imageBytes: imageFiles.reduce((sum, file) => sum + file.size, 0),
+      },
       missingImages,
       extraImages,
-      imageFiles: imageFiles.map((file) => ({
-        name: file.name,
-        path:
-          (file as File & { webkitRelativePath?: string }).webkitRelativePath || file.name,
-        size: file.size,
-      })),
-    }),
-    [
-      currentCount,
-      excelFile?.name,
-      extraImages,
-      imageFiles,
-      missingImages,
-      newModels,
-      removedModels,
-      retainedModels.length,
-      stagedModels,
-    ],
-  );
+    };
+  }, [archiveModels, currentCount, excelFile?.name, extraImages, imageFiles, missingImages, newModels.length, retainedModels.length, removedModels.length, stagedModels]);
 
   function downloadSummary() {
     const blob = new Blob([JSON.stringify(summary, null, 2)], {
@@ -175,344 +136,287 @@ export default function UpdatePage() {
 
   return (
     <main className="update-shell">
-      <section className="update-hero">
-        <div className="update-hero-copy">
-          <p className="update-eyebrow">管理頁 / 上架更新</p>
-          <h1>更新上架中心</h1>
-          <p className="update-lead">
-            上傳 Excel 與圖片資料夾後，先比對新增、下架、缺圖與多圖，再決定要儲存草稿、套用更新或直接發佈。
-          </p>
-          <div className="update-hero-actions">
-            <Link className="update-link" href="/">
-              回到前台
+      <div className="page-frame">
+        <div className="topbar">
+          <Link className="excel-toggle" href="/">
+            <span className="signal" aria-hidden="true" />
+            <strong>EXCEL</strong>
+          </Link>
+
+          <div className="topbar-links">
+            <Link className="link-pill" href="/">
+              回到首頁
             </Link>
-            <button className="update-button primary" onClick={downloadSummary} type="button">
-              下載更新摘要
-            </button>
+            <Link className="link-pill" href="/compare">
+              多機比較
+            </Link>
           </div>
         </div>
 
-        <aside className="update-hero-panel">
-          <div className="update-hero-panel-head">
-            <span className={pillClass("good")}>草稿模式</span>
-            <span className={pillClass("warn")}>可下架</span>
-            <span className={pillClass("muted")}>保留備份</span>
-          </div>
+        <section className="update-hero">
+          <article className="update-card">
+            <p className="eyebrow">admin workflow</p>
+            <h1>更新後台</h1>
+            <p className="update-lead">
+              這一頁是給你更新 Excel 與圖片時用的控制台。重點是先確認 Excel 機型清單，再看圖片對照是否完整，
+              最後把摘要匯出，方便重新產生資料與重新部署。
+            </p>
 
-          <dl className="update-hero-stats">
-            <div>
-              <dt>目前上架</dt>
-              <dd>{currentCount}</dd>
+            <div className="update-actions">
+              <button className="button-primary" onClick={downloadSummary} type="button">
+                匯出更新摘要
+              </button>
+              <Link className="button-soft" href="/compare">
+                先看比較頁
+              </Link>
             </div>
-            <div>
-              <dt>圖片已配對</dt>
-              <dd>{matchedGalleryCount}</dd>
-            </div>
-            <div>
-              <dt>圖片待配對</dt>
-              <dd>{unmatchedGalleryCount}</dd>
-            </div>
-            <div>
-              <dt>本次缺圖</dt>
-              <dd>{missingImages.length}</dd>
-            </div>
-          </dl>
 
-          <div className="update-hero-note">
-            <span>目前最高折扣</span>
-            <strong>
-              {formatMoney(
-                laptops.reduce(
-                  (best, item) => (item.discount > best.discount ? item : best),
-                  laptops[0],
-                ).discount,
-              )}
-            </strong>
-          </div>
-        </aside>
-      </section>
-
-      <section className="update-grid">
-        <article className="update-panel">
-          <div className="panel-heading">
-            <div>
-              <p className="update-eyebrow">來源檔案</p>
-              <h2>Excel 與圖片上傳</h2>
+            <div className="update-note">
+              更新時的標準流程：
+              1. 置換 Excel。
+              2. 放入機型圖片。
+              3. 重新跑圖片對照。
+              4. 匯出摘要後再部署。
             </div>
-            <span className={pillClass(excelFile ? "good" : "muted")}>
-              {excelFile ? excelFile.name : "尚未選擇 Excel"}
-            </span>
-          </div>
+          </article>
 
-          <div className="upload-grid">
-            <label className="upload-card">
-              <span>Excel 檔案</span>
-              <strong>上傳限定機型資料</strong>
-              <input
-                accept=".xlsx,.xls,.csv"
-                onChange={(event) => setExcelFile(event.target.files?.[0] ?? null)}
-                type="file"
+          <aside className="update-card">
+            <p className="eyebrow">資料概況</p>
+            <h2>目前 Excel / 圖片對照</h2>
+
+            <div className="update-meta">
+              <div className="update-meta-card">
+                <span>目前機型數</span>
+                <strong>{currentCount}</strong>
+              </div>
+              <div className="update-meta-card">
+                <span>圖庫命中</span>
+                <strong>{galleryData.matchedModels}</strong>
+              </div>
+              <div className="update-meta-card">
+                <span>缺圖機型</span>
+                <strong>{missingImages.length}</strong>
+              </div>
+              <div className="update-meta-card">
+                <span>最高折扣</span>
+                <strong>{formatMoney(summary.finance.bestDiscountValue)}</strong>
+              </div>
+            </div>
+
+            <div className="notice">
+              更新腳本：<code>scripts/update-model-gallery.mjs</code>
+              <br />
+              圖片會依 <code>model</code> 自動對應，不需要一台一台手動寫死。
+            </div>
+          </aside>
+        </section>
+
+        <section className="update-grid">
+          <article className="update-card">
+            <p className="eyebrow">匯入資料</p>
+            <h2>Excel 與圖片資料夾</h2>
+
+            <div className="update-file-grid">
+              <label className="update-file-box">
+                <span>Excel 檔案</span>
+                <strong>{excelFile ? excelFile.name : "請選擇新的 Excel"}</strong>
+                <input
+                  accept=".xlsx,.xls,.csv"
+                  onChange={(event) => setExcelFile(event.target.files?.[0] ?? null)}
+                  type="file"
+                />
+                <span className="muted-note">
+                  只要 Excel 裡的機型才會保留，外部機種不會被加入。
+                </span>
+              </label>
+
+              <label className="update-file-box">
+                <span>圖片資料夾</span>
+                <strong>{imageFiles.length ? `${imageFiles.length} 張圖片` : "請選擇圖片資料夾"}</strong>
+                <input
+                  accept="image/*"
+                  multiple
+                  // @ts-expect-error Chromium 支援整個資料夾挑選。
+                  webkitdirectory=""
+                  onChange={(event) => setImageFiles(Array.from(event.target.files ?? []))}
+                  type="file"
+                />
+                <span className="muted-note">
+                  圖片會依 model 名稱自動配對，多張圖片會成為輪播來源。
+                </span>
+              </label>
+            </div>
+          </article>
+
+          <article className="update-card">
+            <p className="eyebrow">機型清單</p>
+            <h2>Excel 機型與歸檔機型</h2>
+
+            <label className="search-field">
+              <span>Excel 機型</span>
+              <textarea
+                className="update-textarea"
+                value={stagedModelsText}
+                onChange={(event) => setStagedModelsText(event.target.value)}
+                spellCheck={false}
               />
-              <p>會先顯示檔名與狀態，方便確認本次是否讀到正確版本。</p>
             </label>
 
-            <label className="upload-card">
-              <span>圖片資料夾</span>
-              <strong>選取各機型照片</strong>
-              <input
-                accept="image/*"
-                multiple
-                // @ts-expect-error Chromium supports this folder picker attribute.
-                webkitdirectory=""
-                onChange={(event) => setImageFiles(Array.from(event.target.files ?? []))}
-                type="file"
+            <label className="search-field">
+              <span>歸檔 / 移除機型</span>
+              <textarea
+                className="update-textarea"
+                value={archiveModelsText}
+                onChange={(event) => setArchiveModelsText(event.target.value)}
+                placeholder="例如：FA401EA-0041A392H"
+                spellCheck={false}
               />
-              <p>可直接選整個資料夾，系統會用檔名與資料夾名稱配對機型。</p>
             </label>
+          </article>
+        </section>
+
+        <section className="update-stats">
+          <div className="update-stat">
+            <span>新機型</span>
+            <strong>{newModels.length}</strong>
           </div>
-
-          <div className="file-summary">
-            <div>
-              <span>Excel</span>
-              <strong>
-                {excelFile ? `${excelFile.name} / ${formatBytes(excelFile.size)}` : "未上傳"}
-              </strong>
-            </div>
-            <div>
-              <span>圖片</span>
-              <strong>
-                {imageFiles.length
-                  ? `${imageFiles.length} 檔 / ${formatBytes(
-                      imageFiles.reduce((sum, file) => sum + file.size, 0),
-                    )}`
-                  : "未選擇"}
-              </strong>
-            </div>
-            <div>
-              <span>已配對機型</span>
-              <strong>
-                {imageMatches.size ? `${imageMatches.size} 個機型` : "尚未配對任何圖片"}
-              </strong>
-            </div>
+          <div className="update-stat">
+            <span>保留機型</span>
+            <strong>{retainedModels.length}</strong>
           </div>
-        </article>
-
-        <article className="update-panel">
-          <div className="panel-heading">
-            <div>
-              <p className="update-eyebrow">比對輸入</p>
-              <h2>本次 Excel 機型清單</h2>
-            </div>
-            <button
-              className="update-button ghost"
-              onClick={() => setExcelModelsText(publishedModels.join("\n"))}
-              type="button"
-            >
-              載入目前 88 筆
-            </button>
+          <div className="update-stat">
+            <span>移除機型</span>
+            <strong>{removedModels.length}</strong>
           </div>
-
-          <textarea
-            className="update-textarea"
-            value={excelModelsText}
-            onChange={(event) => setExcelModelsText(event.target.value)}
-            spellCheck={false}
-          />
-
-          <div className="panel-heading compact">
-            <div>
-              <p className="update-eyebrow">下架清單</p>
-              <h3>要強制刪除的舊資料</h3>
-            </div>
-            <span className={pillClass(archiveModels.length ? "danger" : "muted")}>
-              {archiveModels.length ? `${archiveModels.length} 筆` : "可留空"}
-            </span>
+          <div className="update-stat">
+            <span>缺圖機型</span>
+            <strong>{missingImages.length}</strong>
           </div>
-
-          <textarea
-            className="update-textarea small"
-            value={archiveModelsText}
-            onChange={(event) => setArchiveModelsText(event.target.value)}
-            placeholder="每行一個型號，例如：OLD-MODEL-001"
-            spellCheck={false}
-          />
-        </article>
-      </section>
-
-      <section className="update-stats">
-        <div className="update-stat-card">
-          <span>新增模型</span>
-          <strong>{newModels.length}</strong>
-        </div>
-        <div className="update-stat-card">
-          <span>保留模型</span>
-          <strong>{retainedModels.length}</strong>
-        </div>
-        <div className="update-stat-card">
-          <span>下架模型</span>
-          <strong>{removedModels.length}</strong>
-        </div>
-        <div className="update-stat-card">
-          <span>缺圖模型</span>
-          <strong>{missingImages.length}</strong>
-        </div>
-        <div className="update-stat-card">
-          <span>市價總和</span>
-          <strong>{formatMoney(stagedMarketValue)}</strong>
-        </div>
-        <div className="update-stat-card">
-          <span>教育價總和</span>
-          <strong>{formatMoney(stagedEduValue)}</strong>
-        </div>
-      </section>
-
-      <section className="update-panel">
-        <div className="panel-heading">
-          <div>
-            <p className="update-eyebrow">差異預覽</p>
-            <h2>本次更新會發生的事</h2>
+          <div className="update-stat">
+            <span>市價總和</span>
+            <strong>{formatMoney(summary.finance.totalMarketPrice)}</strong>
           </div>
-          <span className={pillClass("warn")}>先比對，再發布</span>
-        </div>
-
-        <div className="diff-grid">
-          <DiffColumn title="新增模型" tone="good" items={newModels} />
-          <DiffColumn title="保留模型" tone="muted" items={retainedModels} />
-          <DiffColumn title="下架模型" tone="danger" items={removedModels} />
-          <DiffColumn title="缺圖模型" tone="warn" items={missingImages} />
-        </div>
-      </section>
-
-      <section className="update-grid">
-        <article className="update-panel">
-          <div className="panel-heading">
-            <div>
-              <p className="update-eyebrow">圖片配對</p>
-              <h2>檔名與機型對應</h2>
-            </div>
-            <span className={pillClass(imageFiles.length ? "good" : "muted")}>
-              {imageFiles.length ? `${imageMatches.size} 組配對` : "尚未上傳圖片"}
-            </span>
+          <div className="update-stat">
+            <span>教育價總和</span>
+            <strong>{formatMoney(summary.finance.totalEducationPrice)}</strong>
           </div>
+        </section>
 
-          {imageFiles.length === 0 ? (
-            <div className="empty-block">
-              請先上傳圖片資料夾，系統就會根據檔名自動整理出對應的機型。
-            </div>
-          ) : (
-            <div className="match-list">
-              {Array.from(imageMatches.entries())
-                .slice(0, 12)
-                .map(([model, files]) => (
-                  <div key={model} className="match-row">
+        <section className="update-grid">
+          <article className="update-card">
+            <p className="eyebrow">圖片對照</p>
+            <h2>目前已配對的機型</h2>
+
+            {imageFiles.length === 0 ? (
+              <div className="empty-state">
+                <strong>尚未選擇圖片</strong>
+                <span>選完圖片資料夾後，這裡會列出能成功配對到 model 的機型。</span>
+              </div>
+            ) : (
+              <div className="update-list">
+                {Array.from(imageMap.entries()).slice(0, 12).map(([model, files]) => (
+                  <div key={model} className="update-row">
                     <strong>{model}</strong>
                     <span>{files.length} 張</span>
                   </div>
                 ))}
-            </div>
-          )}
+              </div>
+            )}
 
-          {extraImages.length > 0 && (
-            <div className="subnote warn">
-              還有 {extraImages.length} 個機型在圖片資料夾裡找不到對應的 Excel 資料。
-            </div>
-          )}
-        </article>
+            {extraImages.length > 0 && (
+              <div className="notice">
+                有 {extraImages.length} 個圖片對應不到目前 Excel 機型，請先確認檔名或 model 是否一致。
+              </div>
+            )}
+          </article>
 
-        <article className="update-panel">
-          <div className="panel-heading">
+          <article className="update-card">
+            <p className="eyebrow">更新摘要</p>
+            <h2>匯出前最後檢查</h2>
+
+            <div className="compact-list">
+              <div className="compact-row">
+                <strong>目前資料列</strong>
+                <span>{currentCount}</span>
+              </div>
+              <div className="compact-row">
+                <strong>Excel 內新機型</strong>
+                <span>{newModels.length}</span>
+              </div>
+              <div className="compact-row">
+                <strong>找不到圖片</strong>
+                <span>{missingImages.length}</span>
+              </div>
+              <div className="compact-row">
+                <strong>已配對圖片群組</strong>
+                <span>{imageMap.size}</span>
+              </div>
+            </div>
+
+            <div className="update-actions">
+              <button className="button-primary" onClick={downloadSummary} type="button">
+                下載 JSON 摘要
+              </button>
+              <Link className="button-soft" href="/">
+                回首頁檢視
+              </Link>
+            </div>
+
+            <label className="search-field">
+              <span>摘要預覽</span>
+              <textarea
+                className="update-textarea large"
+                readOnly
+                value={JSON.stringify(summary, null, 2)}
+                spellCheck={false}
+              />
+            </label>
+          </article>
+        </section>
+
+        <section className="update-card">
+          <p className="eyebrow">缺圖與移除</p>
+          <h2>要回頭處理的項目</h2>
+
+          <div className="update-columns">
             <div>
-              <p className="update-eyebrow">發布流程</p>
-              <h2>更新前的最後檢查</h2>
+              <h3>缺圖機型</h3>
+              <div className="update-list">
+                {missingImages.length === 0 ? (
+                  <div className="empty-state">
+                    <strong>沒有缺圖</strong>
+                    <span>目前 Excel 中的機型都有對應圖片。</span>
+                  </div>
+                ) : (
+                  missingImages.map((model) => (
+                    <div key={model} className="update-row">
+                      <strong>{model}</strong>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
-            <span className={pillClass("good")}>準備完成</span>
-          </div>
 
-          <div className="release-stack">
-            <button className="update-button primary" onClick={downloadSummary} type="button">
-              下載核對摘要
-            </button>
-            <button className="update-button" type="button" disabled>
-              套用更新
-            </button>
-            <button className="update-button" type="button" disabled>
-              下架舊機型
-            </button>
-            <button className="update-button" type="button" disabled>
-              清除快取
-            </button>
-            <button className="update-button ghost" type="button" disabled>
-              預覽發佈頁
-            </button>
-          </div>
-
-          <div className="release-notes">
             <div>
-              <span>推薦流程</span>
-              <strong>先核對 Excel 與圖片，再決定是否發佈。</strong>
-            </div>
-            <div>
-              <span>缺圖處理</span>
-              <strong>若圖片沒配齊，先保留舊資料比較安全。</strong>
-            </div>
-            <div>
-              <span>發布提醒</span>
-              <strong>正式上線前，請先在 Vercel 預覽部署確認畫面。</strong>
+              <h3>移除機型</h3>
+              <div className="update-list">
+                {removedModels.length === 0 ? (
+                  <div className="empty-state">
+                    <strong>沒有移除項目</strong>
+                    <span>目前沒有要從清單中拿掉的機型。</span>
+                  </div>
+                ) : (
+                  removedModels.map((model) => (
+                    <div key={model} className="update-row">
+                      <strong>{model}</strong>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
-        </article>
-      </section>
-
-      <section className="update-panel">
-        <div className="panel-heading">
-          <div>
-            <p className="update-eyebrow">未配對資料</p>
-            <h2>圖片庫中尚未對應的模型</h2>
-          </div>
-          <span className={pillClass("muted")}>{unmatchedGalleryModels.length} 筆</span>
-        </div>
-
-        <div className="compact-list">
-          {unmatchedGalleryModels.map((model) => (
-            <div key={model} className="compact-row">
-              <strong>{model}</strong>
-              <span>圖片未配對</span>
-            </div>
-          ))}
-        </div>
-      </section>
-    </main>
-  );
-}
-
-function DiffColumn({
-  title,
-  tone,
-  items,
-}: {
-  title: string;
-  tone: "good" | "warn" | "muted" | "danger";
-  items: string[];
-}) {
-  return (
-    <article className={`diff-column ${tone}`}>
-      <div className="panel-heading compact">
-        <h3>{title}</h3>
-        <span className={pillClass(tone)}>{items.length}</span>
+        </section>
       </div>
-
-      {items.length === 0 ? (
-        <div className="empty-block small">沒有項目。</div>
-      ) : (
-        <div className="compact-list">
-          {items.slice(0, 8).map((item) => (
-            <div key={item} className="compact-row">
-              <strong>{item}</strong>
-            </div>
-          ))}
-          {items.length > 8 && <div className="subnote">還有 {items.length - 8} 筆未顯示。</div>}
-        </div>
-      )}
-    </article>
+    </main>
   );
 }

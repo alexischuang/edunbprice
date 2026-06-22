@@ -1,496 +1,585 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import {
+  budgetOptions,
+  buildSearchText,
+  cpuOptions,
+  formatMoney,
+  getBudgetLimit,
+  getCpuCategory,
+  getEducationPriceText,
+  getGalleryCandidates,
+  getGpuCategory,
+  getPurposeLabel,
+  getRamCategory,
+  getScreenCategory,
+  getStorageCategory,
+  normalizeText,
+  purposeOptions,
+  ramOptions,
+  screenOptions,
+  selectMobileRecommendations,
+  selectRecommended,
+  splitList,
+  storageOptions,
+  gpuOptions,
+  getBestDiscount,
+} from "./catalog";
 import { laptops, type Laptop } from "./laptop-data";
 
-type Intent = "all" | "study" | "portable" | "gaming" | "creator" | "large";
-type SortMode = "match" | "price" | "saving" | "performance";
+type SortMode = "match" | "price" | "saving" | "performance" | "value";
 
-type RankedLaptop = {
-  laptop: Laptop;
-  score: number;
-};
+const sortOptions = [
+  { value: "match", label: "最符合" },
+  { value: "price", label: "價格最低" },
+  { value: "saving", label: "折扣最多" },
+  { value: "performance", label: "效能優先" },
+  { value: "value", label: "CP 值" },
+] as const;
 
-const intentOptions: Array<{ id: Intent; label: string }> = [
-  { id: "all", label: "全部" },
-  { id: "study", label: "上課 / 文書" },
-  { id: "portable", label: "輕薄便攜" },
-  { id: "gaming", label: "電競效能" },
-  { id: "creator", label: "創作 / AI" },
-  { id: "large", label: "大螢幕" },
-];
+function usePersistentBoolean(key: string, defaultValue: boolean) {
+  const [value, setValue] = useState(defaultValue);
+  const [ready, setReady] = useState(false);
 
-const sortOptions: Array<{ id: SortMode; label: string }> = [
-  { id: "match", label: "最符合需求" },
-  { id: "price", label: "價格由低到高" },
-  { id: "saving", label: "省最多優先" },
-  { id: "performance", label: "效能由高到低" },
-];
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(key);
+      if (stored !== null) setValue(stored === "1");
+    } catch {
+      // Ignore storage errors and keep the default UI state.
+    } finally {
+      setReady(true);
+    }
+  }, [key]);
 
-const currency = new Intl.NumberFormat("zh-TW", {
-  style: "currency",
-  currency: "TWD",
-  maximumFractionDigits: 0,
-});
+  useEffect(() => {
+    if (!ready) return;
+    try {
+      window.localStorage.setItem(key, value ? "1" : "0");
+    } catch {
+      // Ignore storage errors.
+    }
+  }, [key, ready, value]);
 
-const maxBudget = Math.ceil(
-  Math.max(...laptops.map((laptop) => laptop.eduPrice)) / 1000,
-) * 1000;
-const minBudget = Math.floor(
-  Math.min(...laptops.map((laptop) => laptop.eduPrice)) / 1000,
-) * 1000;
-const families = Array.from(new Set(laptops.map((laptop) => laptop.family))).sort(
-  (a, b) => a.localeCompare(b, "zh-Hant"),
-);
-
-function asList(value: string[] | string) {
-  return Array.isArray(value) ? value : value ? [value] : [];
+  return [value, setValue] as const;
 }
 
-function formatPrice(value: number) {
-  return currency.format(value);
+function scoreLaptop(laptop: Laptop, sortMode: SortMode) {
+  if (sortMode === "price") return -laptop.eduPrice;
+  if (sortMode === "saving") return laptop.discount * 2 + laptop.discountRate;
+  if (sortMode === "performance") return laptop.performance * 2 + laptop.valueScore * 0.1;
+  if (sortMode === "value") return laptop.valueScore;
+
+  const distance = Math.abs(laptop.eduPrice - 27500);
+  const rangeBonus = laptop.eduPrice >= 25000 && laptop.eduPrice <= 30000 ? 3000 : 0;
+  const purposeBonus = laptop.purposes.includes("study") ? 120 : 0;
+
+  return laptop.valueScore + laptop.discountRate * 12 + purposeBonus + rangeBonus - distance * 0.05;
 }
 
-function formatWeight(value: number | null) {
-  return value ? `${value.toFixed(2)} kg` : "-";
+function budgetLabel(value: string) {
+  return budgetOptions.find((item) => item.value === value)?.label ?? "所有預算";
 }
 
-function scoreLaptop(laptop: Laptop, intent: Intent) {
-  let score = laptop.valueScore + laptop.discountRate * 1.7;
-
-  if (intent === "gaming") {
-    score += laptop.performance * 1.6 + (laptop.rtx ? 42 : 0) + laptop.gpuTier / 30;
-  }
-
-  if (intent === "creator") {
-    score += laptop.performance * 1.2 + (laptop.ai ? 22 : 0);
-    score += laptop.ramGB && laptop.ramGB >= 32 ? 14 : 0;
-    score += laptop.oled ? 10 : 0;
-  }
-
-  if (intent === "portable") {
-    score += laptop.weightKg ? Math.max(0, 1.95 - laptop.weightKg) * 48 : 0;
-    score += laptop.screenSize && laptop.screenSize <= 14.5 ? 10 : 0;
-  }
-
-  if (intent === "large") {
-    score += laptop.screenSize ? laptop.screenSize * 4.5 : 0;
-  }
-
-  if (intent === "study") {
-    score += laptop.eduPrice <= 35000 ? 30 : 0;
-    score += laptop.weightKg && laptop.weightKg <= 1.7 ? 14 : 0;
-  }
-
-  return score;
-}
-
-function scoreLabel(score: number) {
-  return `${Math.min(99, Math.max(72, Math.round(score / 2.4)))}%`;
-}
-
-function compareRanked(a: RankedLaptop, b: RankedLaptop, sortMode: SortMode) {
-  if (sortMode === "price") {
-    return a.laptop.eduPrice - b.laptop.eduPrice;
-  }
-
-  if (sortMode === "saving") {
-    return b.laptop.discount - a.laptop.discount;
-  }
-
-  if (sortMode === "performance") {
-    return b.laptop.performance - a.laptop.performance;
-  }
-
-  return b.score - a.score;
-}
-
-export default function Home() {
-  const [query, setQuery] = useState("");
-  const [budget, setBudget] = useState(maxBudget);
-  const [intent, setIntent] = useState<Intent>("all");
-  const [family, setFamily] = useState("all");
+export default function HomePage() {
+  const [showEducationPrice, setShowEducationPrice] = usePersistentBoolean(
+    "edu-price-visible",
+    false,
+  );
+  const [search, setSearch] = useState("");
+  const [budget, setBudget] = useState("all");
+  const [purpose, setPurpose] = useState("all");
+  const [cpu, setCpu] = useState("all");
+  const [ram, setRam] = useState("all");
+  const [storage, setStorage] = useState("all");
+  const [screen, setScreen] = useState("all");
+  const [gpu, setGpu] = useState("all");
   const [sortMode, setSortMode] = useState<SortMode>("match");
-  const [onlyRtx, setOnlyRtx] = useState(false);
-  const [onlyAi, setOnlyAi] = useState(false);
-  const [onlyOled, setOnlyOled] = useState(false);
-  const [onlyOneTb, setOnlyOneTb] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  const recommended = useMemo(() => selectRecommended(laptops, 6), []);
+  const mobileRecommended = useMemo(() => selectMobileRecommendations(laptops, 3), []);
+  const bestDiscount = useMemo(() => getBestDiscount(laptops), []);
 
   const filtered = useMemo(() => {
-    const terms = query
-      .trim()
-      .toLowerCase()
-      .split(/\s+/)
-      .filter(Boolean);
+    const searchQuery = normalizeText(search);
+    const limit = getBudgetLimit(budget);
 
     return laptops
-      .filter((laptop) => laptop.eduPrice <= budget)
-      .filter((laptop) => family === "all" || laptop.family === family)
-      .filter((laptop) => intent === "all" || asList(laptop.purposes).includes(intent))
-      .filter((laptop) => !onlyRtx || laptop.rtx)
-      .filter((laptop) => !onlyAi || laptop.ai)
-      .filter((laptop) => !onlyOled || laptop.oled)
-      .filter((laptop) => !onlyOneTb || (laptop.storageGB ?? 0) >= 1000)
-      .filter((laptop) => terms.every((term) => laptop.searchText.includes(term)))
       .map((laptop) => ({
         laptop,
-        score: scoreLaptop(laptop, intent),
+        searchIndex: buildSearchText(laptop),
       }))
-      .sort((a, b) => compareRanked(a, b, sortMode));
-  }, [budget, family, intent, onlyAi, onlyOled, onlyOneTb, onlyRtx, query, sortMode]);
+      .filter(({ laptop }) => laptop.eduPrice <= limit)
+      .filter(({ laptop }) => purpose === "all" || laptop.purposes.includes(purpose))
+      .filter(({ laptop }) => cpu === "all" || getCpuCategory(laptop.cpu) === cpu)
+      .filter(({ laptop }) => ram === "all" || getRamCategory(laptop) === ram)
+      .filter(({ laptop }) => storage === "all" || getStorageCategory(laptop) === storage)
+      .filter(({ laptop }) => screen === "all" || getScreenCategory(laptop) === screen)
+      .filter(({ laptop }) => gpu === "all" || getGpuCategory(laptop) === gpu)
+      .filter(({ searchIndex }) => !searchQuery || searchIndex.includes(searchQuery))
+      .sort((a, b) => scoreLaptop(b.laptop, sortMode) - scoreLaptop(a.laptop, sortMode));
+  }, [budget, cpu, gpu, purpose, ram, screen, search, sortMode, storage]);
 
-  const topPicks = filtered.slice(0, 3);
-  const featured = topPicks[0]?.laptop ?? laptops[0];
-  const featuredScore = topPicks[0]?.score ?? scoreLaptop(featured, intent);
-  const bestSaving = laptops.reduce(
-    (best, laptop) => (laptop.discount > best.discount ? laptop : best),
-    laptops[0],
+  useEffect(() => {
+    setSelectedIds((current) =>
+      current.filter((id) => laptops.some((laptop) => laptop.id === id)),
+    );
+  }, []);
+
+  const selectedLaptops = useMemo(
+    () => selectedIds.map((id) => laptops.find((laptop) => laptop.id === id)).filter(Boolean) as Laptop[],
+    [selectedIds],
   );
-  const lightest = laptops.reduce(
-    (best, laptop) => {
-      if (!laptop.weightKg) return best;
-      if (!best.weightKg) return laptop;
-      return laptop.weightKg < best.weightKg ? laptop : best;
-    },
-    laptops[0],
-  );
-  const fastest = laptops.reduce(
-    (best, laptop) => (laptop.performance > best.performance ? laptop : best),
-    laptops[0],
-  );
-  const underBudget = laptops.filter((laptop) => laptop.eduPrice <= budget).length;
-  const activeFilters = [query, family !== "all", intent !== "all", onlyRtx, onlyAi, onlyOled, onlyOneTb].filter(Boolean).length;
+
+  const compareUrl = selectedIds.length ? `/compare?ids=${selectedIds.join(",")}` : "/compare";
+
+  function toggleSelected(id: string) {
+    setSelectedIds((current) => {
+      if (current.includes(id)) return current.filter((item) => item !== id);
+      if (current.length >= 4) return current;
+      return [...current, id];
+    });
+  }
+
+  function clearFilters() {
+    setSearch("");
+    setBudget("all");
+    setPurpose("all");
+    setCpu("all");
+    setRam("all");
+    setStorage("all");
+    setScreen("all");
+    setGpu("all");
+    setSortMode("match");
+  }
 
   return (
     <main className="site-shell">
-      <section className="hero-band">
-        <div className="hero-grid">
+      <div className="page-frame">
+        <div className="topbar">
+          <button
+            className="excel-toggle"
+            onClick={() => setShowEducationPrice((current) => !current)}
+            type="button"
+            aria-label="切換教育價顯示"
+            title="點 EXCEL 切換價格顯示"
+          >
+            <span className="signal" aria-hidden="true" />
+            <strong>EXCEL</strong>
+          </button>
+
+          <div className="topbar-links">
+            <Link className="link-pill" href="/compare">
+              多機比較
+            </Link>
+            <Link className="link-pill" href="/update">
+              更新後台
+            </Link>
+          </div>
+        </div>
+
+        <section className="hero section">
           <div className="hero-copy">
-            <p className="eyebrow">Excel 限定機型</p>
-            <h1>教育價筆電挑選器</h1>
-            <p className="hero-text">
-              把 88 台 ASUS 教育價筆電整理成可直接比較的清單。先選用途，再縮預算，最後看 CPU、RAM、SSD、顯卡與重量，幫你快速收斂到真正適合上課、創作或遊戲的機型。
+            <p className="eyebrow">education laptop selector</p>
+            <h1>大專教育價筆電挑選器</h1>
+            <p>
+              依 Excel 內的限定機型，快速用預算、用途、CPU、RAM、SSD、螢幕與顯示卡縮小範圍。
+              預設隱藏教育價，點左上角 EXCEL 才切換顯示，市價與折扣仍會保留。
             </p>
-
-            <div className="hero-metrics" aria-label="網站重點數據">
-              <span>{laptops.length} 款機型</span>
-              <span>{families.length} 個系列</span>
-              <span>最高折扣 {formatPrice(bestSaving.discount)}</span>
-            </div>
-
-            <div className="hero-metrics" aria-label="推薦提示">
-              <span>先看用途</span>
-              <span>再看預算</span>
-              <span>最後比規格</span>
+            <div className="hero-metrics">
+              <span className="metric">{laptops.length} 台機型</span>
+              <span className="metric">{purposeOptions.length - 1} 種用途</span>
+              <span className="metric">最佳折扣 {formatMoney(bestDiscount.discount)}</span>
+              <span className="metric">推薦區 25,000 - 30,000</span>
             </div>
           </div>
 
-          <article className="featured-machine">
-            <div className="featured-image">
-              {featured.image ? (
-                <Image
-                  alt={featured.title}
-                  className="machine-image"
-                  fill
-                  priority
-                  sizes="(max-width: 1100px) 100vw, 520px"
-                  src={featured.image}
+          <aside className="hero-card">
+            <div className="hero-card-head">
+              <strong>桌機推薦輪播</strong>
+              <span className="status-pill">手機版顯示最低價推薦</span>
+            </div>
+
+            <div className="carousel-shell carousel-recommend">
+              <div className="carousel">
+                {recommended.map((laptop, index) => (
+                  <RecommendCard
+                    key={laptop.id}
+                    laptop={laptop}
+                    order={index + 1}
+                    showEducationPrice={showEducationPrice}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="carousel-shell recommend-strip">
+              {mobileRecommended.map((laptop, index) => (
+                <RecommendCard
+                  key={laptop.id}
+                  laptop={laptop}
+                  order={index + 1}
+                  showEducationPrice={showEducationPrice}
                 />
-              ) : (
-                <div className="image-fallback">ASUS</div>
-              )}
+              ))}
+            </div>
+          </aside>
+        </section>
+
+        <section className="panel section">
+          <div className="toolbar">
+            <div className="search-field" style={{ flex: "1 1 280px" }}>
+              <label htmlFor="search">搜尋機型、CPU、用途</label>
+              <input
+                id="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="輸入機型代號、CPU、用途關鍵字"
+              />
             </div>
 
-            <div className="featured-body">
-              <div>
-                <p className="muted-label">目前推薦</p>
-                <h2>{featured.model}</h2>
-                <p>{featured.title}</p>
-              </div>
-              <div className="price-block">
-                <span>教育價 / 市價</span>
-                <strong>{formatPrice(featured.eduPrice)}</strong>
-                <del>{formatPrice(featured.marketPrice)}</del>
-              </div>
+            <div className="field" style={{ flex: "0 0 200px" }}>
+              <label htmlFor="budget">預算</label>
+              <select id="budget" value={budget} onChange={(event) => setBudget(event.target.value)}>
+                {budgetOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
             </div>
-          </article>
-        </div>
-      </section>
 
-      <section className="controls-band" aria-label="篩選條件">
-        <div className="controls-grid">
-          <label className="search-field">
-            <span>關鍵字搜尋</span>
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="例如：RTX、OLED、AI、1TB"
-            />
-          </label>
+            <div className="field" style={{ flex: "0 0 180px" }}>
+              <label htmlFor="sort">排序</label>
+              <select
+                id="sort"
+                value={sortMode}
+                onChange={(event) => setSortMode(event.target.value as SortMode)}
+              >
+                {sortOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <label className="budget-field">
-            <span>預算上限 {formatPrice(budget)}</span>
-            <input
-              type="range"
-              min={minBudget}
-              max={maxBudget}
-              step={1000}
-              value={budget}
-              onChange={(event) => setBudget(Number(event.target.value))}
-            />
-          </label>
-
-          <label className="select-field">
-            <span>系列</span>
-            <select value={family} onChange={(event) => setFamily(event.target.value)}>
-              <option value="all">全部系列</option>
-              {families.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="select-field">
-            <span>排序</span>
-            <select value={sortMode} onChange={(event) => setSortMode(event.target.value as SortMode)}>
-              {sortOptions.map((mode) => (
-                <option key={mode.id} value={mode.id}>
-                  {mode.label}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-
-        <div className="intent-row" role="group" aria-label="用途篩選">
-          {intentOptions.map((item) => (
-            <button
-              className={intent === item.id ? "intent is-active" : "intent"}
-              key={item.id}
-              onClick={() => setIntent(item.id)}
-              type="button"
-            >
-              {item.label}
+            <button className="button-soft" onClick={clearFilters} type="button">
+              清除條件
             </button>
-          ))}
-        </div>
+          </div>
 
-        <div className="toggle-row" aria-label="條件切換">
-          <Toggle checked={onlyRtx} label="只看 RTX" onChange={setOnlyRtx} />
-          <Toggle checked={onlyAi} label="只看 AI" onChange={setOnlyAi} />
-          <Toggle checked={onlyOled} label="只看 OLED" onChange={setOnlyOled} />
-          <Toggle checked={onlyOneTb} label="只看 1TB" onChange={setOnlyOneTb} />
-        </div>
-      </section>
+          <div className="filter-row">
+            <FieldSelect label="用途" value={purpose} onChange={setPurpose} options={purposeOptions} />
+            <FieldSelect label="CPU" value={cpu} onChange={setCpu} options={cpuOptions} />
+            <FieldSelect label="RAM" value={ram} onChange={setRam} options={ramOptions} />
+            <FieldSelect label="SSD" value={storage} onChange={setStorage} options={storageOptions} />
+            <FieldSelect label="LCD" value={screen} onChange={setScreen} options={screenOptions} />
+            <FieldSelect label="顯示卡" value={gpu} onChange={setGpu} options={gpuOptions} />
+          </div>
 
-      <section className="summary-band" aria-label="摘要資訊">
-        <div>
-          <span>目前符合</span>
-          <strong>{filtered.length}</strong>
-        </div>
-        <div>
-          <span>預算內機型</span>
-          <strong>{underBudget}</strong>
-        </div>
-        <div>
-          <span>已啟用條件</span>
-          <strong>{activeFilters}</strong>
-        </div>
-      </section>
+          <div className="summary-strip">
+            <div className="summary-stat">
+              <span>目前顯示</span>
+              <strong>{filtered.length}</strong>
+            </div>
+            <div className="summary-stat">
+              <span>已選比較</span>
+              <strong>{selectedIds.length}</strong>
+            </div>
+            <div className="summary-stat">
+              <span>所有機型</span>
+              <strong>{laptops.length}</strong>
+            </div>
+            <div className="summary-stat">
+              <span>價格切換</span>
+              <strong>{showEducationPrice ? "顯示" : "隱藏"}</strong>
+            </div>
+          </div>
+        </section>
 
-      <section className="picks-band" aria-label="推薦清單">
-        <div className="section-heading">
-          <p className="eyebrow">Best matches</p>
-          <h2>這一輪最值得看的 3 台</h2>
-        </div>
-        <div className="pick-grid">
-          {topPicks.length > 0 ? (
-            topPicks.map(({ laptop, score }, index) => (
-              <ProductCard
+        <section className="panel section">
+          <div className="toolbar" style={{ justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <p className="eyebrow">推薦機型</p>
+              <h2>先看教育價 25,000 - 30,000 區間</h2>
+            </div>
+            <span className="toggle-pill">{budgetLabel(budget)}</span>
+          </div>
+
+          <div className="recommend-grid">
+            {recommended.map((laptop, index) => (
+              <LaptopCard
                 key={laptop.id}
                 laptop={laptop}
                 rank={index + 1}
-                score={score}
+                onToggleSelected={toggleSelected}
+                selected={selectedIds.includes(laptop.id)}
+                showEducationPrice={showEducationPrice}
               />
-            ))
-          ) : (
-            <div className="empty-state">
-              <strong>目前沒有符合條件的機型</strong>
-              <span>可以先放寬預算，或取消某些篩選條件再試一次。</span>
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section className="results-band" id="catalog" aria-label="完整清單">
-        <div className="section-heading">
-          <p className="eyebrow">Catalog</p>
-          <h2>全部機型清單</h2>
-        </div>
-
-        <div className="summary-band" style={{ padding: 0, marginBottom: 16 }}>
-          <div>
-            <span>最高評分機型</span>
-            <strong>{scoreLabel(featuredScore)}</strong>
-          </div>
-          <div>
-            <span>最強效能</span>
-            <strong>{fastest.model}</strong>
-          </div>
-          <div>
-            <span>最輕便</span>
-            <strong>{lightest.model}</strong>
-          </div>
-        </div>
-
-        {filtered.length === 0 ? (
-          <div className="empty-state">
-            <strong>沒有找到符合條件的筆電</strong>
-            <span>試著降低條件，或改成「全部」用途後再重新比對。</span>
-          </div>
-        ) : (
-          <div className="catalog-grid">
-            {filtered.map(({ laptop, score }) => (
-              <ProductCard key={laptop.id} laptop={laptop} score={score} />
             ))}
           </div>
-        )}
-      </section>
+        </section>
+
+        <section className="panel section">
+          <div className="toolbar" style={{ justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <p className="eyebrow">全部結果</p>
+              <h2>依 Excel 機型篩選後的清單</h2>
+            </div>
+            <span className="toggle-pill">{filtered.length} 筆</span>
+          </div>
+
+          {filtered.length === 0 ? (
+            <div className="empty-state">
+              <strong>沒有符合的機型</strong>
+              <span>請放寬預算或取消部分下拉條件，Excel 外的機型不會被加入。</span>
+            </div>
+          ) : (
+            <div className="results-grid">
+              {filtered.map(({ laptop }, index) => (
+                <LaptopCard
+                  key={laptop.id}
+                  laptop={laptop}
+                  rank={index + 1}
+                  onToggleSelected={toggleSelected}
+                  selected={selectedIds.includes(laptop.id)}
+                  showEducationPrice={showEducationPrice}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+
+      {selectedIds.length > 0 && (
+        <div className="compare-bar">
+          <div className="summary">
+            <strong>{selectedIds.length} 台已勾選</strong>
+            <span>{selectedLaptops.map((item) => item.model).join("、")}</span>
+          </div>
+          <div className="topbar-links">
+            <button
+              className="button-ghost"
+              onClick={() => setSelectedIds([])}
+              type="button"
+            >
+              清空
+            </button>
+            <Link className="button-action" href={compareUrl}>
+              前往比較
+            </Link>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
 
-function Toggle({
-  checked,
+function FieldSelect({
   label,
+  value,
   onChange,
+  options,
 }: {
-  checked: boolean;
   label: string;
-  onChange: (checked: boolean) => void;
+  value: string;
+  onChange: (value: string) => void;
+  options: Array<{ value: string; label: string }>;
 }) {
   return (
-    <label className="toggle">
-      <input
-        checked={checked}
-        onChange={(event) => onChange(event.target.checked)}
-        type="checkbox"
-      />
-      <span aria-hidden="true" />
-      {label}
-    </label>
+    <div className="field" style={{ flex: "1 1 180px" }}>
+      <label>{label}</label>
+      <select value={value} onChange={(event) => onChange(event.target.value)}>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }
 
-function ProductCard({
+function RecommendCard({
+  laptop,
+  order,
+  showEducationPrice,
+}: {
+  laptop: Laptop;
+  order: number;
+  showEducationPrice: boolean;
+}) {
+  return (
+    <article className="mini-card">
+      <LaptopMedia laptop={laptop} badge={`#${order}`} />
+      <div className="mini-card-body">
+        <div>
+          <p className="family">{laptop.family}</p>
+          <h3>{laptop.model}</h3>
+        </div>
+        <div className="price-stack">
+          <strong className="edu">{getEducationPriceText(showEducationPrice, laptop.eduPrice)}</strong>
+          <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
+        </div>
+        <div className="discount-line">目前最高折扣 {formatMoney(laptop.discount)}</div>
+      </div>
+    </article>
+  );
+}
+
+function LaptopCard({
   laptop,
   rank,
-  score,
+  selected,
+  onToggleSelected,
+  showEducationPrice,
 }: {
   laptop: Laptop;
   rank?: number;
-  score: number;
+  selected: boolean;
+  onToggleSelected: (id: string) => void;
+  showEducationPrice: boolean;
 }) {
-  const tags = asList(laptop.tags);
-  const highlights = asList(laptop.highlights);
+  const purposes = splitList(laptop.purposes).slice(0, 4);
+  const highlights = splitList(laptop.highlights).slice(0, 4);
 
   return (
-    <article className={rank ? "product-card ranked" : "product-card"}>
-      <div className="card-media">
-        {rank && <span className="rank-badge">Top {rank}</span>}
-        {laptop.imageKind && <span className="image-kind">{laptop.imageKind}</span>}
-        {laptop.image ? (
-          <Image
-            alt={laptop.title}
-            className="machine-image"
-            fill
-            sizes="(max-width: 760px) 100vw, (max-width: 1100px) 220px, 210px"
-            src={laptop.image}
-          />
-        ) : (
-          <div className="image-fallback">ASUS</div>
-        )}
-      </div>
+    <article className="laptop-card">
+      <LaptopMedia laptop={laptop} badge={rank ? `#${rank}` : undefined} />
 
       <div className="card-body">
-        <div className="card-title-row">
+        <div className="card-topline">
           <div>
             <p className="family">{laptop.family}</p>
             <h3>{laptop.model}</h3>
           </div>
-          <span className="match-score">{scoreLabel(score)}</span>
+          <span className="toggle-pill">值 {Math.round(laptop.valueScore)}</span>
         </div>
 
         <p className="model-title">{laptop.title}</p>
 
         <div className="price-row">
-          <div>
-            <span>教育價 / 市價</span>
-            <strong>{formatPrice(laptop.eduPrice)}</strong>
-          </div>
-          <div>
-            <span>原價</span>
-            <del>{formatPrice(laptop.marketPrice)}</del>
-          </div>
+          <strong className="edu">{getEducationPriceText(showEducationPrice, laptop.eduPrice)}</strong>
+          <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
         </div>
 
-        <div className="saving-line">
-          省下 {formatPrice(laptop.discount)}
-          {laptop.discountRate > 0 ? `，折扣 ${laptop.discountRate}%` : ""}
+        <div className="discount-line">
+          目前最高折扣 {formatMoney(laptop.discount)}
+          {laptop.discountRate ? ` · ${laptop.discountRate}%` : ""}
         </div>
 
         <div className="tag-row">
-          {tags.slice(0, 5).map((tag) => (
-            <span key={tag}>{tag}</span>
+          {purposes.map((item) => (
+            <span className="tag" key={item}>
+              {getPurposeLabel(item)}
+            </span>
           ))}
         </div>
 
-        <dl className="spec-grid">
+        <dl className="info-grid">
           <div>
             <dt>CPU</dt>
             <dd>{laptop.cpu}</dd>
           </div>
           <div>
-            <dt>GPU</dt>
-            <dd>{laptop.gpu}</dd>
-          </div>
-          <div>
-            <dt>記憶體</dt>
+            <dt>RAM</dt>
             <dd>{laptop.memory}</dd>
           </div>
           <div>
-            <dt>儲存</dt>
+            <dt>SSD</dt>
             <dd>{laptop.storage}</dd>
           </div>
           <div>
-            <dt>螢幕</dt>
+            <dt>LCD</dt>
             <dd>{laptop.display}</dd>
           </div>
           <div>
-            <dt>重量</dt>
-            <dd>{formatWeight(laptop.weightKg)}</dd>
+            <dt>顯示卡</dt>
+            <dd>{laptop.gpu}</dd>
+          </div>
+          <div>
+            <dt>重量 / 保固</dt>
+            <dd>
+              {laptop.weight} · {laptop.warranty}
+            </dd>
           </div>
         </dl>
 
-        <details className="details-panel">
-          <summary>更多資訊</summary>
-          <div className="detail-copy">
-            <p>保固：{laptop.warranty || "兩年保固"}</p>
-            <p>配件：{laptop.bundle || "依實際出貨內容為準"}</p>
-            <p>條碼：{laptop.barcode}</p>
-            {highlights.length > 0 && (
-              <ul>
-                {highlights.map((item, index) => (
-                  <li key={`${laptop.id}-highlight-${index}`}>{item}</li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </details>
+        <div className="tag-row">
+          {highlights.map((item) => (
+            <span className="filter-chip" key={item}>
+              {item}
+            </span>
+          ))}
+        </div>
+
+        <div className="compare-row">
+          <label>
+            <input
+              checked={selected}
+              onChange={() => onToggleSelected(laptop.id)}
+              type="checkbox"
+            />
+            勾選比較
+          </label>
+          <Link className="link-pill" href={`/compare?ids=${laptop.id}`}>
+            單機檢視
+          </Link>
+        </div>
       </div>
     </article>
+  );
+}
+
+function LaptopMedia({ laptop, badge }: { laptop: Laptop; badge?: string }) {
+  const sources = useMemo(() => getGalleryCandidates(laptop), [laptop]);
+  const [visibleSources, setVisibleSources] = useState<string[]>(sources);
+  const [index, setIndex] = useState(0);
+  const activeSource = visibleSources[index] ?? visibleSources[0] ?? null;
+
+  useEffect(() => {
+    setVisibleSources(sources);
+    setIndex(0);
+  }, [sources]);
+
+  useEffect(() => {
+    if (visibleSources.length <= 1) return;
+    const timer = window.setInterval(() => {
+      setIndex((current) => (current + 1) % visibleSources.length);
+    }, 3200);
+    return () => window.clearInterval(timer);
+  }, [visibleSources.length]);
+
+  return (
+    <div className="card-media">
+      <div className="card-badges">
+        {badge && <span className="badge">{badge}</span>}
+        {laptop.imageKind && <span className="badge">{laptop.imageKind}</span>}
+      </div>
+
+      {activeSource ? (
+        <Image
+          alt={laptop.title}
+          className="machine-image"
+          fill
+          onError={() => {
+            setVisibleSources((current) => current.filter((item) => item !== activeSource));
+            setIndex(0);
+          }}
+          sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 33vw"
+          src={activeSource}
+        />
+      ) : (
+        <div className="fallback-visual">
+          <strong>圖片待補</strong>
+          <span>{laptop.model}</span>
+        </div>
+      )}
+    </div>
   );
 }

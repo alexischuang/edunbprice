@@ -88,27 +88,33 @@ a {
 
 .excel-toggle {
   align-items: center;
-  background: rgba(255, 250, 244, 0.72);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--teal-strong);
+  background: transparent;
+  border: 0;
+  color: var(--muted);
   display: inline-flex;
-  gap: 10px;
-  min-height: 42px;
-  padding: 0 14px 0 12px;
+  gap: 8px;
+  min-height: 24px;
+  opacity: 0.72;
+  padding: 0;
+  text-transform: uppercase;
 }
 
 .excel-toggle strong {
-  font-size: 14px;
-  letter-spacing: 0.12em;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
 }
 
 .excel-toggle .signal {
   background: var(--teal);
   border-radius: 999px;
-  box-shadow: 0 0 0 6px rgba(10, 111, 101, 0.1);
-  height: 9px;
-  width: 9px;
+  box-shadow: 0 0 0 4px rgba(10, 111, 101, 0.08);
+  height: 7px;
+  width: 7px;
+}
+
+.excel-toggle:hover {
+  opacity: 1;
 }
 
 .topbar-links {
@@ -137,6 +143,53 @@ a {
   gap: 18px;
   grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
   margin-bottom: 18px;
+}
+
+.update-auth {
+  display: grid;
+  margin: 12px 0 18px;
+  place-items: center;
+}
+
+.update-auth-hidden,
+.update-content--locked {
+  display: none;
+}
+
+.update-locked .topbar {
+  display: none;
+}
+
+.update-auth-card {
+  max-width: 560px;
+  width: 100%;
+}
+
+.auth-form {
+  display: grid;
+  gap: 14px;
+}
+
+.auth-input {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  color: var(--foreground);
+  min-height: 52px;
+  padding: 0 16px;
+}
+
+.auth-input:focus {
+  border-color: rgba(10, 111, 101, 0.5);
+  box-shadow: 0 0 0 4px rgba(10, 111, 101, 0.1);
+  outline: none;
+}
+
+.auth-error {
+  color: var(--rose);
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
 }
 
 .hero-copy,
@@ -1037,4 +1090,3 @@ a {
     padding-bottom: 124px;
   }
 }
-

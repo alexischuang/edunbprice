@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { laptops } from "../laptop-data";
 import modelGalleryReport from "../model-gallery-report.json";
 import { formatMoney, splitList } from "../catalog";
@@ -20,6 +20,8 @@ type GalleryReport = {
 };
 
 const galleryData = modelGalleryReport as GalleryReport;
+const UPDATE_PASSWORD = "CavesBooks";
+const UPDATE_AUTH_KEY = "education-update-auth";
 
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -43,10 +45,24 @@ function normalize(value: string) {
 }
 
 export default function UpdatePage() {
+  const [authReady, setAuthReady] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [excelFile, setExcelFile] = useState<File | null>(null);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [stagedModelsText, setStagedModelsText] = useState(laptops.map((item) => item.model).join("\n"));
   const [archiveModelsText, setArchiveModelsText] = useState("");
+
+  useEffect(() => {
+    try {
+      setIsUnlocked(window.sessionStorage.getItem(UPDATE_AUTH_KEY) === "1");
+    } catch {
+      setIsUnlocked(false);
+    } finally {
+      setAuthReady(true);
+    }
+  }, []);
 
   const stagedModels = useMemo(() => splitModels(stagedModelsText), [stagedModelsText]);
   const archiveModels = useMemo(() => splitModels(archiveModelsText), [archiveModelsText]);
@@ -134,13 +150,32 @@ export default function UpdatePage() {
     URL.revokeObjectURL(url);
   }
 
+  function handlePasswordSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (password === UPDATE_PASSWORD) {
+      try {
+        window.sessionStorage.setItem(UPDATE_AUTH_KEY, "1");
+      } catch {
+        // Ignore storage errors and keep the page unlocked in memory.
+      }
+
+      setPasswordError("");
+      setIsUnlocked(true);
+      setPassword("");
+      return;
+    }
+
+    setPasswordError("密碼不正確");
+  }
+
   return (
     <main className="update-shell">
-      <div className="page-frame">
+      <div className={`page-frame ${authReady && isUnlocked ? "" : "update-locked"}`}>
         <div className="topbar">
           <Link className="excel-toggle" href="/">
             <span className="signal" aria-hidden="true" />
-            <strong>EXCEL</strong>
+            <strong>EDUCATION</strong>
           </Link>
 
           <div className="topbar-links">
@@ -153,6 +188,38 @@ export default function UpdatePage() {
           </div>
         </div>
 
+        <section className={`update-auth ${authReady && isUnlocked ? "update-auth-hidden" : ""}`}>
+          <article className="update-card update-auth-card">
+            <p className="eyebrow">admin access</p>
+            <h1>更新後台</h1>
+            <p className="update-lead">
+              請先輸入密碼進入更新頁面。通過後，才可以看到資料整理、圖片對照與匯出工具。
+            </p>
+
+            <form className="auth-form" onSubmit={handlePasswordSubmit}>
+              <label className="search-field">
+                <span>密碼</span>
+                <input
+                  className="auth-input"
+                  onChange={(event) => setPassword(event.target.value)}
+                  type="password"
+                  value={password}
+                  autoComplete="current-password"
+                />
+              </label>
+
+              {passwordError ? <p className="auth-error">{passwordError}</p> : null}
+
+              <div className="update-actions">
+                <button className="button-primary" type="submit">
+                  進入後台
+                </button>
+              </div>
+            </form>
+          </article>
+        </section>
+
+        <div className={`update-content ${authReady && isUnlocked ? "" : "update-content--locked"}`}>
         <section className="update-hero">
           <article className="update-card">
             <p className="eyebrow">admin workflow</p>
@@ -416,6 +483,7 @@ export default function UpdatePage() {
             </div>
           </div>
         </section>
+        </div>
       </div>
     </main>
   );

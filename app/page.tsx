@@ -166,10 +166,10 @@ export default function HomePage() {
             onClick={() => setShowEducationPrice((current) => !current)}
             type="button"
             aria-label="切換教育價顯示"
-            title="點 EXCEL 切換價格顯示"
+            title="EDUCATION"
           >
             <span className="signal" aria-hidden="true" />
-            <strong>EXCEL</strong>
+            <strong>EDUCATION</strong>
           </button>
 
           <div className="topbar-links">
@@ -188,7 +188,7 @@ export default function HomePage() {
             <h1>大專教育價筆電挑選器</h1>
             <p>
               依 Excel 內的限定機型，快速用預算、用途、CPU、RAM、SSD、螢幕與顯示卡縮小範圍。
-              預設隱藏教育價，點左上角 EXCEL 才切換顯示，市價與折扣仍會保留。
+              預設隱藏教育價，只有點左上角的 `EDUCATION` 才會切換顯示，市價與折扣仍會保留。
             </p>
             <div className="hero-metrics">
               <span className="metric">{laptops.length} 台機型</span>

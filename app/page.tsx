@@ -161,16 +161,7 @@ export default function HomePage() {
     <main className="site-shell">
       <div className="page-frame">
         <div className="topbar">
-          <button
-            className="excel-toggle"
-            onClick={() => setShowEducationPrice((current) => !current)}
-            type="button"
-            aria-label="切換教育價顯示"
-            title="EDUCATION"
-          >
-            <span className="signal" aria-hidden="true" />
-            <strong>EDUCATION</strong>
-          </button>
+          <div className="topbar-spacer" aria-hidden="true" />
 
           <div className="topbar-links">
             <Link className="link-pill" href="/compare">
@@ -184,11 +175,22 @@ export default function HomePage() {
 
         <section className="hero section">
           <div className="hero-copy">
-            <p className="eyebrow">education laptop selector</p>
+            <p className="eyebrow eyebrow-inline">
+              <button
+                className="education-switch"
+                onClick={() => setShowEducationPrice((current) => !current)}
+                type="button"
+                aria-label="切換教育價顯示"
+                title="切換教育價顯示"
+              >
+                EDUCATION
+              </button>
+              <span className="eyebrow-tail"> laptop selector</span>
+            </p>
             <h1>大專教育價筆電挑選器</h1>
             <p>
               依 Excel 內的限定機型，快速用預算、用途、CPU、RAM、SSD、螢幕與顯示卡縮小範圍。
-              預設隱藏教育價，只有點左上角的 `EDUCATION` 才會切換顯示，市價與折扣仍會保留。
+              預設隱藏教育價，只有點標題前面的 `EDUCATION` 才會切換顯示，市價與折扣仍會保留。
             </p>
             <div className="hero-metrics">
               <span className="metric">{laptops.length} 台機型</span>

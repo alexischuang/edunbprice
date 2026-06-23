@@ -86,35 +86,35 @@ a {
   margin-bottom: 20px;
 }
 
-.excel-toggle {
+.topbar-spacer {
+  flex: 1;
+}
+
+.eyebrow-inline {
   align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.education-switch {
   background: transparent;
   border: 0;
-  color: var(--muted);
-  display: inline-flex;
-  gap: 8px;
-  min-height: 24px;
-  opacity: 0.72;
+  color: inherit;
+  font: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
   padding: 0;
-  text-transform: uppercase;
+  text-transform: inherit;
 }
 
-.excel-toggle strong {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.26em;
+.education-switch:hover {
+  color: var(--teal-strong);
 }
 
-.excel-toggle .signal {
-  background: var(--teal);
-  border-radius: 999px;
-  box-shadow: 0 0 0 4px rgba(10, 111, 101, 0.08);
-  height: 7px;
-  width: 7px;
-}
-
-.excel-toggle:hover {
-  opacity: 1;
+.eyebrow-tail {
+  color: var(--teal-strong);
 }
 
 .topbar-links {

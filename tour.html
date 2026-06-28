@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="中部北陸五日旅遊導覽，含景點特色、Google 地圖連結與照片區塊。" />
+  <title>中部北陸行程導覽</title>
+  <style>
+    :root{--bg:#f5efe6;--paper:rgba(255,251,246,.94);--ink:#2e261f;--muted:#6b5b4d;--line:rgba(71,55,41,.12);--accent:#a24d2d;--accent-2:#2f6f68;--accent-3:#b98b3d;--shadow:0 20px 60px rgba(58,39,25,.12)}
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;color:var(--ink);background:radial-gradient(circle at top left,rgba(162,77,45,.14),transparent 32%),radial-gradient(circle at 90% 10%,rgba(47,111,104,.15),transparent 28%),linear-gradient(180deg,var(--bg),#fffaf4 42%,#f9f2e7 100%);min-height:100vh}
+    .wrap{max-width:1240px;margin:0 auto;padding:32px 20px 60px}
+    .hero,.day{box-shadow:var(--shadow);border:1px solid rgba(71,55,41,.12);overflow:hidden}
+    .hero{background:linear-gradient(135deg,rgba(255,255,255,.86),rgba(255,247,239,.78));border-radius:28px;padding:28px;position:relative}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:rgba(162,77,45,.08);border-radius:999px;padding:8px 14px}
+    h1{margin:16px 0 10px;font-size:clamp(32px,5vw,54px);line-height:1.05}
+    .lead{max-width:850px;font-size:16px;line-height:1.9;color:var(--muted);margin:0 0 22px}
+    .stats,.photo-grid,.route{display:grid;gap:12px}
+    .stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:18px}
+    .stat,.stop,.photo-card{border:1px solid var(--line);background:rgba(255,255,255,.82)}
+    .stat{border-radius:20px;padding:14px 16px}.stat b{display:block;font-size:18px;margin-bottom:4px}.stat span{color:var(--muted);font-size:13px;line-height:1.5}
+    .nav{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 30px}.nav a{color:var(--ink);text-decoration:none;background:rgba(255,255,255,.72);border:1px solid var(--line);padding:10px 14px;border-radius:999px;font-size:14px}
+    .section-title{margin:34px 0 14px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}.section-title h2{margin:0;font-size:26px}.section-title p{margin:0;color:var(--muted);font-size:14px}
+    .day{margin-top:16px;background:var(--paper);border-radius:28px}
+    .day-head{padding:22px 22px 0;display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:start}.badge{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:10px 14px;border-radius:18px;color:#fff;font-weight:700;background:linear-gradient(135deg,var(--accent),#d67a4d)}
+    .day-head h3{margin:0 0 6px;font-size:24px}.day-head p{margin:0;color:var(--muted);line-height:1.8}
+    .photo-grid{grid-template-columns:repeat(3,minmax(0,1fr));padding:18px 22px 0}
+    .photo-card{border-radius:22px;min-height:170px;position:relative;box-shadow:0 16px 30px rgba(58,39,25,.08);background-size:cover;background-position:center}
+    .photo-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,10,7,.02) 15%,rgba(15,10,7,.58) 100%)}
+    .photo-label{position:absolute;left:14px;right:14px;bottom:14px;z-index:1;color:#fff;font-size:14px;line-height:1.55}.photo-label b{display:block;font-size:17px;margin-bottom:4px}
+    .route{padding:20px 22px 22px;grid-template-columns:repeat(2,minmax(0,1fr))}
+    .stop{border-radius:22px;padding:16px 16px 15px;position:relative;overflow:hidden}.stop::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--accent-3),var(--accent-2))}
+    .stop h4{margin:0 0 8px;padding-left:8px;font-size:18px}.stop .meta{display:flex;gap:8px;flex-wrap:wrap;padding-left:8px;margin-bottom:10px}.pill{font-size:12px;color:var(--accent);background:rgba(162,77,45,.08);border:1px solid rgba(162,77,45,.1);border-radius:999px;padding:4px 10px}
+    .stop p{margin:0;padding-left:8px;color:var(--muted);line-height:1.85;font-size:14px}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;padding-left:8px;margin-top:12px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:700}.btn-map{color:#fff;background:linear-gradient(135deg,var(--accent-2),#3d8f87)}.btn-photo{color:var(--ink);background:rgba(255,255,255,.8);border:1px solid var(--line)}
+    .callout{margin:14px 22px 22px;background:linear-gradient(135deg,rgba(47,111,104,.1),rgba(162,77,45,.08));border:1px solid rgba(47,111,104,.12);border-radius:22px;padding:18px 20px}.callout b{color:var(--accent-2)}
+    .footer-note{margin-top:28px;color:var(--muted);font-size:13px;line-height:1.8;padding:0 4px}
+    @media (max-width:920px){.stats,.route,.photo-grid,.day-head{grid-template-columns:1fr}.section-title{flex-direction:column;align-items:flex-start}.badge{width:fit-content}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Travel Guide · Chubu & Hokuriku</div>
+    <h1>中部北陸五日導覽</h1>
+    <p class="lead">這是一份依照原始行程順序整理的旅遊導覽網頁，已排除住宿內容，只保留交通、景點、購物與自由活動。每個景點都加上 Google 地圖連結與照片區塊，適合直接上傳成靜態網站。</p>
+    <div class="stats">
+      <div class="stat"><b>5 天</b><span>完整動線從名古屋進出，串起高山、白川鄉、金澤、犬山與名古屋市區。</span></div>
+      <div class="stat"><b>8 大重點</b><span>古街、合掌村、名園、城下町、神社與百貨商圈一次收齊。</span></div>
+      <div class="stat"><b>自由日推薦</b><span>第 4 天建議放慢步調，主打名古屋站與榮商圈。</span></div>
+      <div class="stat"><b>可直接部署</b><span>單一 `index.html`，不需要額外建置流程即可上傳。</span></div>
+    </div>
+  </section>
+  <nav class="nav"><a href="#day1">第1天</a><a href="#day2">第2天</a><a href="#day3">第3天</a><a href="#day4">第4天</a><a href="#day5">第5天</a></nav>
+  <div class="section-title"><h2>行程導覽</h2><p>照著順序看，就能快速掌握每天的旅遊重點</p></div>
+  <article class="day" id="day1">
+    <div class="day-head"><div class="badge">Day 1</div><div><h3>桃園出發，前往高山老街</h3><p>這一天是抵達日，重點放在高山上三之町的古街散策。整體氛圍像走進保留完好的江戶街區，適合慢慢逛、慢慢拍。</p></div></div>
+    <div class="photo-grid">
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/9/9f/Chubu_Centrair_International_Airport_01.jpg');"><div class="photo-label"><b>中部國際機場</b>抵達名古屋的空中門戶，銜接市區與周邊景點的起點。</div></div>
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/5/56/Takayama_Sannomachi_01.jpg');"><div class="photo-label"><b>上三之町</b>木造町家與老街店鋪並列，最能代表高山古都氣質。</div></div>
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/8/83/Takayama_old_town.jpg');"><div class="photo-label"><b>高山老街街景</b>整個街區本身就是景點，適合拍照與散步。</div></div>
+    </div>
+    <div class="route">
+      <div class="stop"><h4>桃園國際機場</h4><div class="meta"><span class="pill">交通起點</span><span class="pill">台灣出發</span></div><p>旅程從桃園機場啟程，正式進入中部北陸路線。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E6%A1%83%E5%9C%92%E5%9C%8B%E9%9A%9B%E6%A9%9F%E5%A0%B4" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/0/0e/Taoyuan_International_Airport.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>名古屋中部國際機場</h4><div class="meta"><span class="pill">入境節點</span><span class="pill">名古屋</span></div><p>作為中部地區的重要空中門戶，這裡是銜接市區與周邊景點的起點。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E4%B8%AD%E9%83%A8%E5%9C%8B%E9%9A%9B%E7%A9%BA%E6%B8%AF" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/1/19/Chubu_Centrair_International_Airport_terminal_1.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>飛驒高山老街（上三之町）</h4><div class="meta"><span class="pill">古街散策</span><span class="pill">高山小京都</span></div><p>這條街最大特色是保存完整的木造町家與江戶風情，沿街有味噌、漬物、清酒與雜貨店，走起來很有時代感。適合安排成慢步散策與拍照重點。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E4%B8%8A%E4%B8%89%E4%B9%8B%E7%94%BA%20%E9%AB%98%E5%B1%B1" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/5/56/Takayama_Sannomachi_01.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>高山老城區街景</h4><div class="meta"><span class="pill">歷史氛圍</span><span class="pill">散步型景點</span></div><p>高山的魅力在於「不是只看一個點」，而是整個街區本身就是景點，巷弄、商店與建築共同構成懷舊風景。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E9%AB%98%E5%B1%B1%E8%80%81%E8%A1%97" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/8/83/Takayama_old_town.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+    </div>
+  </article>
+  <article class="day" id="day2">
+    <div class="day-head"><div class="badge">Day 2</div><div><h3>白川鄉合掌村，走進金澤名園與茶屋街</h3><p>這天是本行程的經典文化日，從世界遺產到日本三大名園，再到保存完整的東茶屋街，風景層次非常豐富。</p></div></div>
+    <div class="photo-grid">
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/3/39/Shirakawa-go%2C_Gifu%2C_Japan.jpg');"><div class="photo-label"><b>白川鄉合掌村</b>像童話世界般的合掌屋聚落，四季都很上鏡。</div></div>
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/7/7e/Kenrokuen_November_2017_01.jpg');"><div class="photo-label"><b>兼六園</b>日本三大名園之一，冬天雪吊尤其有名。</div></div>
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/5/5a/Higashi_Chaya_District_Kanazawa_01.jpg');"><div class="photo-label"><b>東茶屋街</b>保存良好的茶屋街區，最適合收尾與逛伴手禮。</div></div>
+    </div>
+    <div class="route">
+      <div class="stop"><h4>白川鄉合掌村</h4><div class="meta"><span class="pill">世界遺產</span><span class="pill">童話村落</span></div><p>最知名的是像雙手合十般陡斜的茅草屋頂，能有效承受積雪。整個村落與田園、山景相連，像一幅冬季雪國明信片，也是日本鄉村風景的代表。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E7%99%BD%E5%B7%9D%E9%84%89%E5%90%88%E6%8E%8C%E6%9D%91" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/3/39/Shirakawa-go%2C_Gifu%2C_Japan.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>金澤兼六園</h4><div class="meta"><span class="pill">日本三大名園</span><span class="pill">四季皆美</span></div><p>以「六勝」意境聞名，融合池泉、橋梁、松樹、石組與步道，春天櫻花、秋天紅葉、冬天雪吊都很有看點，是金澤最具代表性的庭園。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E5%85%BC%E5%85%AD%E5%9C%92" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/7/7e/Kenrokuen_November_2017_01.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>金澤城跡</h4><div class="meta"><span class="pill">歷史遺構</span><span class="pill">城郭散步</span></div><p>與兼六園相鄰，能串成一條很完整的文化路線。適合搭配庭園一起看，感受加賀藩歷史與城下町格局。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E9%87%91%E6%BE%A4%E5%9F%8E%E8%B7%A1" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/8/8b/Kanazawa_Castle_park.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>東茶屋街</h4><div class="meta"><span class="pill">茶屋街</span><span class="pill">金箔名店</span></div><p>保存完整的町家與茶屋建築是最大亮點。街上有咖啡館、甜點店與金箔商品店，很適合用來收尾，氣氛優雅又有在地特色。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E8%8C%B6%E5%B1%8B%E8%A1%97%20%E9%87%91%E6%BE%A4" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/5/5a/Higashi_Chaya_District_Kanazawa_01.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+    </div>
+  </article>
+  <article class="day" id="day3">
+    <div class="day-head"><div class="badge">Day 3</div><div><h3>城下町、水之小鎮、國寶名城與名古屋夜景</h3><p>這天的節奏非常多元，從郡上八幡的清流街景、犬山城的古城天守，到名古屋市區的夜間購物，兼具歷史與城市感。</p></div></div>
+    <div class="photo-grid">
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/4/47/Gujo_Hachiman_2018.jpg');"><div class="photo-label"><b>郡上八幡</b>保有純粹生活感的水之小鎮，步調安靜。</div></div>
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/a/ab/Inuyama_Castle_from_Kiso_River.jpg');"><div class="photo-label"><b>犬山城</b>現存最古老天守之一，城下景色很有歷史感。</div></div>
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/1/1b/Osu_Kannon_Temple_02.jpg');"><div class="photo-label"><b>大須觀音</b>寺院與商圈共生，是名古屋很有味道的區域。</div></div>
+    </div>
+    <div class="route">
+      <div class="stop"><h4>郡上八幡</h4><div class="meta"><span class="pill">小京都</span><span class="pill">水之小鎮</span></div><p>這裡以城下町、町屋與水流共存而聞名。小鎮裡保留非常自然的生活感，沒有過度商業化，走起來有安靜又純粹的懷舊氛圍。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E9%83%A1%E4%B8%8A%E5%85%AB%E5%B9%A1" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/4/47/Gujo_Hachiman_2018.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>宗祇水</h4><div class="meta"><span class="pill">名水百選</span><span class="pill">清澈湧水</span></div><p>被列為日本名水百選，是郡上八幡「水之小鎮」精神的代表。若喜歡拍街景與細節，這裡很值得停留。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E5%AE%97%E7%A5%87%E6%B0%B4" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/7/7f/Sogi_spring_Gujo_Hachiman.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>犬山城</h4><div class="meta"><span class="pill">國寶</span><span class="pill">最古老天守之一</span></div><p>日本現存少數木造天守之一，歷史感非常強。城址位置高，視野不錯，能感受到戰國時代城堡的防禦格局與地形優勢。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E7%8A%AC%E5%B1%B1%E5%9F%8E" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/a/ab/Inuyama_Castle_from_Kiso_River.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>三光稻荷神社</h4><div class="meta"><span class="pill">千鳥居</span><span class="pill">戀愛與財運</span></div><p>入口一排朱紅鳥居很有拍照感，境內的愛心元素與錢洗祈福很受歡迎。想拍網美照或求好運，這裡很適合停一下。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E4%B8%89%E5%85%89%E7%A8%BB%E8%8D%B7%E7%A5%9E%E7%A4%BE%20%E7%8A%AC%E5%B1%B1" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/1/1d/Sanko_Inari_Shrine.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>大須觀音</h4><div class="meta"><span class="pill">日本三大觀音</span><span class="pill">名古屋地標</span></div><p>不只是一座寺院，也帶動了周邊商圈的發展。周圍街區很適合接續逛街、吃小吃，文化與商業結合得很自然。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E9%A0%88%E8%A7%80%E9%9F%B3" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/1/1b/Osu_Kannon_Temple_02.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>名古屋榮町商圈 / 名古屋車站商圈</h4><div class="meta"><span class="pill">夜間購物</span><span class="pill">百貨與地下街</span></div><p>榮町適合看夜景、逛百貨、找餐廳；名古屋車站則是交通與商場集合地，兩者都很適合作為自由活動的落點。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E6%A6%AE%E7%94%BA%20%E5%90%8D%E5%8F%A4%E5%B1%8B" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/7/73/Sakae_Nagoya_2018.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+    </div>
+  </article>
+  <article class="day" id="day4">
+    <div class="day-head"><div class="badge">Day 4</div><div><h3>全日自由活動，最適合放慢腳步逛名古屋</h3><p>這一天我最推薦你把重點放在名古屋站到榮商圈的城市散步，若喜歡在地感，可以再加上大須一帶。這樣最順，也最不累。</p></div></div>
+    <div class="photo-grid">
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/8/80/Nagoya_Station_Tower_2014.jpg');"><div class="photo-label"><b>名古屋中央塔樓</b>車站上方的城市地標，逛街與用餐都方便。</div></div>
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/7/73/Sakae_Nagoya_2018.jpg');"><div class="photo-label"><b>榮町商圈</b>百貨、地下街、餐廳密集，最適合自由日。</div></div>
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/6/63/Ohsu_shopping_street_Nagoya.jpg');"><div class="photo-label"><b>大須商店街</b>如果想加一點在地感，這裡非常值得順遊。</div></div>
+    </div>
+    <div class="route">
+      <div class="stop"><h4>名古屋中央塔樓</h4><div class="meta"><span class="pill">地標商場</span><span class="pill">名古屋站上方</span></div><p>高樓層商場與餐廳集中，最適合一站式購物與午餐。它的優勢是交通方便，從車站出來就能直接開始逛，非常適合自由行第一選擇。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E5%90%8D%E5%8F%A4%E5%B1%8B%E4%B8%AD%E5%A4%AE%E5%A1%94%E6%A8%93" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/8/80/Nagoya_Station_Tower_2014.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>榮町商圈</h4><div class="meta"><span class="pill">百貨集中</span><span class="pill">地下街</span></div><p>名古屋最具代表性的購物與餐飲區之一，百貨、書店、雜貨、服飾和咖啡館密集，還能順路遠望名古屋塔，氣氛很完整。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E6%A6%AE%E7%94%BA%20%E5%90%8D%E5%8F%A4%E5%B1%8B" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/2/2b/Nagoya_TV_Tower_and_Sakae_2019.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>建議玩法：城市漫遊線</h4><div class="meta"><span class="pill">推薦路線</span><span class="pill">最順動線</span></div><p>名古屋中央塔樓 → 名古屋站地下街 → 午餐 → 榮町商圈 → 傍晚咖啡或甜點。這條線很適合拍照、購物與吃美食，步調舒服又不趕。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E5%90%8D%E5%8F%A4%E5%B1%8B%E7%AB%99%20%E6%A6%AE%E7%94%BA" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/6/63/Ohsu_shopping_street_Nagoya.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>建議玩法：在地文化線</h4><div class="meta"><span class="pill">進階選項</span><span class="pill">大須周邊</span></div><p>如果你想要更有名古屋味道，可以把大須地區納入自由日。寺院、商店街與小吃攤的混合感，會比純百貨更有旅行記憶點。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E9%A0%88%E5%95%86%E5%BA%97%E8%A1%97" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/6/63/Ohsu_shopping_street_Nagoya.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+    </div>
+    <div class="callout"><b>我的推薦：</b>第 4 天選「名古屋中央塔樓 + 榮町商圈」最穩。如果你很愛街區散步，再加上大須商店街會更有層次。</div>
+  </article>
+  <article class="day" id="day5">
+    <div class="day-head"><div class="badge">Day 5</div><div><h3>AEON 購物中心，收尾回程</h3><p>最後一天安排購物中心很合理，適合補伴手禮、整理行李與吃最後一餐，再前往機場返台。</p></div></div>
+    <div class="photo-grid">
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/2/21/AEON_Mall_01.jpg');"><div class="photo-label"><b>AEON 購物中心</b>大型複合商場，最適合最後補貨與用餐。</div></div>
+      <div class="photo-card" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/1/19/Chubu_Centrair_International_Airport_terminal_1.jpg');"><div class="photo-label"><b>中部國際機場</b>從市區回到機場，準備返台。</div></div>
+    </div>
+    <div class="route">
+      <div class="stop"><h4>AEON購物中心</h4><div class="meta"><span class="pill">大型商場</span><span class="pill">伴手禮補貨</span></div><p>AEON 是日本常見的大型連鎖購物中心，優點是品項齊全、餐飲方便，適合作為回程前的最後停留點。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=AEON%20%E6%A8%82%E5%A4%A9%E6%B8%85%E5%B7%9E%E5%90%8D%E5%8F%A4%E5%B1%8B" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/2/21/AEON_Mall_01.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+      <div class="stop"><h4>名古屋中部國際機場 → 桃園國際機場</h4><div class="meta"><span class="pill">回程</span><span class="pill">旅程結束</span></div><p>完成五天的中部北陸旅行後，從名古屋返回台北，結束這趟兼具古都風情與城市購物的旅程。</p><div class="actions"><a class="btn btn-map" href="https://www.google.com/maps/search/?api=1&query=%E4%B8%AD%E9%83%A8%E5%9C%8B%E9%9A%9B%E7%A9%BA%E6%B8%AF" target="_blank" rel="noopener">Google 地圖</a><a class="btn btn-photo" href="https://upload.wikimedia.org/wikipedia/commons/1/19/Chubu_Centrair_International_Airport_terminal_1.jpg" target="_blank" rel="noopener">照片參考</a></div></div>
+    </div>
+  </article>
+  <div class="footer-note">這份頁面已經把住宿排除，只保留旅遊導覽內容，並補上 Google 地圖連結與照片區塊。若你要，我下一步可以再幫你拆成 `index.html`、`styles.css`、`site.js` 的三檔版，讓它更像正式可維護的靜態網站專案。</div>
+</div>
+</body>
+</html>

@@ -160,14 +160,6 @@ export default function UpdatePage() {
       finance: {
         bestDiscountModel: bestDiscount.model,
         bestDiscountValue: bestDiscount.discount,
-        totalMarketPrice: stagedModels.reduce(
-          (sum, model) => sum + (laptops.find((item) => item.model === model)?.marketPrice ?? 0),
-          0,
-        ),
-        totalEducationPrice: stagedModels.reduce(
-          (sum, model) => sum + (laptops.find((item) => item.model === model)?.eduPrice ?? 0),
-          0,
-        ),
       },
       files: {
         imageCount: appliedImageFiles.length,
@@ -337,8 +329,8 @@ export default function UpdatePage() {
             </article>
 
             <aside className="update-card">
-              <p className="eyebrow">資料概況</p>
-              <h2>Excel / 圖片配對</h2>
+              <p className="eyebrow">?????????</p>
+              <h2>????????????????????????</h2>
 
               <div className="update-meta">
                 <div className="update-meta-card">
@@ -350,7 +342,7 @@ export default function UpdatePage() {
                   <strong>{galleryData.matchedModels}</strong>
                 </div>
                 <div className="update-meta-card">
-                  <span>缺圖機型</span>
+                  <span>?????</span>
                   <strong>{missingImages.length}</strong>
                 </div>
                 <div className="update-meta-card">
@@ -465,28 +457,20 @@ export default function UpdatePage() {
 
           <section className="update-stats">
             <div className="update-stat">
-              <span>新增機型</span>
+              <span>????????</span>
               <strong>{newModels.length}</strong>
             </div>
             <div className="update-stat">
-              <span>保留機型</span>
+              <span>????????</span>
               <strong>{retainedModels.length}</strong>
             </div>
             <div className="update-stat">
-              <span>移除機型</span>
+              <span>????????</span>
               <strong>{removedModels.length}</strong>
             </div>
             <div className="update-stat">
-              <span>缺圖機型</span>
+              <span>?????</span>
               <strong>{missingImages.length}</strong>
-            </div>
-            <div className="update-stat">
-              <span>市價總和</span>
-              <strong>{formatMoney(summary.finance.totalMarketPrice)}</strong>
-            </div>
-            <div className="update-stat">
-              <span>教育價總和</span>
-              <strong>{formatMoney(summary.finance.totalEducationPrice)}</strong>
             </div>
           </section>
 
@@ -497,12 +481,12 @@ export default function UpdatePage() {
 
               <div className="update-columns">
                 <div>
-                  <h3>未配對照片機型</h3>
+                  <h3>?????</h3>
                   <div className="update-list">
                     {missingImages.length === 0 ? (
                       <div className="empty-state">
-                        <strong>沒有缺圖機型</strong>
-                        <span>目前 Excel 內的機型都已經找到圖片。</span>
+                        <strong>???????</strong>
+                        <span>?? Excel ????????????</span>
                       </div>
                     ) : (
                       missingImages.map((model) => (
@@ -555,16 +539,16 @@ export default function UpdatePage() {
 
           <section className="update-card">
             <p className="eyebrow">檢查結果</p>
-            <h2>缺圖與移除清單</h2>
+            <h2>??????????</h2>
 
             <div className="update-columns">
               <div>
-                <h3>缺圖機型</h3>
+                <h3>?????</h3>
                 <div className="update-list">
                   {missingImages.length === 0 ? (
                     <div className="empty-state">
-                      <strong>沒有缺圖</strong>
-                      <span>目前 Excel 內的機型都能找到圖片。</span>
+                      <strong>???????</strong>
+                      <span>?? Excel ???????????</span>
                     </div>
                   ) : (
                     missingImages.map((model) => (

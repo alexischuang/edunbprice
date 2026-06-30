@@ -117,6 +117,17 @@ export default function UpdatePage() {
     return map;
   }, [appliedImageFiles, stagedModels]);
 
+  const unmatchedImageFiles = useMemo(
+    () =>
+      appliedImageFiles.filter((file) => {
+        const path =
+          (file as File & { webkitRelativePath?: string }).webkitRelativePath || file.name;
+        const normalizedPath = normalize(path);
+        return !stagedModels.some((model) => normalizedPath.includes(normalize(model)));
+      }),
+    [appliedImageFiles, stagedModels],
+  );
+
   const currentCount = laptops.length;
   const newModels = stagedModels.filter((model) => !publishedModelSet.has(normalize(model)));
   const retainedModels = stagedModels.filter((model) => publishedModelSet.has(normalize(model)));
@@ -470,6 +481,44 @@ export default function UpdatePage() {
               <p className="eyebrow">圖片配對</p>
               <h2>前 12 筆檢視</h2>
 
+              <div className="update-columns">
+                <div>
+                  <h3>未配對照片機型</h3>
+                  <div className="update-list">
+                    {missingImages.length === 0 ? (
+                      <div className="empty-state">
+                        <strong>沒有缺圖機型</strong>
+                        <span>目前 Excel 內的機型都已經找到圖片。</span>
+                      </div>
+                    ) : (
+                      missingImages.map((model) => (
+                        <div key={model} className="update-row">
+                          <strong>{model}</strong>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <h3>未配對圖片檔</h3>
+                  <div className="update-list">
+                    {unmatchedImageFiles.length === 0 ? (
+                      <div className="empty-state">
+                        <strong>沒有多餘圖片</strong>
+                        <span>目前資料夾內的圖片都有對到機型。</span>
+                      </div>
+                    ) : (
+                      unmatchedImageFiles.map((file) => (
+                        <div key={file.name} className="update-row">
+                          <strong>{file.name}</strong>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+
               {appliedImageFiles.length === 0 ? (
                 <div className="empty-state">
                   <strong>尚未套用圖片</strong>
@@ -487,30 +536,6 @@ export default function UpdatePage() {
                     ))}
                 </div>
               )}
-            </article>
-
-            <article className="update-card">
-              <p className="eyebrow">摘要</p>
-              <h2>更新摘要預覽</h2>
-
-              <div className="update-actions">
-                <button className="button-primary" onClick={downloadSummary} type="button">
-                  下載 JSON 摘要
-                </button>
-                <Link className="button-soft" href="/compare">
-                  先看比較頁
-                </Link>
-              </div>
-
-              <label className="search-field">
-                <span>JSON 預覽</span>
-                <textarea
-                  className="update-textarea large"
-                  readOnly
-                  value={JSON.stringify(summary, null, 2)}
-                  spellCheck={false}
-                />
-              </label>
             </article>
           </section>
 

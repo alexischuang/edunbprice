@@ -29,6 +29,7 @@ import {
   getBestDiscount,
 } from "./catalog";
 import { filterVisibleLaptops, useHiddenModels } from "./catalog-store";
+import { EducationPriceLink } from "./education-price-link";
 import { laptops as baseLaptops, type Laptop } from "./laptop-data";
 
 type SortMode = "match" | "price" | "saving" | "performance" | "value";
@@ -321,7 +322,6 @@ export default function HomePage() {
               <p className="eyebrow">推薦機型</p>
               <h2>先看教育價 25,000 - 30,000 區間</h2>
             </div>
-            <span className="toggle-pill">{budgetLabel(budget)}</span>
           </div>
 
           <div className="recommend-grid">
@@ -344,7 +344,6 @@ export default function HomePage() {
               <p className="eyebrow">全部結果</p>
               <h2>依 Excel 機型篩選後的清單</h2>
             </div>
-            <span className="toggle-pill">{filtered.length} 筆</span>
           </div>
 
           {filtered.length === 0 ? (
@@ -436,7 +435,12 @@ function RecommendCard({
           <h3>{laptop.model}</h3>
         </div>
         <div className="price-stack">
-          <strong className="edu">{getEducationPriceText(showEducationPrice, laptop.eduPrice)}</strong>
+          <strong className="edu">
+            <EducationPriceLink
+              priceText={getEducationPriceText(showEducationPrice, laptop.eduPrice)}
+              showEducationPrice={showEducationPrice}
+            />
+          </strong>
           <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
         </div>
         <div className="discount-line">目前最高折扣 {formatMoney(laptop.discount)}</div>
@@ -471,13 +475,17 @@ function LaptopCard({
             <p className="family">{laptop.family}</p>
             <h3>{laptop.model}</h3>
           </div>
-          <span className="toggle-pill">值 {Math.round(laptop.valueScore)}</span>
         </div>
 
         <p className="model-title">{laptop.title}</p>
 
         <div className="price-row">
-          <strong className="edu">{getEducationPriceText(showEducationPrice, laptop.eduPrice)}</strong>
+          <strong className="edu">
+            <EducationPriceLink
+              priceText={getEducationPriceText(showEducationPrice, laptop.eduPrice)}
+              showEducationPrice={showEducationPrice}
+            />
+          </strong>
           <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
         </div>
 

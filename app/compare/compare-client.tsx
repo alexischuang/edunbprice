@@ -12,6 +12,7 @@ import {
   splitList,
 } from "../catalog";
 import { filterVisibleLaptops, useHiddenModels } from "../catalog-store";
+import { EducationPriceLink } from "../education-price-link";
 import { laptops as baseLaptops, type Laptop } from "../laptop-data";
 
 function usePersistentBoolean(key: string, defaultValue: boolean) {
@@ -46,7 +47,14 @@ function findLaptop(id: string) {
 }
 
 function formatField(laptop: Laptop, key: (typeof compareFields)[number]["key"], showEducationPrice: boolean) {
-  if (key === "eduPrice") return getEducationPriceText(showEducationPrice, laptop.eduPrice);
+  if (key === "eduPrice") {
+    return (
+      <EducationPriceLink
+        priceText={getEducationPriceText(showEducationPrice, laptop.eduPrice)}
+        showEducationPrice={showEducationPrice}
+      />
+    );
+  }
   if (key === "marketPrice") return formatMoney(laptop.marketPrice);
   if (key === "discount") return formatMoney(laptop.discount);
   return String(laptop[key as keyof Laptop] ?? "");
@@ -149,7 +157,12 @@ export default function CompareClient() {
                     <p className="family">{laptop.family}</p>
                     <h3>{laptop.model}</h3>
                     <div className="compare-price">
-                      <strong className="edu">{getEducationPriceText(showEducationPrice, laptop.eduPrice)}</strong>
+                      <strong className="edu">
+                      <EducationPriceLink
+                        priceText={getEducationPriceText(showEducationPrice, laptop.eduPrice)}
+                        showEducationPrice={showEducationPrice}
+                      />
+                    </strong>
                       <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
                       <span className="market">目前最高折扣 {formatMoney(laptop.discount)}</span>
                     </div>

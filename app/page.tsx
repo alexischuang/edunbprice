@@ -292,20 +292,12 @@ export default function HomePage() {
 
           <div className="summary-strip">
             <div className="summary-stat">
-              <span>目前顯示</span>
-              <strong>{filtered.length}</strong>
+              <span>目前機型</span>
+              <strong>{laptops.length}</strong>
             </div>
             <div className="summary-stat">
               <span>已選比較</span>
               <strong>{selectedIds.length}</strong>
-            </div>
-            <div className="summary-stat">
-              <span>所有機型</span>
-              <strong>{laptops.length}</strong>
-            </div>
-            <div className="summary-stat">
-              <span>價格切換</span>
-              <strong>{showEducationPrice ? "顯示" : "隱藏"}</strong>
             </div>
           </div>
         </section>

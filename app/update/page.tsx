@@ -84,9 +84,9 @@ export default function UpdatePage() {
 
   useEffect(() => {
     if (!hiddenReady) return;
+    setStagedModelsText(laptops.map((item) => item.model).join("\n"));
     setAppliedModelsText(laptops.map((item) => item.model).join("\n"));
   }, [hiddenReady, laptops]);
-
   const stagedModels = useMemo(() => splitModels(appliedModelsText), [appliedModelsText]);
   const stagedDraftModels = useMemo(() => splitModels(stagedModelsText), [stagedModelsText]);
   const archiveDraftModels = useMemo(() => splitModels(archiveDraftText), [archiveDraftText]);
@@ -329,8 +329,8 @@ export default function UpdatePage() {
             </article>
 
             <aside className="update-card">
-              <p className="eyebrow">?????????</p>
-              <h2>????????????????????????</h2>
+              <p className="eyebrow">更新概況</p>
+              <h2>目前同步狀態</h2>
 
               <div className="update-meta">
                 <div className="update-meta-card">
@@ -342,7 +342,7 @@ export default function UpdatePage() {
                   <strong>{galleryData.matchedModels}</strong>
                 </div>
                 <div className="update-meta-card">
-                  <span>?????</span>
+                  <span>未配對照片</span>
                   <strong>{missingImages.length}</strong>
                 </div>
                 <div className="update-meta-card">
@@ -352,7 +352,7 @@ export default function UpdatePage() {
               </div>
 
               <div className="notice">
-                目前會依 <code>model</code> 自動對圖，若找不到圖片會保留預設圖。
+                會依 <code>model</code> 自動對圖，找不到圖片會保留預設圖。
                 <br />
                 圖片總數：{galleryData.maxImages} 張
               </div>
@@ -457,19 +457,19 @@ export default function UpdatePage() {
 
           <section className="update-stats">
             <div className="update-stat">
-              <span>????????</span>
+              <span>新增機型</span>
               <strong>{newModels.length}</strong>
             </div>
             <div className="update-stat">
-              <span>????????</span>
+              <span>保留機型</span>
               <strong>{retainedModels.length}</strong>
             </div>
             <div className="update-stat">
-              <span>????????</span>
+              <span>移除機型</span>
               <strong>{removedModels.length}</strong>
             </div>
             <div className="update-stat">
-              <span>?????</span>
+              <span>未配對照片</span>
               <strong>{missingImages.length}</strong>
             </div>
           </section>
@@ -539,16 +539,16 @@ export default function UpdatePage() {
 
           <section className="update-card">
             <p className="eyebrow">檢查結果</p>
-            <h2>??????????</h2>
+            <h2>未配對照片與移除清單</h2>
 
             <div className="update-columns">
               <div>
-                <h3>?????</h3>
+                <h3>未配對照片</h3>
                 <div className="update-list">
                   {missingImages.length === 0 ? (
                     <div className="empty-state">
-                      <strong>???????</strong>
-                      <span>?? Excel ???????????</span>
+                      <strong>沒有未配對照片</strong>
+                      <span>目前 Excel 內的機型都已經找到圖片。</span>
                     </div>
                   ) : (
                     missingImages.map((model) => (
@@ -565,7 +565,7 @@ export default function UpdatePage() {
                 <div className="update-list">
                   {removedModels.length === 0 ? (
                     <div className="empty-state">
-                      <strong>沒有移除項目</strong>
+                      <strong>沒有移除機型</strong>
                       <span>按下「執行移除」後，會依清單更新這裡的結果。</span>
                     </div>
                   ) : (
@@ -586,12 +586,12 @@ export default function UpdatePage() {
 
             <div className="compact-list">
               <div className="compact-row">
-                <strong>總機型數</strong>
+                <strong>目前機型</strong>
                 <span>{currentCount}</span>
               </div>
               <div className="compact-row">
-                <strong>待處理機型</strong>
-                <span>{stagedModels.length}</span>
+                <strong>待更新機型</strong>
+                <span>{stagedDraftModels.length}</span>
               </div>
               <div className="compact-row">
                 <strong>已配對圖片群</strong>

@@ -11,7 +11,8 @@ import {
   getGalleryCandidates,
   splitList,
 } from "../catalog";
-import { laptops, type Laptop } from "../laptop-data";
+import { filterVisibleLaptops, useHiddenModels } from "../catalog-store";
+import { laptops as baseLaptops, type Laptop } from "../laptop-data";
 
 function usePersistentBoolean(key: string, defaultValue: boolean) {
   const [value, setValue] = useState(defaultValue);
@@ -41,7 +42,7 @@ function usePersistentBoolean(key: string, defaultValue: boolean) {
 }
 
 function findLaptop(id: string) {
-  return laptops.find((item) => item.id === id) ?? null;
+  return baseLaptops.find((item) => item.id === id) ?? null;
 }
 
 function formatField(laptop: Laptop, key: (typeof compareFields)[number]["key"], showEducationPrice: boolean) {
@@ -53,6 +54,11 @@ function formatField(laptop: Laptop, key: (typeof compareFields)[number]["key"],
 
 export default function CompareClient() {
   const params = useSearchParams();
+  const { hiddenModels } = useHiddenModels();
+  const laptops = useMemo(
+    () => filterVisibleLaptops(baseLaptops, hiddenModels),
+    [hiddenModels],
+  );
   const [showEducationPrice, setShowEducationPrice] = usePersistentBoolean(
     "edu-price-visible",
     false,
@@ -215,4 +221,3 @@ function CompareMedia({ laptop }: { laptop: Laptop }) {
     </div>
   );
 }
-

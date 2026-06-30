@@ -28,7 +28,8 @@ import {
   gpuOptions,
   getBestDiscount,
 } from "./catalog";
-import { laptops, type Laptop } from "./laptop-data";
+import { filterVisibleLaptops, useHiddenModels } from "./catalog-store";
+import { laptops as baseLaptops, type Laptop } from "./laptop-data";
 
 type SortMode = "match" | "price" | "saving" | "performance" | "value";
 
@@ -85,6 +86,11 @@ function budgetLabel(value: string) {
 }
 
 export default function HomePage() {
+  const { hiddenModels } = useHiddenModels();
+  const laptops = useMemo(
+    () => filterVisibleLaptops(baseLaptops, hiddenModels),
+    [hiddenModels],
+  );
   const [showEducationPrice, setShowEducationPrice] = usePersistentBoolean(
     "edu-price-visible",
     false,

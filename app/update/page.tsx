@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { laptops } from "../laptop-data";
+import { filterVisibleLaptops, useHiddenModels } from "../catalog-store";
+import { laptops as baseLaptops } from "../laptop-data";
 import modelGalleryReport from "../model-gallery-report.json";
 import { formatMoney, splitList } from "../catalog";
 
@@ -45,6 +46,11 @@ function normalize(value: string) {
 }
 
 export default function UpdatePage() {
+  const { hiddenModels, setHiddenModels, ready: hiddenReady } = useHiddenModels();
+  const laptops = useMemo(
+    () => filterVisibleLaptops(baseLaptops, hiddenModels),
+    [hiddenModels],
+  );
   const [authReady, setAuthReady] = useState(false);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [password, setPassword] = useState("");
@@ -53,10 +59,10 @@ export default function UpdatePage() {
   const [imageDraftFiles, setImageDraftFiles] = useState<File[]>([]);
   const [appliedImageFiles, setAppliedImageFiles] = useState<File[]>([]);
   const [stagedModelsText, setStagedModelsText] = useState(
-    laptops.map((item) => item.model).join("\n"),
+    baseLaptops.map((item) => item.model).join("\n"),
   );
   const [appliedModelsText, setAppliedModelsText] = useState(
-    laptops.map((item) => item.model).join("\n"),
+    baseLaptops.map((item) => item.model).join("\n"),
   );
   const [archiveDraftText, setArchiveDraftText] = useState("");
   const [appliedArchiveText, setAppliedArchiveText] = useState("");
@@ -75,6 +81,11 @@ export default function UpdatePage() {
       setAuthReady(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!hiddenReady) return;
+    setAppliedModelsText(laptops.map((item) => item.model).join("\n"));
+  }, [hiddenReady, laptops]);
 
   const stagedModels = useMemo(() => splitModels(appliedModelsText), [appliedModelsText]);
   const stagedDraftModels = useMemo(() => splitModels(stagedModelsText), [stagedModelsText]);
@@ -198,10 +209,10 @@ export default function UpdatePage() {
 
   function handleExecuteArchive() {
     setAppliedArchiveText(archiveDraftText);
-    setAppliedModelsText((current) =>
-      splitModels(current)
-        .filter((model) => !archiveDraftModels.some((draft) => normalize(draft) === normalize(model)))
-        .join("\n"),
+    setHiddenModels((current) =>
+      Array.from(
+        new Set([...current, ...archiveDraftModels].map((model) => model.trim()).filter(Boolean)),
+      ),
     );
     setExecuteCounts((current) => ({ ...current, archive: current.archive + 1 }));
   }

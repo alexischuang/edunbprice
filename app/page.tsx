@@ -86,7 +86,7 @@ function budgetLabel(value: string) {
 }
 
 export default function HomePage() {
-  const { hiddenModels } = useHiddenModels();
+  const { hiddenModels, ready: hiddenReady } = useHiddenModels();
   const laptops = useMemo(
     () => filterVisibleLaptops(baseLaptops, hiddenModels),
     [hiddenModels],
@@ -106,9 +106,9 @@ export default function HomePage() {
   const [sortMode, setSortMode] = useState<SortMode>("match");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const recommended = useMemo(() => selectRecommended(laptops, 6), []);
-  const mobileRecommended = useMemo(() => selectMobileRecommendations(laptops, 3), []);
-  const bestDiscount = useMemo(() => getBestDiscount(laptops), []);
+  const recommended = useMemo(() => selectRecommended(laptops, 6), [laptops]);
+  const mobileRecommended = useMemo(() => selectMobileRecommendations(laptops, 3), [laptops]);
+  const bestDiscount = useMemo(() => getBestDiscount(laptops), [laptops]);
 
   const filtered = useMemo(() => {
     const searchQuery = normalizeText(search);
@@ -128,13 +128,13 @@ export default function HomePage() {
       .filter(({ laptop }) => gpu === "all" || getGpuCategory(laptop) === gpu)
       .filter(({ searchIndex }) => !searchQuery || searchIndex.includes(searchQuery))
       .sort((a, b) => scoreLaptop(b.laptop, sortMode) - scoreLaptop(a.laptop, sortMode));
-  }, [budget, cpu, gpu, purpose, ram, screen, search, sortMode, storage]);
+  }, [budget, cpu, gpu, laptops, purpose, ram, screen, search, sortMode, storage]);
 
   useEffect(() => {
     setSelectedIds((current) =>
       current.filter((id) => laptops.some((laptop) => laptop.id === id)),
     );
-  }, []);
+  }, [laptops]);
 
   const selectedLaptops = useMemo(
     () => selectedIds.map((id) => laptops.find((laptop) => laptop.id === id)).filter(Boolean) as Laptop[],
@@ -142,6 +142,19 @@ export default function HomePage() {
   );
 
   const compareUrl = selectedIds.length ? `/compare?ids=${selectedIds.join(",")}` : "/compare";
+
+  if (!hiddenReady) {
+    return (
+      <main className="site-shell">
+        <div className="page-frame">
+          <div className="loading-stage">
+            <strong>載入共享資料中</strong>
+            <span>正在從 Vercel KV 讀取已隱藏機型，請稍候。</span>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   function toggleSelected(id: string) {
     setSelectedIds((current) => {

@@ -7,12 +7,13 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node ./scripts/make-dist.mjs",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
+    "@vercel/kv": "^3.0.0",
     "drizzle-orm": "0.45.2",
     "next": "16.2.6",
     "react": "19.2.6",
@@ -38,4 +39,3 @@
   },
   "type": "module"
 }
-

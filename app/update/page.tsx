@@ -96,7 +96,7 @@ export default function UpdatePage() {
 
   const publishedModelSet = useMemo(
     () => new Set(laptops.map((item) => normalize(item.model))),
-    [],
+    [laptops],
   );
 
   const imageMap = useMemo(() => {
@@ -187,6 +187,7 @@ export default function UpdatePage() {
     retainedModels.length,
     removedModels.length,
     stagedModels,
+    laptops,
   ]);
 
   function handlePasswordSubmit(event: FormEvent<HTMLFormElement>) {
@@ -238,6 +239,19 @@ export default function UpdatePage() {
     anchor.download = `laptop-update-summary-${new Date().toISOString().slice(0, 10)}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
+  }
+
+  if (!authReady || !hiddenReady) {
+    return (
+      <main className="update-shell">
+        <div className="page-frame">
+          <div className="loading-stage">
+            <strong>載入後台資料中</strong>
+            <span>正在連線到 Vercel KV 與登入狀態，請稍候。</span>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (

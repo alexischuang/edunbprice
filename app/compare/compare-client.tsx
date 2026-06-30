@@ -54,7 +54,7 @@ function formatField(laptop: Laptop, key: (typeof compareFields)[number]["key"],
 
 export default function CompareClient() {
   const params = useSearchParams();
-  const { hiddenModels } = useHiddenModels();
+  const { hiddenModels, ready: hiddenReady } = useHiddenModels();
   const laptops = useMemo(
     () => filterVisibleLaptops(baseLaptops, hiddenModels),
     [hiddenModels],
@@ -73,9 +73,22 @@ export default function CompareClient() {
     const resolved = ids.map(findLaptop).filter(Boolean) as Laptop[];
     if (resolved.length > 0) return resolved;
     return laptops.slice(0, Math.min(3, laptops.length));
-  }, [params]);
+  }, [laptops, params]);
 
   const compareCount = Math.max(1, selected.length);
+
+  if (!hiddenReady) {
+    return (
+      <main className="compare-shell">
+        <div className="page-frame">
+          <div className="loading-stage">
+            <strong>載入共享資料中</strong>
+            <span>正在從 Vercel KV 讀取已隱藏機型，請稍候。</span>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="compare-shell">

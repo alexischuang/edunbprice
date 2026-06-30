@@ -1,32 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type SetStateAction } from "react";
 import type { Laptop } from "./laptop-data";
 
-export const HIDDEN_MODELS_KEY = "education-hidden-models";
+const HIDDEN_MODELS_ENDPOINT = "/api/hidden-models";
 
 function normalize(value: string) {
   return value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-}
-
-function readHiddenModels() {
-  try {
-    const raw = window.localStorage.getItem(HIDDEN_MODELS_KEY);
-    if (!raw) return [] as string[];
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [] as string[];
-    return parsed.map((item) => String(item)).filter(Boolean);
-  } catch {
-    return [] as string[];
-  }
-}
-
-function writeHiddenModels(models: string[]) {
-  try {
-    window.localStorage.setItem(HIDDEN_MODELS_KEY, JSON.stringify(models));
-  } catch {
-    // Ignore storage errors.
-  }
 }
 
 export function useHiddenModels() {
@@ -34,16 +14,50 @@ export function useHiddenModels() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setHiddenModels(readHiddenModels());
-    setReady(true);
+    let cancelled = false;
+
+    async function loadHiddenModels() {
+      try {
+        const response = await fetch(HIDDEN_MODELS_ENDPOINT, { cache: "no-store" });
+        if (!response.ok) throw new Error("Failed to load hidden models.");
+        const payload = (await response.json()) as { models?: unknown };
+        const models = Array.isArray(payload.models)
+          ? payload.models.map((item) => String(item)).filter(Boolean)
+          : [];
+        if (!cancelled) setHiddenModels(models);
+      } catch {
+        if (!cancelled) setHiddenModels([]);
+      } finally {
+        if (!cancelled) setReady(true);
+      }
+    }
+
+    void loadHiddenModels();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  useEffect(() => {
-    if (!ready) return;
-    writeHiddenModels(hiddenModels);
-  }, [hiddenModels, ready]);
+  const updateHiddenModels = useCallback((value: SetStateAction<string[]>) => {
+    setHiddenModels((current) => {
+      const next = typeof value === "function" ? value(current) : value;
 
-  return { hiddenModels, setHiddenModels, ready } as const;
+      void fetch(HIDDEN_MODELS_ENDPOINT, {
+        body: JSON.stringify({ models: next }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      }).catch(() => {
+        // Ignore network/storage errors and keep the optimistic UI state.
+      });
+
+      return next;
+    });
+  }, []);
+
+  return { hiddenModels, setHiddenModels: updateHiddenModels, ready } as const;
 }
 
 export function filterVisibleLaptops<T extends Laptop>(items: T[], hiddenModels: string[]) {

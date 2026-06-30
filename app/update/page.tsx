@@ -198,6 +198,11 @@ export default function UpdatePage() {
 
   function handleExecuteArchive() {
     setAppliedArchiveText(archiveDraftText);
+    setAppliedModelsText((current) =>
+      splitModels(current)
+        .filter((model) => !archiveDraftModels.some((draft) => normalize(draft) === normalize(model)))
+        .join("\n"),
+    );
     setExecuteCounts((current) => ({ ...current, archive: current.archive + 1 }));
   }
 

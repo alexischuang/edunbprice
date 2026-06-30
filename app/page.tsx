@@ -428,7 +428,7 @@ function RecommendCard({
 }) {
   return (
     <article className="mini-card">
-      <LaptopMedia laptop={laptop} badge={`#${order}`} />
+      <LaptopMedia laptop={laptop} />
       <div className="mini-card-body">
         <div>
           <p className="family">{laptop.family}</p>
@@ -467,7 +467,7 @@ function LaptopCard({
 
   return (
     <article className="laptop-card">
-      <LaptopMedia laptop={laptop} badge={rank ? `#${rank}` : undefined} />
+      <LaptopMedia laptop={laptop} />
 
       <div className="card-body">
         <div className="card-topline">
@@ -557,7 +557,7 @@ function LaptopCard({
   );
 }
 
-function LaptopMedia({ laptop, badge }: { laptop: Laptop; badge?: string }) {
+function LaptopMedia({ laptop }: { laptop: Laptop }) {
   const sources = useMemo(() => getGalleryCandidates(laptop), [laptop]);
   const [visibleSources, setVisibleSources] = useState<string[]>(sources);
   const [index, setIndex] = useState(0);
@@ -578,11 +578,6 @@ function LaptopMedia({ laptop, badge }: { laptop: Laptop; badge?: string }) {
 
   return (
     <div className="card-media">
-      <div className="card-badges">
-        {badge && <span className="badge">{badge}</span>}
-        {laptop.imageKind && <span className="badge">{laptop.imageKind}</span>}
-      </div>
-
       {activeSource ? (
         <Image
           alt={laptop.title}

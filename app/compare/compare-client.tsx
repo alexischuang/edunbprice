@@ -158,11 +158,11 @@ export default function CompareClient() {
                     <h3>{laptop.model}</h3>
                     <div className="compare-price">
                       <strong className="edu">
-                      <EducationPriceLink
-                        priceText={getEducationPriceText(showEducationPrice, laptop.eduPrice)}
-                        showEducationPrice={showEducationPrice}
-                      />
-                    </strong>
+                        <EducationPriceLink
+                          priceText={getEducationPriceText(showEducationPrice, laptop.eduPrice)}
+                          showEducationPrice={showEducationPrice}
+                        />
+                      </strong>
                       <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
                       <span className="market">目前最高折扣 {formatMoney(laptop.discount)}</span>
                     </div>

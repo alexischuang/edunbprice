@@ -6,6 +6,7 @@ const target = path.join(root, "dist");
 const hostingConfig = path.join(root, ".openai", "hosting.json");
 const drizzleSource = path.join(root, "drizzle");
 const targetOpenAI = path.join(target, ".openai");
+const targetDrizzle = path.join(targetOpenAI, "drizzle");
 
 async function main() {
   await fs.mkdir(target, { recursive: true });
@@ -19,7 +20,7 @@ async function main() {
   }
 
   try {
-    await fs.cp(drizzleSource, path.join(target, "drizzle"), { recursive: true });
+    await fs.cp(drizzleSource, targetDrizzle, { recursive: true });
   } catch {
     // Ignore missing drizzle assets when they are not present.
   }

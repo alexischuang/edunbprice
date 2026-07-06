@@ -285,6 +285,12 @@ export function getEducationPriceText(showEducationPrice: boolean, eduPrice: num
   return showEducationPrice ? formatMoney(eduPrice) : "報價請洽服務人員";
 }
 
+export function formatDiscountFold(discountRate: number) {
+  const fold = 10 - discountRate / 10;
+  const text = fold.toFixed(2).replace(/\.?0+$/, "");
+  return `${text}折`;
+}
+
 export function getBudgetLimit(value: string) {
   return getBudgetRange(value).max;
 }

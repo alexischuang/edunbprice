@@ -218,6 +218,32 @@ a {
   text-transform: uppercase;
 }
 
+.hero-strap {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.education-toggle {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  padding: 0;
+  text-transform: inherit;
+}
+
+.education-toggle:focus-visible {
+  outline: 2px solid rgba(10, 111, 101, 0.32);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 .hero-copy h1,
 .panel h2,
 .panel h3,
@@ -533,25 +559,6 @@ a {
   aspect-ratio: 16 / 10;
 }
 
-.card-badges {
-  inset: 12px 12px auto;
-  position: absolute;
-  z-index: 1;
-}
-
-.card-badges .badge {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(19, 24, 28, 0.12);
-  border-radius: 999px;
-  color: var(--foreground);
-  display: inline-flex;
-  font-size: 12px;
-  font-weight: 800;
-  margin-right: 8px;
-  min-height: 30px;
-  padding: 4px 10px;
-}
-
 .card-body {
   display: grid;
   gap: 12px;
@@ -717,6 +724,18 @@ a {
   background: rgba(255, 255, 255, 0.95);
   border-color: var(--line);
   color: var(--foreground);
+}
+
+.quote-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(23, 28, 33, 0.28);
+  text-underline-offset: 3px;
+}
+
+.quote-link:hover {
+  color: var(--teal-strong);
+  text-decoration-color: currentColor;
 }
 
 .button-disabled {

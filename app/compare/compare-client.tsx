@@ -45,7 +45,7 @@ function EducationPrice({ showEducationPrice, price }: { showEducationPrice: boo
     formatMoney(price)
   ) : (
     <Link className="quote-link" href="https://lin.ee/Y9sCx0K" rel="noreferrer" target="_blank">
-      ?勗隢晾??鈭箏
+      報價請洽服務人員
     </Link>
   );
 }
@@ -93,7 +93,7 @@ export default function CompareClient() {
             className="excel-toggle"
             onClick={() => setShowEducationPrice((current) => !current)}
             type="button"
-            aria-label="????寥＊蝷?"
+            aria-label="切換教育價顯示"
           >
             <span className="signal" aria-hidden="true" />
             <strong>EXCEL</strong>
@@ -101,10 +101,10 @@ export default function CompareClient() {
 
           <div className="topbar-links">
             <Link className="link-pill" href="/">
-              ????
+              回到挑選器
             </Link>
             <Link className="link-pill" href="/update">
-              ?湔敺
+              更新後台
             </Link>
           </div>
         </div>
@@ -112,25 +112,25 @@ export default function CompareClient() {
         <section className="compare-header">
           <div className="compare-title">
             <p className="eyebrow">comparison</p>
-            <h1>憭?瘥?</h1>
+            <h1>多機比較</h1>
             <p className="compare-lead">
-              ???銝嚗??瘥? CPU?AM?SD?CD?＊蝷箏???脣???嫘??????靽??
+              圖片先放上方，接著逐欄比較 CPU、RAM、SSD、LCD、顯示卡、教育價、市價、折扣、重量與保固。
             </p>
           </div>
 
           <div className="compare-chip-row">
-            <span className="compare-chip">{selected.length} ?唳???</span>
-            <span className="compare-chip">{showEducationPrice ? "??寥＊蝷?" : "??寥??"}</span>
+            <span className="compare-chip">{selected.length} 台機型</span>
+            <span className="compare-chip">{showEducationPrice ? "教育價顯示" : "教育價隱藏"}</span>
           </div>
         </section>
 
         {selected.length === 0 ? (
           <section className="panel">
             <div className="empty-state">
-              <strong>瘝??舀?頛?璈?</strong>
-              <span>?擐????2 ?唬誑銝???瘥???</span>
+              <strong>沒有可比較的機型</strong>
+              <span>回到首頁先勾選 2 台以上，再按比較。</span>
               <Link className="button-primary" href="/">
-                ??????
+                回首頁挑選
               </Link>
             </div>
           </section>
@@ -147,10 +147,10 @@ export default function CompareClient() {
                       <strong className="edu">
                         <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
                       </strong>
-                      <span className="market">撣 {formatMoney(laptop.marketPrice)}</span>
+                      <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
                       <span className="market">
-                        ?桀??擃???{formatMoney(laptop.discount)}
-                        {laptop.discountRate ? ` 繚 ${formatDiscountFold(laptop.discountRate)}` : ""}
+                        目前最高折扣 {formatMoney(laptop.discount)}
+                        {laptop.discountRate ? ` · ${formatDiscountFold(laptop.discountRate)}` : ""}
                       </span>
                     </div>
                   </div>
@@ -159,7 +159,7 @@ export default function CompareClient() {
             </div>
 
             <div className="compare-mobile-note notice">
-              ????靽?摰瘥??批捆嚗??恍??瘀??嫣噶銝頝臬?銝???
+              手機版也保留完整比較內容，但畫面會更長，方便一路往下看。
             </div>
 
             <div className="compare-table">
@@ -179,7 +179,7 @@ export default function CompareClient() {
               ))}
 
               <div className="compare-row-grid" style={{ ["--compare-count" as string]: compareCount }}>
-                <header>?券?</header>
+                <header>用途</header>
                 {selected.map((laptop) => (
                   <div key={`${laptop.id}-purposes`}>
                     {splitList(laptop.purposes).join("、")}
@@ -188,7 +188,7 @@ export default function CompareClient() {
               </div>
 
               <div className="compare-row-grid" style={{ ["--compare-count" as string]: compareCount }}>
-                <header>???寡</header>
+                <header>重點特色</header>
                 {selected.map((laptop) => (
                   <div key={`${laptop.id}-highlights`}>
                     {splitList(laptop.highlights).slice(0, 4).join("、")}
@@ -227,7 +227,7 @@ function CompareMedia({ laptop }: { laptop: Laptop }) {
         />
       ) : (
         <div className="fallback-visual">
-          <strong>??敺?</strong>
+          <strong>圖片待補</strong>
           <span>{laptop.model}</span>
         </div>
       )}

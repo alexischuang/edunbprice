@@ -1,0 +1,325 @@
+﻿<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>更新管理</title>
+    <style>
+      :root {
+        --bg: #f4efe6;
+        --ink: #1b1e23;
+        --muted: #6a665f;
+        --paper: #fffdf9;
+        --line: #ddd6ca;
+        --accent: #0d6b5f;
+        --accent-dark: #084f48;
+        --danger: #b73535;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; }
+      body {
+        background:
+          radial-gradient(circle at top left, rgba(13, 107, 95, 0.11), transparent 30%),
+          radial-gradient(circle at top right, rgba(180, 92, 43, 0.1), transparent 24%),
+          var(--bg);
+        color: var(--ink);
+        font-family: Arial, "Microsoft JhengHei", sans-serif;
+      }
+      button, input, textarea { font: inherit; }
+      button { cursor: pointer; }
+      .shell { min-height: 100vh; padding: 24px 16px 44px; }
+      .wrap { margin: 0 auto; max-width: 1200px; }
+      .hero, .panel { margin-bottom: 16px; }
+      .hero {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.85fr);
+      }
+      .hero-copy, .hero-side, .panel {
+        background: rgba(255, 253, 249, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(23, 25, 28, 0.04);
+        padding: 22px;
+      }
+      .eyebrow { color: var(--accent-dark); font-size: 12px; font-weight: 800; margin: 0 0 8px; text-transform: uppercase; }
+      h1, h2, p { margin: 0; }
+      h1 { font-size: 38px; line-height: 1.12; margin-bottom: 12px; }
+      h2 { font-size: 20px; line-height: 1.2; }
+      .lead { color: #34404d; font-size: 15px; line-height: 1.75; max-width: 760px; }
+      .panel-head, .toolbar, .pill-row { display: flex; gap: 10px; }
+      .panel-head { align-items: center; justify-content: space-between; margin-bottom: 14px; }
+      .toolbar { flex-wrap: wrap; }
+      .button { align-items: center; border: 1px solid var(--line); border-radius: 6px; display: inline-flex; font-size: 14px; font-weight: 800; justify-content: center; min-height: 44px; padding: 0 16px; background: #f3efe7; color: #333c46; }
+      .button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .button.ghost { background: #fff; color: var(--ink); }
+      .button:disabled { cursor: not-allowed; opacity: 0.6; }
+      .pill { align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 999px; display: inline-flex; font-size: 12px; font-weight: 800; min-height: 30px; padding: 4px 10px; white-space: nowrap; }
+      .pill.good { background: rgba(13, 107, 95, 0.08); color: var(--accent-dark); }
+      .pill.muted { background: #f7f3eb; color: var(--muted); }
+      .pill.warn { background: rgba(180, 92, 43, 0.08); color: #b45c2b; }
+      .pill.danger { background: rgba(183, 53, 53, 0.08); color: var(--danger); }
+      .summary-grid { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric, .row, .subnote, .field, .file-summary, .empty { background: #fff; border: 1px solid var(--line); border-radius: 6px; }
+      .metric { display: grid; gap: 6px; padding: 14px; }
+      .metric span, .field span, .subnote, .row small { color: var(--muted); font-size: 12px; font-weight: 800; }
+      .metric strong { font-size: 18px; }
+      .field { display: grid; gap: 6px; padding: 12px; }
+      .field input[type="file"], .textarea { background: #fff; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); min-height: 44px; width: 100%; }
+      .textarea { min-height: 160px; padding: 12px; resize: vertical; }
+      .file-grid { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .file-summary, .empty, .row { padding: 12px 14px; }
+      .result-list { display: grid; gap: 8px; }
+      .row { display: flex; gap: 10px; justify-content: space-between; align-items: center; }
+      .row strong { font-size: 14px; }
+      .auth-logout { position: fixed; right: 18px; top: 18px; z-index: 51; }
+      .mini-grid { display: grid; gap: 10px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .mini-grid .metric { min-height: 86px; }
+      @media (max-width: 960px) {
+        .hero { grid-template-columns: 1fr; }
+        .mini-grid, .summary-grid, .file-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="button ghost auth-logout" id="auth-logout" type="button">登出</button>
+    <main class="shell">
+      <div class="wrap">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">更新頁面</p>
+            <h1>Excel 更新上架</h1>
+            <p class="lead">請輸入後台密碼後，再上傳 Excel 與圖片資料夾。系統會比對相同機型、規格差異與圖片是否對應，完成後可直接更新或一鍵發布。</p>
+            <div class="pill-row" style="margin-top: 14px; flex-wrap: wrap;">
+              <span class="pill" id="auth-pill">未解鎖</span>
+              <span class="pill muted" id="current-count">0 筆機型</span>
+              <span class="pill muted" id="image-count">0 張圖片</span>
+            </div>
+          </div>
+          <div class="hero-side">
+            <div class="mini-grid">
+              <div class="metric"><span>目前機型</span><strong id="current-machine-metric">0</strong></div>
+              <div class="metric"><span>規格異動</span><strong id="changed-metric">0</strong></div>
+              <div class="metric"><span>新增機型</span><strong id="new-metric">0</strong></div>
+              <div class="metric"><span>下架機型</span><strong id="removed-metric">0</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div><p class="eyebrow">檔案</p><h2>上傳 Excel 與照片</h2></div>
+            <span class="pill muted" id="file-status">尚未選擇</span>
+          </div>
+          <div class="file-grid">
+            <label class="field"><span>Excel 檔</span><input id="excel-file" type="file" accept=".xlsx,.xls" /></label>
+            <label class="field"><span>圖片資料夾</span><input id="image-folder" type="file" webkitdirectory directory multiple /></label>
+          </div>
+          <div class="file-summary" id="file-summary" style="margin-top: 12px;">尚未選擇檔案。</div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div><p class="eyebrow">機型</p><h2>現有限定機型</h2></div>
+            <span class="pill muted" id="model-count">0 筆</span>
+          </div>
+          <textarea id="models-text" class="textarea" hidden></textarea>
+          <textarea id="archive-text" class="textarea" hidden></textarea>
+          <div class="result-list" id="model-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div><p class="eyebrow">操作</p><h2>更新與發布</h2></div>
+            <span class="pill good">需要後台密碼</span>
+          </div>
+          <div class="toolbar">
+            <button class="button ghost" id="load-current" type="button">載入現有機型</button>
+            <button class="button ghost" id="save-draft" type="button">下載摘要</button>
+            <button class="button primary" id="apply-update" type="button">更新</button>
+            <button class="button primary" id="publish-update" type="button">一鍵發布</button>
+          </div>
+          <div class="subnote" id="api-status" style="margin-top: 12px;">尚未送出更新。</div>
+          <div class="result-list" id="api-result" style="margin-top: 12px;"></div>
+        </section>
+      </div>
+    </main>
+
+    <script src="update-auth.js"></script>
+    <script type="module">
+      const money = new Intl.NumberFormat("zh-TW", { style: "currency", currency: "TWD", maximumFractionDigits: 0 });
+      const state = { laptops: [], excelFile: null, imageFiles: [], lastResult: null };
+      const els = {
+        authPill: document.getElementById("auth-pill"),
+        currentCount: document.getElementById("current-count"),
+        imageCount: document.getElementById("image-count"),
+        currentMachineMetric: document.getElementById("current-machine-metric"),
+        changedMetric: document.getElementById("changed-metric"),
+        newMetric: document.getElementById("new-metric"),
+        removedMetric: document.getElementById("removed-metric"),
+        fileStatus: document.getElementById("file-status"),
+        fileSummary: document.getElementById("file-summary"),
+        excelInput: document.getElementById("excel-file"),
+        imageInput: document.getElementById("image-folder"),
+        modelCount: document.getElementById("model-count"),
+        modelList: document.getElementById("model-list"),
+        modelsText: document.getElementById("models-text"),
+        archiveText: document.getElementById("archive-text"),
+        loadCurrent: document.getElementById("load-current"),
+        saveDraft: document.getElementById("save-draft"),
+        applyUpdate: document.getElementById("apply-update"),
+        publishUpdate: document.getElementById("publish-update"),
+        apiStatus: document.getElementById("api-status"),
+        apiResult: document.getElementById("api-result"),
+      };
+
+      function escapeHtml(value) {
+        return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+      }
+      function formatMoney(value) { return money.format(Number(value || 0)); }
+      function normalize(value) { return String(value || "").toUpperCase().replace(/[^A-Z0-9]/g, ""); }
+      function getAuthUser() { return window.updateAuth?.getCurrentUser?.() || null; }
+      function updateAuthPill() {
+        const user = getAuthUser();
+        if (user) { els.authPill.textContent = "已解鎖後台"; els.authPill.className = "pill good"; return; }
+        els.authPill.textContent = "未解鎖"; els.authPill.className = "pill danger";
+      }
+
+      async function loadLaptopData() {
+        const response = await fetch("app/laptop-data.ts", { cache: "no-store" });
+        if (!response.ok) throw new Error(`無法讀取機型資料：${response.status}`);
+        const text = await response.text();
+        const marker = "export const laptops: Laptop[] = ";
+        const start = text.indexOf(marker);
+        if (start < 0) throw new Error("找不到 laptops 資料。");
+        const arrayStart = text.indexOf("[", start);
+        const arrayEnd = text.lastIndexOf("];\n");
+        const end = arrayEnd >= 0 ? arrayEnd + 1 : text.lastIndexOf("];") + 1;
+        return Function(`"use strict"; return ${text.slice(arrayStart, end)};`)();
+      }
+
+      function renderModels() {
+        els.modelCount.textContent = `${state.laptops.length} 筆`;
+        els.currentCount.textContent = `${state.laptops.length} 筆機型`;
+        els.currentMachineMetric.textContent = String(state.laptops.length);
+        els.modelsText.value = state.laptops.map((item) => item.model).join("\n");
+        els.modelList.innerHTML = state.laptops.slice(0, 8).map((item) => `
+          <div class="row">
+            <div><strong>${escapeHtml(item.model)}</strong><div><small>${escapeHtml(item.title || "")}</small></div></div>
+            <small>${formatMoney(item.eduPrice)}</small>
+          </div>
+        `).join("") || `<div class="empty">尚未載入機型。</div>`;
+      }
+
+      function renderFiles() {
+        els.fileStatus.textContent = state.excelFile ? state.excelFile.name : "尚未選擇";
+        els.fileSummary.textContent = [
+          state.excelFile ? `Excel：${state.excelFile.name}` : "Excel：尚未選擇",
+          `圖片數量：${state.imageFiles.length}`,
+          state.imageFiles.length ? `第一張：${state.imageFiles[0].name}` : "",
+        ].filter(Boolean).join(" ｜ ");
+        els.imageCount.textContent = `${state.imageFiles.length} 張圖片`;
+      }
+
+      function renderSummaryFromResult(data) {
+        els.newMetric.textContent = String(data.newCount ?? 0);
+        els.changedMetric.textContent = String(data.changedCount ?? 0);
+        els.removedMetric.textContent = String(data.removedCount ?? 0);
+      }
+
+      function renderApiResult(data) {
+        const rows = Array.isArray(data.rows) ? data.rows.slice(0, 8) : [];
+        els.apiResult.innerHTML = rows.length
+          ? rows.map((row) => `
+              <div class="row">
+                <div><strong>${escapeHtml(row.model || row.title || "未命名")}</strong><div><small>${escapeHtml(row.status || "unknown")} ・ 圖片 ${row.imageCount ?? 0}${row.changeSummary ? ` ・ ${escapeHtml(row.changeSummary)}` : ""}</small></div></div>
+                <small>${row.savingDelta ? `差額 ${formatMoney(row.savingDelta.edu)}` : ""}</small>
+              </div>
+            `).join("")
+          : `<div class="empty">API 尚未回傳結果。</div>`;
+      }
+
+      function downloadSummary() {
+        const payload = els.saveDraft.dataset.summary || "{}";
+        const blob = new Blob([payload], { type: "application/json;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `laptop-update-summary-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      async function readFileAsDataURL(file) {
+        return await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result || ""));
+          reader.onerror = () => reject(reader.error || new Error("無法讀取檔案"));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      async function submitUpdate(mode) {
+        try {
+          els.apiStatus.textContent = mode === "publish" ? "正在送出發布..." : "正在送出更新資料...";
+          els.applyUpdate.disabled = true;
+          els.publishUpdate.disabled = true;
+
+          const headers = { "Content-Type": "application/json" };
+          if (window.updateAuth?.getAuthHeader) Object.assign(headers, await window.updateAuth.getAuthHeader());
+
+          const payload = {
+            mode,
+            excelName: state.excelFile?.name || "",
+            excelBase64: state.excelFile ? String(await readFileAsDataURL(state.excelFile)).split(",")[1] || "" : "",
+            modelsText: els.modelsText.value,
+            archiveModelsText: els.archiveText.value,
+            imageFiles: state.imageFiles.map((file) => ({ name: file.name, path: (file.webkitRelativePath || file.name || "").replaceAll("\\", "/"), size: file.size })),
+          };
+
+          const response = await fetch("/.netlify/functions/update", { method: "POST", headers, body: JSON.stringify(payload) });
+          const data = await response.json();
+          if (!response.ok || !data.ok) throw new Error(data.error || `API 失敗：${response.status}`);
+
+          state.lastResult = data;
+          renderSummaryFromResult(data);
+          renderApiResult(data);
+          els.saveDraft.dataset.summary = JSON.stringify(data.summary || data, null, 2);
+          els.apiStatus.textContent = mode === "publish"
+            ? `發布完成：解析 ${data.sourceCount} 台，新增 ${data.newCount} 台，規格異動 ${data.changedCount ?? 0} 台，下架 ${data.removedCount} 台。`
+            : `更新完成：解析 ${data.sourceCount} 台，新增 ${data.newCount} 台，規格異動 ${data.changedCount ?? 0} 台，下架 ${data.removedCount} 台。`;
+          if (mode === "publish" && data.publish?.triggered) {
+            els.apiResult.insertAdjacentHTML("afterbegin", `<div class="empty">發布排程已送出，Netlify 正在重新部署。</div>`);
+          }
+        } catch (error) {
+          els.apiStatus.textContent = `送出失敗：${error.message}`;
+        } finally {
+          els.applyUpdate.disabled = false;
+          els.publishUpdate.disabled = false;
+        }
+      }
+
+      function bindEvents() {
+        els.excelInput.addEventListener("change", (event) => { state.excelFile = event.target.files?.[0] || null; renderFiles(); });
+        els.imageInput.addEventListener("change", (event) => { state.imageFiles = Array.from(event.target.files || []); renderFiles(); });
+        els.loadCurrent.addEventListener("click", () => { els.modelsText.value = state.laptops.map((item) => item.model).join("\n"); els.apiStatus.textContent = "已載入現有機型。"; });
+        els.saveDraft.addEventListener("click", downloadSummary);
+        els.applyUpdate.addEventListener("click", () => submitUpdate("apply"));
+        els.publishUpdate.addEventListener("click", () => submitUpdate("publish"));
+        window.addEventListener("update-auth-change", updateAuthPill);
+      }
+
+      Promise.all([loadLaptopData()])
+        .then(([laptops]) => {
+          state.laptops = laptops;
+          renderModels();
+          renderFiles();
+          updateAuthPill();
+        })
+        .catch((error) => {
+          document.querySelector(".wrap").insertAdjacentHTML("afterbegin", `<section class="panel" style="border-color: #b73535; color: #b73535; margin-bottom: 16px;">無法載入資料：${escapeHtml(error.message)}</section>`);
+        });
+      bindEvents();
+    </script>
+  </body>
+</html>

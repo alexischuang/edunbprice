@@ -8,9 +8,9 @@ import {
   buildSearchText,
   cpuOptions,
   formatMoney,
+  formatDiscountFold,
   getBudgetLimit,
   getCpuCategory,
-  getEducationPriceText,
   getGalleryCandidates,
   getGpuCategory,
   getPurposeLabel,
@@ -33,12 +33,22 @@ import { laptops, type Laptop } from "./laptop-data";
 type SortMode = "match" | "price" | "saving" | "performance" | "value";
 
 const sortOptions = [
-  { value: "match", label: "最符合" },
-  { value: "price", label: "價格最低" },
-  { value: "saving", label: "折扣最多" },
-  { value: "performance", label: "效能優先" },
-  { value: "value", label: "CP 值" },
+  { value: "match", label: "?蝚血?" },
+  { value: "price", label: "?寞?雿?" },
+  { value: "saving", label: "??憭?" },
+  { value: "performance", label: "??芸?" },
+  { value: "value", label: "CP ??" },
 ] as const;
+
+function EducationPrice({ showEducationPrice, price }: { showEducationPrice: boolean; price: number }) {
+  return showEducationPrice ? (
+    formatMoney(price)
+  ) : (
+    <Link className="quote-link" href="https://lin.ee/Y9sCx0K" rel="noreferrer" target="_blank">
+      ?勗隢晾??鈭箏
+    </Link>
+  );
+}
 
 function usePersistentBoolean(key: string, defaultValue: boolean) {
   const [value, setValue] = useState(defaultValue);
@@ -157,10 +167,10 @@ export default function HomePage() {
         <div className="topbar">
           <div className="topbar-links">
             <Link className="link-pill" href="/compare">
-              多機比較
+              ??瘥?
             </Link>
             <Link className="link-pill" href="/update">
-              更新後台
+              ?湔敺
             </Link>
           </div>
         </div>
@@ -172,29 +182,28 @@ export default function HomePage() {
                 className="excel-toggle"
                 onClick={() => setShowEducationPrice((current) => !current)}
                 type="button"
-                aria-label="切換教育價顯示"
+                aria-label="????寥＊蝷?"
                 title="EDUCATION"
               >
                 EDUCATION
               </button>
               <span> LAPTOP SELECTOR</span>
             </p>
-            <h1>大專教育價筆電挑選器</h1>
+            <h1>憭批???寧??餅??詨</h1>
             <p>
-              依 Excel 內的限定機型，快速用預算、用途、CPU、RAM、SSD、螢幕與顯示卡縮小範圍。
-              預設隱藏教育價，只有點標題前面的 `EDUCATION` 才會切換顯示，市價與折扣仍會保留。
+              靘?Excel ?抒???璈?嚗翰?????PU?AM?SD?撟?憿舐內?∠葬撠???              ?身?梯???對??芣?暺?憿??Ｙ? `EDUCATION` ????憿舐內嚗??寡??隞?靽???
             </p>
             <div className="hero-metrics">
-              <span className="metric">{laptops.length} 台機型</span>
-              <span className="metric">{purposeOptions.length - 1} 種用途</span>
-              <span className="metric">最佳折扣 {formatMoney(bestDiscount.discount)}</span>
+              <span className="metric">{laptops.length} ?唳???</span>
+              <span className="metric">{purposeOptions.length - 1} 蝔桃??</span>
+              <span className="metric">?雿單???{formatMoney(bestDiscount.discount)}</span>
             </div>
           </div>
 
-          <aside className="hero-card carousel-recommend" aria-label="23000 到 30000 推薦機型">
+          <aside className="hero-card carousel-recommend" aria-label="23000 ??30000 ?刻璈?">
             <div className="hero-card-head">
               <strong>23000 ~ 30000</strong>
-              <span className="toggle-pill">{recommendedLaptops.length} 台推薦</span>
+              <span className="toggle-pill">{recommendedLaptops.length} ?唳??</span>
             </div>
 
             <div className="carousel-shell">
@@ -207,13 +216,13 @@ export default function HomePage() {
                       <h3>{laptop.model}</h3>
                       <div className="price-stack">
                         <strong className="edu">
-                          {getEducationPriceText(showEducationPrice, laptop.eduPrice)}
+                          <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
                         </strong>
-                        <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
+                        <span className="market">撣 {formatMoney(laptop.marketPrice)}</span>
                       </div>
                       <div className="discount-line">
-                        目前最高折扣 {formatMoney(laptop.discount)}
-                        {laptop.discountRate ? ` · ${laptop.discountRate}%` : ""}
+                        ?桀??擃???{formatMoney(laptop.discount)}
+                        {laptop.discountRate ? ` 繚 ${formatDiscountFold(laptop.discountRate)}` : ""}
                       </div>
                     </div>
                   </article>
@@ -226,17 +235,17 @@ export default function HomePage() {
         <section className="panel section">
           <div className="toolbar">
             <div className="search-field" style={{ flex: "1 1 280px" }}>
-              <label htmlFor="search">搜尋機型、CPU、用途</label>
+              <label htmlFor="search">??璈??PU???</label>
               <input
                 id="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="輸入機型代號、CPU、用途關鍵字"
+                placeholder="頛詨璈?隞???PU????萄?"
               />
             </div>
 
             <div className="field" style={{ flex: "0 0 200px" }}>
-              <label htmlFor="budget">預算</label>
+              <label htmlFor="budget">??</label>
               <select id="budget" value={budget} onChange={(event) => setBudget(event.target.value)}>
                 {budgetOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -247,7 +256,7 @@ export default function HomePage() {
             </div>
 
             <div className="field" style={{ flex: "0 0 180px" }}>
-              <label htmlFor="sort">排序</label>
+              <label htmlFor="sort">??</label>
               <select
                 id="sort"
                 value={sortMode}
@@ -262,35 +271,35 @@ export default function HomePage() {
             </div>
 
             <button className="button-soft" onClick={clearFilters} type="button">
-              清除條件
+              皜璇辣
             </button>
           </div>
 
           <div className="filter-row">
-            <FieldSelect label="用途" value={purpose} onChange={setPurpose} options={purposeOptions} />
+            <FieldSelect label="?券?" value={purpose} onChange={setPurpose} options={purposeOptions} />
             <FieldSelect label="CPU" value={cpu} onChange={setCpu} options={cpuOptions} />
             <FieldSelect label="RAM" value={ram} onChange={setRam} options={ramOptions} />
             <FieldSelect label="SSD" value={storage} onChange={setStorage} options={storageOptions} />
             <FieldSelect label="LCD" value={screen} onChange={setScreen} options={screenOptions} />
-            <FieldSelect label="顯示卡" value={gpu} onChange={setGpu} options={gpuOptions} />
+            <FieldSelect label="憿舐內?" value={gpu} onChange={setGpu} options={gpuOptions} />
           </div>
 
           <div className="summary-strip">
             <div className="summary-stat">
-              <span>目前顯示</span>
+              <span>?桀?憿舐內</span>
               <strong>{filtered.length}</strong>
             </div>
             <div className="summary-stat">
-              <span>已選比較</span>
+              <span>撌脤瘥?</span>
               <strong>{selectedIds.length}</strong>
             </div>
             <div className="summary-stat">
-              <span>所有機型</span>
+              <span>???機型</span>
               <strong>{laptops.length}</strong>
             </div>
             <div className="summary-stat">
-              <span>價格切換</span>
-              <strong>{showEducationPrice ? "顯示" : "隱藏"}</strong>
+              <span>?寞??</span>
+              <strong>{showEducationPrice ? "憿舐內" : "?梯?"}</strong>
             </div>
           </div>
         </section>
@@ -298,16 +307,16 @@ export default function HomePage() {
         <section className="panel section">
           <div className="toolbar" style={{ justifyContent: "space-between", alignItems: "center" }}>
             <div>
-              <p className="eyebrow">全部結果</p>
-              <h2>依 Excel 機型篩選後的清單</h2>
+              <p className="eyebrow">?券蝯?</p>
+              <h2>靘?Excel 璈?蝭拚敺?皜</h2>
             </div>
-            <span className="toggle-pill">{filtered.length} 筆</span>
+            <span className="toggle-pill">{filtered.length} ?筆</span>
           </div>
 
           {filtered.length === 0 ? (
             <div className="empty-state">
-              <strong>沒有符合的機型</strong>
-              <span>請放寬預算或取消部分下拉條件，Excel 外的機型不會被加入。</span>
+              <strong>瘝?蝚血???</strong>
+              <span>隢撖祇?蝞????典?銝?璇辣嚗xcel 憭?璈?銝?鋡怠??乓?</span>
             </div>
           ) : (
             <div className="results-grid">
@@ -328,7 +337,7 @@ export default function HomePage() {
       {selectedIds.length > 0 && (
         <div className="compare-bar">
           <div className="summary">
-            <strong>{selectedIds.length} 台已勾選</strong>
+            <strong>{selectedIds.length} ?台已勾選</strong>
             <span>{selectedLaptops.map((item) => item.model).join("、")}</span>
           </div>
           <div className="topbar-links">
@@ -337,10 +346,10 @@ export default function HomePage() {
               onClick={() => setSelectedIds([])}
               type="button"
             >
-              清空
+              皜征
             </button>
             <Link className="button-action" href={compareUrl}>
-              前往比較
+              ??瘥?
             </Link>
           </div>
         </div>
@@ -398,19 +407,21 @@ function LaptopCard({
             <p className="family">{laptop.family}</p>
             <h3>{laptop.model}</h3>
           </div>
-          <span className="toggle-pill">值 {Math.round(laptop.valueScore)}</span>
+          <span className="toggle-pill">??{Math.round(laptop.valueScore)}</span>
         </div>
 
         <p className="model-title">{laptop.title}</p>
 
         <div className="price-row">
-          <strong className="edu">{getEducationPriceText(showEducationPrice, laptop.eduPrice)}</strong>
-          <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
+          <strong className="edu">
+            <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
+          </strong>
+          <span className="market">撣 {formatMoney(laptop.marketPrice)}</span>
         </div>
 
         <div className="discount-line">
-          目前最高折扣 {formatMoney(laptop.discount)}
-          {laptop.discountRate ? ` · ${laptop.discountRate}%` : ""}
+          ?桀??擃???{formatMoney(laptop.discount)}
+          {laptop.discountRate ? ` 繚 ${formatDiscountFold(laptop.discountRate)}` : ""}
         </div>
 
         <div className="tag-row">
@@ -439,13 +450,13 @@ function LaptopCard({
             <dd>{laptop.display}</dd>
           </div>
           <div>
-            <dt>顯示卡</dt>
+            <dt>憿舐內?</dt>
             <dd>{laptop.gpu}</dd>
           </div>
           <div>
-            <dt>重量 / 保固</dt>
+            <dt>?? / 靽</dt>
             <dd>
-              {laptop.weight} · {laptop.warranty}
+              {laptop.weight} 繚 {laptop.warranty}
             </dd>
           </div>
         </dl>
@@ -465,10 +476,10 @@ function LaptopCard({
               onChange={() => onToggleSelected(laptop.id)}
               type="checkbox"
             />
-            勾選比較
+            ?暸瘥?
           </label>
           <Link className="link-pill" href={`/compare?ids=${laptop.id}`}>
-            單機檢視
+            ?格?瑼Ｚ?
           </Link>
         </div>
       </div>
@@ -511,7 +522,7 @@ function LaptopMedia({ laptop }: { laptop: Laptop }) {
         />
       ) : (
         <div className="fallback-visual">
-          <strong>圖片待補</strong>
+          <strong>??敺?</strong>
           <span>{laptop.model}</span>
         </div>
       )}

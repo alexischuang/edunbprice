@@ -155,17 +155,6 @@ export default function HomePage() {
     <main className="site-shell">
       <div className="page-frame">
         <div className="topbar">
-          <button
-            className="excel-toggle"
-            onClick={() => setShowEducationPrice((current) => !current)}
-            type="button"
-            aria-label="切換教育價顯示"
-            title="EDUCATION"
-          >
-            <span className="signal" aria-hidden="true" />
-            <strong>EDUCATION</strong>
-          </button>
-
           <div className="topbar-links">
             <Link className="link-pill" href="/compare">
               多機比較
@@ -178,11 +167,22 @@ export default function HomePage() {
 
         <section className="hero section">
           <div className="hero-copy">
-            <p className="eyebrow">education laptop selector</p>
+            <p className="eyebrow hero-strap">
+              <button
+                className="excel-toggle"
+                onClick={() => setShowEducationPrice((current) => !current)}
+                type="button"
+                aria-label="切換教育價顯示"
+                title="EDUCATION"
+              >
+                EDUCATION
+              </button>
+              <span> LAPTOP SELECTOR</span>
+            </p>
             <h1>大專教育價筆電挑選器</h1>
             <p>
               依 Excel 內的限定機型，快速用預算、用途、CPU、RAM、SSD、螢幕與顯示卡縮小範圍。
-              預設隱藏教育價，只有點左上角的 `EDUCATION` 才會切換顯示，市價與折扣仍會保留。
+              預設隱藏教育價，只有點標題前面的 `EDUCATION` 才會切換顯示，市價與折扣仍會保留。
             </p>
             <div className="hero-metrics">
               <span className="metric">{laptops.length} 台機型</span>
@@ -315,7 +315,6 @@ export default function HomePage() {
                 <LaptopCard
                   key={laptop.id}
                   laptop={laptop}
-                  rank={index + 1}
                   onToggleSelected={toggleSelected}
                   selected={selectedIds.includes(laptop.id)}
                   showEducationPrice={showEducationPrice}
@@ -377,13 +376,11 @@ function FieldSelect({
 
 function LaptopCard({
   laptop,
-  rank,
   selected,
   onToggleSelected,
   showEducationPrice,
 }: {
   laptop: Laptop;
-  rank?: number;
   selected: boolean;
   onToggleSelected: (id: string) => void;
   showEducationPrice: boolean;
@@ -393,7 +390,7 @@ function LaptopCard({
 
   return (
     <article className="laptop-card">
-      <LaptopMedia laptop={laptop} badge={rank ? `#${rank}` : undefined} />
+      <LaptopMedia laptop={laptop} />
 
       <div className="card-body">
         <div className="card-topline">
@@ -479,7 +476,7 @@ function LaptopCard({
   );
 }
 
-function LaptopMedia({ laptop, badge }: { laptop: Laptop; badge?: string }) {
+function LaptopMedia({ laptop }: { laptop: Laptop }) {
   const sources = useMemo(() => getGalleryCandidates(laptop), [laptop]);
   const [visibleSources, setVisibleSources] = useState<string[]>(sources);
   const [index, setIndex] = useState(0);
@@ -500,11 +497,6 @@ function LaptopMedia({ laptop, badge }: { laptop: Laptop; badge?: string }) {
 
   return (
     <div className="card-media">
-      <div className="card-badges">
-        {badge && <span className="badge">{badge}</span>}
-        {laptop.imageKind && <span className="badge">{laptop.imageKind}</span>}
-      </div>
-
       {activeSource ? (
         <Image
           alt={laptop.title}

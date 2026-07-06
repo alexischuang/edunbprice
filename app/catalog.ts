@@ -295,10 +295,10 @@ export function getBestDiscount(laptops: Laptop[]) {
 
 export function selectRecommended(laptops: Laptop[], count = 6) {
   const target = laptops
-    .filter((item) => item.eduPrice >= 25000 && item.eduPrice <= 30000)
+    .filter((item) => item.eduPrice >= 23000 && item.eduPrice <= 30000)
     .sort((a, b) => {
-      const aGap = Math.abs(a.eduPrice - 27500);
-      const bGap = Math.abs(b.eduPrice - 27500);
+      const aGap = Math.abs(a.eduPrice - 26500);
+      const bGap = Math.abs(b.eduPrice - 26500);
       return aGap - bGap || b.valueScore - a.valueScore || a.eduPrice - b.eduPrice;
     });
 
@@ -307,7 +307,7 @@ export function selectRecommended(laptops: Laptop[], count = 6) {
   const fallback = [...laptops]
     .sort(
       (a, b) =>
-        Math.abs(a.eduPrice - 27500) - Math.abs(b.eduPrice - 27500) ||
+        Math.abs(a.eduPrice - 26500) - Math.abs(b.eduPrice - 26500) ||
         a.eduPrice - b.eduPrice ||
         b.valueScore - a.valueScore,
     )

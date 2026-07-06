@@ -21,6 +21,7 @@ import {
   purposeOptions,
   ramOptions,
   screenOptions,
+  selectRecommended,
   splitList,
   storageOptions,
   gpuOptions,
@@ -95,6 +96,7 @@ export default function HomePage() {
   const [sortMode, setSortMode] = useState<SortMode>("match");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const bestDiscount = useMemo(() => getBestDiscount(laptops), []);
+  const recommendedLaptops = useMemo(() => selectRecommended(laptops, 6), []);
 
   const filtered = useMemo(() => {
     const searchQuery = normalizeText(search);
@@ -182,12 +184,43 @@ export default function HomePage() {
               依 Excel 內的限定機型，快速用預算、用途、CPU、RAM、SSD、螢幕與顯示卡縮小範圍。
               預設隱藏教育價，只有點左上角的 `EDUCATION` 才會切換顯示，市價與折扣仍會保留。
             </p>
-          <div className="hero-metrics">
+            <div className="hero-metrics">
               <span className="metric">{laptops.length} 台機型</span>
               <span className="metric">{purposeOptions.length - 1} 種用途</span>
               <span className="metric">最佳折扣 {formatMoney(bestDiscount.discount)}</span>
             </div>
           </div>
+
+          <aside className="hero-card carousel-recommend" aria-label="23000 到 30000 推薦機型">
+            <div className="hero-card-head">
+              <strong>23000 ~ 30000</strong>
+              <span className="toggle-pill">{recommendedLaptops.length} 台推薦</span>
+            </div>
+
+            <div className="carousel-shell">
+              <div className="carousel">
+                {recommendedLaptops.map((laptop) => (
+                  <article className="mini-card" key={laptop.id}>
+                    <LaptopMedia laptop={laptop} />
+                    <div className="mini-card-body">
+                      <p className="family">{laptop.family}</p>
+                      <h3>{laptop.model}</h3>
+                      <div className="price-stack">
+                        <strong className="edu">
+                          {getEducationPriceText(showEducationPrice, laptop.eduPrice)}
+                        </strong>
+                        <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
+                      </div>
+                      <div className="discount-line">
+                        目前最高折扣 {formatMoney(laptop.discount)}
+                        {laptop.discountRate ? ` · ${laptop.discountRate}%` : ""}
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </aside>
         </section>
 
         <section className="panel section">

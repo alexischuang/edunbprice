@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 import {
   compareFields,
   formatMoney,
-  getEducationPriceText,
+  formatDiscountFold,
   getGalleryCandidates,
   splitList,
 } from "../catalog";
@@ -40,12 +40,26 @@ function usePersistentBoolean(key: string, defaultValue: boolean) {
   return [value, setValue] as const;
 }
 
+function EducationPrice({ showEducationPrice, price }: { showEducationPrice: boolean; price: number }) {
+  return showEducationPrice ? (
+    formatMoney(price)
+  ) : (
+    <Link className="quote-link" href="https://lin.ee/Y9sCx0K" rel="noreferrer" target="_blank">
+      ?勗隢晾??鈭箏
+    </Link>
+  );
+}
+
 function findLaptop(id: string) {
   return laptops.find((item) => item.id === id) ?? null;
 }
 
-function formatField(laptop: Laptop, key: (typeof compareFields)[number]["key"], showEducationPrice: boolean) {
-  if (key === "eduPrice") return getEducationPriceText(showEducationPrice, laptop.eduPrice);
+function formatField(
+  laptop: Laptop,
+  key: (typeof compareFields)[number]["key"],
+  showEducationPrice: boolean,
+) {
+  if (key === "eduPrice") return <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />;
   if (key === "marketPrice") return formatMoney(laptop.marketPrice);
   if (key === "discount") return formatMoney(laptop.discount);
   return String(laptop[key as keyof Laptop] ?? "");
@@ -79,7 +93,7 @@ export default function CompareClient() {
             className="excel-toggle"
             onClick={() => setShowEducationPrice((current) => !current)}
             type="button"
-            aria-label="切換教育價顯示"
+            aria-label="????寥＊蝷?"
           >
             <span className="signal" aria-hidden="true" />
             <strong>EXCEL</strong>
@@ -87,10 +101,10 @@ export default function CompareClient() {
 
           <div className="topbar-links">
             <Link className="link-pill" href="/">
-              回到挑選器
+              ????
             </Link>
             <Link className="link-pill" href="/update">
-              更新後台
+              ?湔敺
             </Link>
           </div>
         </div>
@@ -98,25 +112,25 @@ export default function CompareClient() {
         <section className="compare-header">
           <div className="compare-title">
             <p className="eyebrow">comparison</p>
-            <h1>多機比較</h1>
+            <h1>憭?瘥?</h1>
             <p className="compare-lead">
-              圖片先放上方，接著逐欄比較 CPU、RAM、SSD、LCD、顯示卡、教育價、市價、折扣、重量與保固。
+              ???銝嚗??瘥? CPU?AM?SD?CD?＊蝷箏???脣???嫘??????靽??
             </p>
           </div>
 
           <div className="compare-chip-row">
-            <span className="compare-chip">{selected.length} 台機型</span>
-            <span className="compare-chip">{showEducationPrice ? "教育價顯示" : "教育價隱藏"}</span>
+            <span className="compare-chip">{selected.length} ?唳???</span>
+            <span className="compare-chip">{showEducationPrice ? "??寥＊蝷?" : "??寥??"}</span>
           </div>
         </section>
 
         {selected.length === 0 ? (
           <section className="panel">
             <div className="empty-state">
-              <strong>沒有可比較的機型</strong>
-              <span>回到首頁先勾選 2 台以上，再按比較。</span>
+              <strong>瘝??舀?頛?璈?</strong>
+              <span>?擐????2 ?唬誑銝???瘥???</span>
               <Link className="button-primary" href="/">
-                回首頁挑選
+                ??????
               </Link>
             </div>
           </section>
@@ -130,9 +144,14 @@ export default function CompareClient() {
                     <p className="family">{laptop.family}</p>
                     <h3>{laptop.model}</h3>
                     <div className="compare-price">
-                      <strong className="edu">{getEducationPriceText(showEducationPrice, laptop.eduPrice)}</strong>
-                      <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
-                      <span className="market">目前最高折扣 {formatMoney(laptop.discount)}</span>
+                      <strong className="edu">
+                        <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
+                      </strong>
+                      <span className="market">撣 {formatMoney(laptop.marketPrice)}</span>
+                      <span className="market">
+                        ?桀??擃???{formatMoney(laptop.discount)}
+                        {laptop.discountRate ? ` 繚 ${formatDiscountFold(laptop.discountRate)}` : ""}
+                      </span>
                     </div>
                   </div>
                 </article>
@@ -140,7 +159,7 @@ export default function CompareClient() {
             </div>
 
             <div className="compare-mobile-note notice">
-              手機版也保留完整比較內容，但畫面會更長，方便一路往下看。
+              ????靽?摰瘥??批捆嚗??恍??瘀??嫣噶銝頝臬?銝???
             </div>
 
             <div className="compare-table">
@@ -160,7 +179,7 @@ export default function CompareClient() {
               ))}
 
               <div className="compare-row-grid" style={{ ["--compare-count" as string]: compareCount }}>
-                <header>用途</header>
+                <header>?券?</header>
                 {selected.map((laptop) => (
                   <div key={`${laptop.id}-purposes`}>
                     {splitList(laptop.purposes).join("、")}
@@ -169,7 +188,7 @@ export default function CompareClient() {
               </div>
 
               <div className="compare-row-grid" style={{ ["--compare-count" as string]: compareCount }}>
-                <header>重點特色</header>
+                <header>???寡</header>
                 {selected.map((laptop) => (
                   <div key={`${laptop.id}-highlights`}>
                     {splitList(laptop.highlights).slice(0, 4).join("、")}
@@ -208,11 +227,10 @@ function CompareMedia({ laptop }: { laptop: Laptop }) {
         />
       ) : (
         <div className="fallback-visual">
-          <strong>圖片待補</strong>
+          <strong>??敺?</strong>
           <span>{laptop.model}</span>
         </div>
       )}
     </div>
   );
 }
-

@@ -28,7 +28,8 @@ import {
   getBestDiscount,
   getBudgetRange,
 } from "./catalog";
-import { laptops, type Laptop } from "./laptop-data";
+import { useCatalog } from "./catalog-client";
+import { laptops as fallbackLaptops, type Laptop } from "./laptop-data";
 
 type SortMode = "match" | "price" | "saving" | "performance" | "value";
 
@@ -91,6 +92,7 @@ function scoreLaptop(laptop: Laptop, sortMode: SortMode) {
 }
 
 export default function HomePage() {
+  const { catalog: laptops } = useCatalog(fallbackLaptops);
   const [showEducationPrice, setShowEducationPrice] = usePersistentBoolean(
     "edu-price-visible",
     false,

@@ -11,7 +11,8 @@ import {
   getGalleryCandidates,
   splitList,
 } from "../catalog";
-import { laptops, type Laptop } from "../laptop-data";
+import { useCatalog } from "../catalog-client";
+import { laptops as fallbackLaptops, type Laptop } from "../laptop-data";
 
 function usePersistentBoolean(key: string, defaultValue: boolean) {
   const [value, setValue] = useState(defaultValue);
@@ -50,8 +51,8 @@ function EducationPrice({ showEducationPrice, price }: { showEducationPrice: boo
   );
 }
 
-function findLaptop(id: string) {
-  return laptops.find((item) => item.id === id) ?? null;
+function findLaptop(catalog: Laptop[], id: string) {
+  return catalog.find((item) => item.id === id) ?? null;
 }
 
 function formatField(
@@ -66,6 +67,7 @@ function formatField(
 }
 
 export default function CompareClient() {
+  const { catalog } = useCatalog(fallbackLaptops);
   const params = useSearchParams();
   const [showEducationPrice, setShowEducationPrice] = usePersistentBoolean(
     "edu-price-visible",
@@ -78,10 +80,10 @@ export default function CompareClient() {
       ?.split(",")
       .map((value) => value.trim())
       .filter(Boolean) ?? [];
-    const resolved = ids.map(findLaptop).filter(Boolean) as Laptop[];
+    const resolved = ids.map((id) => findLaptop(catalog, id)).filter(Boolean) as Laptop[];
     if (resolved.length > 0) return resolved;
-    return laptops.slice(0, Math.min(3, laptops.length));
-  }, [params]);
+    return catalog.slice(0, Math.min(3, catalog.length));
+  }, [catalog, params]);
 
   const compareCount = Math.max(1, selected.length);
 

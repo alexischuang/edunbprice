@@ -8,12 +8,14 @@ const CATALOG_ENDPOINT = "/api/catalog";
 export type CatalogResponse = {
   status?: "default" | "custom" | "cleared";
   storageStatus?: "connected" | "local" | "missing";
+  photoStorageStatus?: "connected" | "local" | "missing";
   sourceFile?: string | null;
   updatedAt?: string | null;
   laptops?: Laptop[];
   missingImages?: string[];
   matchedImageModels?: number;
   totalImageModels?: number;
+  imageFiles?: Record<string, string[]>;
   currentCount?: number;
   nextCount?: number;
   newCount?: number;
@@ -26,12 +28,14 @@ export function useCatalog(initialCatalog: Laptop[] = fallbackLaptops) {
   const [meta, setMeta] = useState<CatalogResponse>({
     status: "default",
     storageStatus: "local",
+    photoStorageStatus: "local",
     sourceFile: null,
     updatedAt: null,
     laptops: initialCatalog,
     missingImages: [],
     matchedImageModels: initialCatalog.length,
     totalImageModels: initialCatalog.length,
+    imageFiles: {},
   });
   const [ready, setReady] = useState(false);
 
@@ -48,12 +52,14 @@ export function useCatalog(initialCatalog: Laptop[] = fallbackLaptops) {
       setMeta({
         status: "default",
         storageStatus: "local",
+        photoStorageStatus: "local",
         sourceFile: null,
         updatedAt: null,
         laptops: initialCatalog,
         missingImages: [],
         matchedImageModels: initialCatalog.length,
         totalImageModels: initialCatalog.length,
+        imageFiles: {},
       });
     } finally {
       setReady(true);

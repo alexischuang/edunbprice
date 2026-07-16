@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import { useCatalog } from "../catalog-client";
 import { laptops as fallbackLaptops } from "../laptop-data";
-import { formatMoney } from "../catalog";
 
 const UPDATE_PASSWORD = "CavesBooks";
 const UPDATE_AUTH_KEY = "education-update-auth";
+
+type UploadAction = "clear" | "upload" | "photos";
 
 export default function UpdatePage() {
   const { catalog, meta, ready, reload } = useCatalog(fallbackLaptops);
@@ -16,8 +17,9 @@ export default function UpdatePage() {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [excelFile, setExcelFile] = useState<File | null>(null);
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
-  const [notice, setNotice] = useState("請先輸入密碼。");
+  const [notice, setNotice] = useState("請先登入後台。");
 
   useEffect(() => {
     try {
@@ -29,10 +31,13 @@ export default function UpdatePage() {
     }
   }, []);
 
-  const missingImages = meta.missingImages ?? [];
   const storageMissing = meta.storageStatus === "missing";
-  const sourceLabel = meta.sourceFile ?? (meta.status === "cleared" ? "已清空" : "目前使用預設資料");
+  const photoStorageMissing = meta.photoStorageStatus === "missing";
+  const missingImages = meta.missingImages ?? [];
+  const sourceLabel = meta.sourceFile ?? (meta.status === "cleared" ? "已清空" : "尚未上傳 Excel");
   const updatedLabel = meta.updatedAt ? new Date(meta.updatedAt).toLocaleString("zh-TW") : "尚未更新";
+  const selectedPhotoCount = photoFiles.length;
+  const selectedPhotoPreview = photoFiles.slice(0, 5).map((file) => file.name).join("、");
 
   function handlePasswordSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,36 +46,59 @@ export default function UpdatePage() {
       try {
         window.sessionStorage.setItem(UPDATE_AUTH_KEY, "1");
       } catch {
-        // Ignore storage errors and keep the page unlocked in memory.
+        // Ignore storage issues and keep the local session unlocked.
       }
 
       setPasswordError("");
       setIsUnlocked(true);
       setPassword("");
-      setNotice("已進入更新後台。");
+      setNotice("已登入後台。");
       return;
     }
 
-    setPasswordError("密碼不正確");
+    setPasswordError("密碼錯誤，請再試一次。");
   }
 
-  async function postCatalogAction(action: "clear" | "upload") {
+  async function postCatalogAction(action: UploadAction) {
     const formData = new FormData();
     formData.append("action", action);
+
     if (action === "upload") {
       if (!excelFile) {
-        throw new Error("請先選擇 Excel 檔。");
+        throw new Error("請先選擇 Excel 檔案。");
       }
       formData.append("excel", excelFile);
+    }
+
+    if (action === "photos") {
+      if (!photoFiles.length) {
+        throw new Error("請先選擇照片。");
+      }
+      photoFiles.forEach((file) => formData.append("photos", file));
     }
 
     const response = await fetch("/api/catalog", {
       method: "POST",
       body: formData,
     });
-    const payload = await response.json();
+
+    const payload = (await response.json()) as {
+      ok?: boolean;
+      error?: string;
+      state?: {
+        laptops?: unknown[];
+        missingImages?: string[];
+        uploadedCount?: number;
+        unmatchedFiles?: string[];
+      };
+      summary?: {
+        nextCount?: number;
+        missingImageCount?: number;
+      };
+    };
+
     if (!response.ok || !payload.ok) {
-      throw new Error(payload.error || "更新失敗");
+      throw new Error(payload.error || "操作失敗。");
     }
 
     await reload();
@@ -78,17 +106,18 @@ export default function UpdatePage() {
   }
 
   async function handleClearAll() {
-    const confirmed = window.confirm("確定要清除所有機型嗎？這會先把目前資料清空。");
+    const confirmed = window.confirm("確定要清空目前所有機型資料嗎？");
     if (!confirmed) return;
 
     try {
       setBusy(true);
-      setNotice("正在清除所有機型...");
+      setNotice("正在清空資料...");
       await postCatalogAction("clear");
       setExcelFile(null);
-      setNotice("已清除所有機型，現在可以上傳新的 Excel。");
+      setPhotoFiles([]);
+      setNotice("已清空，請重新上傳新的 Excel。");
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "清除失敗");
+      setNotice(error instanceof Error ? error.message : "清空失敗。");
     } finally {
       setBusy(false);
     }
@@ -97,14 +126,32 @@ export default function UpdatePage() {
   async function handleUploadExcel() {
     try {
       setBusy(true);
-      setNotice("正在上傳與解析 Excel...");
+      setNotice("正在匯入 Excel...");
       const result = await postCatalogAction("upload");
-      const state = result.state ?? {};
-      const nextCount = Array.isArray(state.laptops) ? state.laptops.length : 0;
-      const missingCount = Array.isArray(state.missingImages) ? state.missingImages.length : 0;
-      setNotice(`上傳完成：${nextCount} 台機型，缺圖 ${missingCount} 台。`);
+      const nextCount = result.summary?.nextCount ?? result.state?.laptops?.length ?? 0;
+      const missingCount = result.summary?.missingImageCount ?? result.state?.missingImages?.length ?? 0;
+      setNotice(`已匯入 ${nextCount} 台機型，缺圖 ${missingCount} 台。`);
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "上傳失敗");
+      setNotice(error instanceof Error ? error.message : "匯入失敗。");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleUploadPhotos() {
+    try {
+      setBusy(true);
+      setNotice("正在上傳照片...");
+      const result = await postCatalogAction("photos");
+      const uploadedCount = result.state?.uploadedCount ?? photoFiles.length;
+      const unmatchedFiles = result.state?.unmatchedFiles ?? [];
+      if (unmatchedFiles.length) {
+        setNotice(`已上傳 ${uploadedCount} 張照片，${unmatchedFiles.length} 張未配對。請看缺圖清單補上。`);
+      } else {
+        setNotice(`已上傳 ${uploadedCount} 張照片，全部完成配對。`);
+      }
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "照片上傳失敗。");
     } finally {
       setBusy(false);
     }
@@ -133,9 +180,11 @@ export default function UpdatePage() {
           </div>
         </div>
 
-        {storageMissing ? (
+        {storageMissing || photoStorageMissing ? (
           <div className="notice" style={{ marginTop: 0, marginBottom: 16 }}>
-            目前沒有連上 Vercel KV，所以後台更新不會同步到所有裝置。請先在 Vercel 連接 KV，之後刪除與上傳才會真正生效。
+            {storageMissing ? "Vercel KV 尚未連線，資料更新無法同步。" : null}
+            {storageMissing && photoStorageMissing ? " " : null}
+            {photoStorageMissing ? "Vercel Blob 尚未連線，照片無法永久儲存。" : null}
           </div>
         ) : null}
 
@@ -144,9 +193,7 @@ export default function UpdatePage() {
             <article className="update-card update-auth-card">
               <p className="eyebrow">admin access</p>
               <h1>更新後台</h1>
-              <p className="update-lead">
-                請先輸入密碼進入更新頁面。通過後，可以清除所有機型、上傳新的 Excel，並檢查缺圖清單。
-              </p>
+              <p className="update-lead">請先輸入密碼進入更新頁面。通過後，可以上傳 Excel、一次上傳多張照片，系統會自動配對並列出缺圖清單。</p>
 
               <form className="auth-form" onSubmit={handlePasswordSubmit}>
                 <label className="search-field">
@@ -174,18 +221,16 @@ export default function UpdatePage() {
           <div className="update-content">
             <section className="update-grid">
               <article className="update-card">
-                <p className="eyebrow">更新流程</p>
-                <h1>清除與上傳</h1>
-                <p className="update-lead">
-                  先清空目前機型，再上傳新的 Excel。系統會自動保留原有圖片資料，若找不到圖片會列出缺圖機型。
-                </p>
+                <p className="eyebrow">資料更新</p>
+                <h1>Excel 匯入</h1>
+                <p className="update-lead">先清空舊資料，再上傳新的 Excel。圖片會沿用已比對成功的照片，缺圖會保留在下方清單。</p>
 
                 <div className="update-actions">
                   <button className="button-primary" disabled={busy} onClick={handleClearAll} type="button">
-                    清除所有機型
+                    清空所有機型
                   </button>
                   <button className="button-soft" disabled={busy || !excelFile} onClick={handleUploadExcel} type="button">
-                    上傳新的 Excel 檔
+                    上傳新的 Excel
                   </button>
                   <button className="button-soft" disabled={busy} onClick={() => void reload()} type="button">
                     重新整理
@@ -197,57 +242,87 @@ export default function UpdatePage() {
                   <input
                     accept=".xlsx,.xls"
                     className="auth-input"
-                    onChange={(event) => {
-                      setExcelFile(event.target.files?.[0] ?? null);
-                    }}
+                    onChange={(event) => setExcelFile(event.target.files?.[0] ?? null)}
                     type="file"
                   />
                 </label>
 
                 <div className="notice" style={{ marginTop: 16 }}>
-                  目前檔案：{excelFile ? excelFile.name : "尚未選擇"}
+                  <strong>檔案：</strong>
+                  {excelFile ? excelFile.name : "尚未選擇"}
                   <br />
-                  狀態：{notice}
+                  <strong>狀態：</strong>
+                  {notice}
                 </div>
               </article>
 
               <article className="update-card">
-                <p className="eyebrow">目前資料</p>
-                <h2>{catalog.length} 台機型</h2>
+                <p className="eyebrow">照片上傳</p>
+                <h1>一次選很多張</h1>
+                <p className="update-lead">檔名只要包含機型代號就能自動配對。已經配對過的照片會重複沿用，沒配到的會列在缺圖清單。</p>
 
-                <div className="compact-list">
-                  <div className="compact-row">
-                    <strong>資料來源</strong>
-                    <span>{sourceLabel}</span>
-                  </div>
-                  <div className="compact-row">
-                    <strong>最後更新</strong>
-                    <span>{updatedLabel}</span>
-                  </div>
-                  <div className="compact-row">
-                    <strong>缺圖機型</strong>
-                    <span>{missingImages.length}</span>
-                  </div>
-                  <div className="compact-row">
-                    <strong>已配對圖片</strong>
-                    <span>{meta.matchedImageModels ?? 0}</span>
-                  </div>
+                <div className="update-actions">
+                  <button className="button-primary" disabled={busy || !photoFiles.length} onClick={handleUploadPhotos} type="button">
+                    上傳照片
+                  </button>
+                  <button className="button-soft" disabled={busy} onClick={() => setPhotoFiles([])} type="button">
+                    清除選取
+                  </button>
                 </div>
 
+                <label className="search-field" style={{ marginTop: 16 }}>
+                  <span>照片檔案</span>
+                  <input
+                    accept="image/*,.jpg,.jpeg,.png,.webp"
+                    className="auth-input"
+                    multiple
+                    onChange={(event) => setPhotoFiles(Array.from(event.target.files ?? []))}
+                    type="file"
+                  />
+                </label>
+
                 <div className="notice" style={{ marginTop: 16 }}>
-                  現在只會使用最新的資料來源，不會再把舊 Excel 一併混進來。
+                  <strong>已選：</strong>
+                  {selectedPhotoCount} 張
+                  <br />
+                  <strong>前五張：</strong>
+                  {selectedPhotoPreview || "尚未選擇照片"}
                 </div>
               </article>
             </section>
 
             <section className="update-card" style={{ marginTop: 16 }}>
+              <p className="eyebrow">目前狀態</p>
+              <h2>{catalog.length} 台機型</h2>
+
+              <div className="compact-list">
+                <div className="compact-row">
+                  <strong>來源檔</strong>
+                  <span>{sourceLabel}</span>
+                </div>
+                <div className="compact-row">
+                  <strong>更新時間</strong>
+                  <span>{updatedLabel}</span>
+                </div>
+                <div className="compact-row">
+                  <strong>缺圖機型</strong>
+                  <span>{missingImages.length}</span>
+                </div>
+                <div className="compact-row">
+                  <strong>已配對圖片</strong>
+                  <span>{meta.matchedImageModels ?? 0}</span>
+                </div>
+              </div>
+            </section>
+
+            <section className="update-card" style={{ marginTop: 16 }}>
               <p className="eyebrow">缺圖清單</p>
-              <h2>需要補照片的機型</h2>
+              <h2>後續補圖用</h2>
 
               {ready && missingImages.length === 0 ? (
                 <div className="empty-state">
                   <strong>沒有缺圖</strong>
-                  <span>目前資料都能找到對應圖片。</span>
+                  <span>目前資料都已找到對應圖片。</span>
                 </div>
               ) : (
                 <div className="update-list">
@@ -258,30 +333,6 @@ export default function UpdatePage() {
                   ))}
                 </div>
               )}
-            </section>
-
-            <section className="update-card" style={{ marginTop: 16 }}>
-              <p className="eyebrow">快速檢查</p>
-              <h2>更新後概況</h2>
-
-              <div className="compact-list">
-                <div className="compact-row">
-                  <strong>目前機型</strong>
-                  <span>{catalog.length}</span>
-                </div>
-                <div className="compact-row">
-                  <strong>教育價總和</strong>
-                  <span>{formatMoney(catalog.reduce((sum, item) => sum + item.eduPrice, 0))}</span>
-                </div>
-                <div className="compact-row">
-                  <strong>市價總和</strong>
-                  <span>{formatMoney(catalog.reduce((sum, item) => sum + item.marketPrice, 0))}</span>
-                </div>
-                <div className="compact-row">
-                  <strong>最高價差</strong>
-                  <span>{formatMoney(catalog.length ? Math.max(...catalog.map((item) => item.discount)) : 0)}</span>
-                </div>
-              </div>
             </section>
           </div>
         )}

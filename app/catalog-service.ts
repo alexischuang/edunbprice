@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import * as XLSX from "xlsx";
+import { put } from "@vercel/blob";
 import { kv } from "@vercel/kv";
 import {
   buildSearchText,
@@ -23,16 +24,19 @@ export type CatalogStorageStatus = "connected" | "local" | "missing";
 export type CatalogState = {
   status: CatalogStatus;
   storageStatus: CatalogStorageStatus;
+  photoStorageStatus: CatalogStorageStatus;
   sourceFile: string | null;
   updatedAt: string | null;
   laptops: Laptop[];
   missingImages: string[];
   matchedImageModels: number;
   totalImageModels: number;
+  imageFiles: Record<string, string[]>;
 };
 
 type StoredCatalogState = Omit<CatalogState, "storageStatus"> & {
   storageStatus?: CatalogStorageStatus;
+  photoStorageStatus?: CatalogStorageStatus;
   imageFiles?: Record<string, string[]>;
 };
 
@@ -45,6 +49,45 @@ function hasKvConfig() {
 function getStorageStatus(): CatalogStorageStatus {
   if (hasKvConfig()) return "connected";
   return process.env.NODE_ENV === "production" ? "missing" : "local";
+}
+
+function hasBlobConfig() {
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+}
+
+function getPhotoStorageStatus(): CatalogStorageStatus {
+  if (hasBlobConfig()) return "connected";
+  return process.env.NODE_ENV === "production" ? "missing" : "local";
+}
+
+function normalizeModelKey(value: string) {
+  return normalizeText(value).replace(/[^a-z0-9]/g, "");
+}
+
+function safeFileName(value: string) {
+  return value.replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+}
+
+function findModelFromFilename(fileName: string, models: string[]) {
+  const key = normalizeModelKey(fileName.replace(/\.[^.]+$/, ""));
+  if (!key) return "";
+
+  let bestMatch = "";
+  let bestLength = 0;
+
+  for (const model of models) {
+    const modelKey = normalizeModelKey(model);
+    if (!modelKey) continue;
+    if (key === modelKey) return model;
+    if (key.includes(modelKey) || modelKey.includes(key)) {
+      if (modelKey.length > bestLength) {
+        bestMatch = model;
+        bestLength = modelKey.length;
+      }
+    }
+  }
+
+  return bestMatch;
 }
 
 async function readFileState(): Promise<StoredCatalogState | null> {
@@ -205,7 +248,8 @@ function inferFamily(model: string, fallback?: Laptop) {
   return prefix || "ASUS";
 }
 
-function resolvePrimaryImage(model: string, existingImage: string) {
+function resolvePrimaryImage(model: string, existingImage: string, imageFiles: Record<string, string[]> = {}) {
+  const uploadedImage = imageFiles[model]?.[0] ?? "";
   const candidates = getGalleryCandidates({
     ...fallbackLaptops[0],
     id: "",
@@ -229,7 +273,7 @@ function resolvePrimaryImage(model: string, existingImage: string) {
     highlights: [],
     tags: [],
     purposes: [],
-    image: existingImage,
+    image: uploadedImage || existingImage,
     imageKind: "",
     screenSize: null,
     weightKg: null,
@@ -244,10 +288,15 @@ function resolvePrimaryImage(model: string, existingImage: string) {
     searchText: "",
   });
 
-  return candidates[0] ?? "";
+  return uploadedImage || candidates[0] || existingImage || "";
 }
 
-function buildLaptopFromRow(row: ExcelRow, fallback?: Laptop, index = 0): Laptop | null {
+function buildLaptopFromRow(
+  row: ExcelRow,
+  fallback?: Laptop,
+  index = 0,
+  imageFiles: Record<string, string[]> = {},
+): Laptop | null {
   const model = getString(row, ["型號", "model", "Model"]);
   if (!model) return null;
 
@@ -272,7 +321,7 @@ function buildLaptopFromRow(row: ExcelRow, fallback?: Laptop, index = 0): Laptop
   const oled = fallback?.oled ?? /oled/i.test(display);
   const ai = fallback?.ai ?? /ai|xdna|core ultra/i.test(cpu);
   const gpuTier = fallback?.gpuTier ?? deriveGpuTier(gpu);
-  const image = resolvePrimaryImage(model, fallback?.image ?? "");
+  const image = resolvePrimaryImage(model, fallback?.image ?? "", imageFiles);
 
   const next: Laptop = {
     id: fallback?.id ?? `laptop-${String(index + 1).padStart(3, "0")}`,
@@ -315,7 +364,7 @@ function buildLaptopFromRow(row: ExcelRow, fallback?: Laptop, index = 0): Laptop
   return next;
 }
 
-async function scanGalleryMatch(laptops: Laptop[]) {
+async function scanGalleryMatch(laptops: Laptop[], imageFiles: Record<string, string[]> = {}) {
   const publicRoot = path.join(process.cwd(), "public");
   const missingImages: string[] = [];
 
@@ -330,6 +379,10 @@ async function scanGalleryMatch(laptops: Laptop[]) {
   }
 
   for (const laptop of laptops) {
+    if (imageFiles[laptop.model]?.length) {
+      continue;
+    }
+
     const candidates = getGalleryCandidates(laptop);
     let hasImage = false;
     for (const candidate of candidates) {
@@ -353,6 +406,7 @@ function normalizeState(state: Partial<StoredCatalogState> | null | undefined): 
   return {
     status: state.status === "cleared" ? "cleared" : state.status === "custom" ? "custom" : "default",
     storageStatus: getStorageStatus(),
+    photoStorageStatus: getPhotoStorageStatus(),
     sourceFile: typeof state.sourceFile === "string" ? state.sourceFile : null,
     updatedAt: typeof state.updatedAt === "string" ? state.updatedAt : null,
     laptops: state.laptops.filter(Boolean) as Laptop[],
@@ -367,13 +421,15 @@ export async function getCatalogState(): Promise<CatalogState> {
   const stored = normalizeState(await readStoredState());
   if (!stored) {
     const initial = fallbackLaptops.map((item) => ({ ...item }));
-    const gallery = await scanGalleryMatch(initial);
+    const gallery = await scanGalleryMatch(initial, {});
     return {
       status: "default",
       storageStatus: getStorageStatus(),
+      photoStorageStatus: getPhotoStorageStatus(),
       sourceFile: null,
       updatedAt: null,
       laptops: initial,
+      imageFiles: {},
       ...gallery,
     };
   }
@@ -381,12 +437,14 @@ export async function getCatalogState(): Promise<CatalogState> {
   return {
     status: stored.status,
     storageStatus: getStorageStatus(),
+    photoStorageStatus: getPhotoStorageStatus(),
     sourceFile: stored.sourceFile,
     updatedAt: stored.updatedAt,
     laptops: stored.status === "cleared" ? [] : stored.laptops,
     missingImages: stored.status === "cleared" ? [] : stored.missingImages,
     matchedImageModels: stored.status === "cleared" ? 0 : stored.matchedImageModels,
     totalImageModels: stored.status === "cleared" ? 0 : stored.totalImageModels,
+    imageFiles: stored.status === "cleared" ? {} : stored.imageFiles ?? {},
   };
 }
 
@@ -394,12 +452,14 @@ export async function clearCatalogState() {
   const state: CatalogState = {
     status: "cleared",
     storageStatus: getStorageStatus(),
+    photoStorageStatus: getPhotoStorageStatus(),
     sourceFile: null,
     updatedAt: new Date().toISOString(),
     laptops: [],
     missingImages: [],
     matchedImageModels: 0,
     totalImageModels: 0,
+    imageFiles: {},
   };
 
   await writeStoredState(state as StoredCatalogState);
@@ -407,7 +467,9 @@ export async function clearCatalogState() {
 }
 
 export async function importCatalogFromExcel(file: File) {
-  const fallbackCatalog = (await getCatalogState()).laptops.length ? (await getCatalogState()).laptops : fallbackLaptops;
+  const currentState = await getCatalogState();
+  const fallbackCatalog = currentState.laptops.length ? currentState.laptops : fallbackLaptops;
+  const imageFiles = currentState.imageFiles ?? {};
   const buffer = Buffer.from(await file.arrayBuffer());
   const workbook = XLSX.read(buffer, { cellDates: true });
   const firstSheet = workbook.SheetNames[0];
@@ -420,23 +482,103 @@ export async function importCatalogFromExcel(file: File) {
   const fallbackByModel = new Map(fallbackCatalog.map((item) => [normalizeText(item.model), item]));
 
   const laptops = rows
-    .map((row, index) => buildLaptopFromRow(row, fallbackByModel.get(normalizeText(getString(row, ["型號"]))) ?? undefined, index))
+    .map((row, index) =>
+      buildLaptopFromRow(
+        row,
+        fallbackByModel.get(normalizeText(getString(row, ["型號"]))) ?? undefined,
+        index,
+        imageFiles,
+      ),
+    )
     .filter(Boolean) as Laptop[];
 
-  const gallery = await scanGalleryMatch(laptops);
+  const gallery = await scanGalleryMatch(laptops, imageFiles);
   const state: CatalogState = {
     status: "custom",
     storageStatus: getStorageStatus(),
+    photoStorageStatus: getPhotoStorageStatus(),
     sourceFile: file.name,
     updatedAt: new Date().toISOString(),
     laptops,
     missingImages: gallery.missingImages,
     matchedImageModels: gallery.matchedImageModels,
     totalImageModels: gallery.totalImageModels,
+    imageFiles,
   };
 
   await writeStoredState(state as StoredCatalogState);
   return state;
+}
+
+export async function importCatalogPhotos(files: File[]) {
+  if (!files.length) {
+    throw new Error("請先選擇照片檔案。");
+  }
+
+  if (!hasBlobConfig() && process.env.NODE_ENV === "production") {
+    throw new Error("Vercel Blob 尚未連線，無法儲存照片。");
+  }
+
+  const currentState = await getCatalogState();
+  const laptops = currentState.laptops.length ? currentState.laptops : fallbackLaptops;
+  const imageFiles: Record<string, string[]> = { ...(currentState.imageFiles ?? {}) };
+  const models = laptops.map((item) => item.model);
+  const uploaded: Array<{ file: string; model: string }> = [];
+  const unmatched: string[] = [];
+
+  for (const file of files) {
+    const relativeName = (file as File & { webkitRelativePath?: string }).webkitRelativePath || file.name;
+    const matchedModel = findModelFromFilename(relativeName, models);
+    if (!matchedModel) {
+      unmatched.push(relativeName);
+      continue;
+    }
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const cleanName = safeFileName(path.basename(relativeName));
+    const blob = await put(`catalog-images/${matchedModel}/${Date.now()}-${cleanName}`, buffer, {
+      access: "public",
+      contentType: file.type || "application/octet-stream",
+      addRandomSuffix: true,
+    });
+
+    imageFiles[matchedModel] = [...new Set([...(imageFiles[matchedModel] ?? []), blob.url])];
+    uploaded.push({ file: relativeName, model: matchedModel });
+  }
+
+  const updatedLaptops = laptops.map((item) => {
+    const urls = imageFiles[item.model] ?? [];
+    if (!urls.length) return item;
+
+    return {
+      ...item,
+      image: urls[0],
+      imageKind: urls.length > 1 ? "系列圖" : "產品圖",
+    };
+  });
+
+  const gallery = await scanGalleryMatch(updatedLaptops, imageFiles);
+  const state: CatalogState = {
+    status: currentState.status === "cleared" ? "custom" : currentState.status,
+    storageStatus: getStorageStatus(),
+    photoStorageStatus: getPhotoStorageStatus(),
+    sourceFile: currentState.sourceFile,
+    updatedAt: new Date().toISOString(),
+    laptops: updatedLaptops,
+    missingImages: gallery.missingImages,
+    matchedImageModels: gallery.matchedImageModels,
+    totalImageModels: gallery.totalImageModels,
+    imageFiles,
+  };
+
+  await writeStoredState(state as StoredCatalogState);
+
+  return {
+    ...state,
+    uploadedCount: uploaded.length,
+    unmatchedFiles: unmatched,
+    uploadedFiles: uploaded,
+  };
 }
 
 export function summarizeCatalog(catalog: CatalogState, fallbackCatalog = fallbackLaptops) {

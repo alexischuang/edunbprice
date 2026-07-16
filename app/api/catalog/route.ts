@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { clearCatalogState, getCatalogState, importCatalogFromExcel, summarizeCatalog } from "@/app/catalog-service";
+import {
+  clearCatalogState,
+  getCatalogState,
+  importCatalogFromExcel,
+  importCatalogPhotos,
+  summarizeCatalog,
+} from "@/app/catalog-service";
 import { laptops as fallbackLaptops } from "@/app/laptop-data";
 
 export const runtime = "nodejs";
@@ -24,6 +30,24 @@ export async function POST(request: Request) {
         ok: true,
         action,
         state,
+      });
+    }
+
+    if (action === "photos") {
+      const photoFiles = formData
+        .getAll("photos")
+        .filter((value): value is File => value instanceof File);
+
+      if (!photoFiles.length) {
+        return NextResponse.json({ ok: false, error: "請先選擇照片。" }, { status: 400 });
+      }
+
+      const state = await importCatalogPhotos(photoFiles);
+      return NextResponse.json({
+        ok: true,
+        action,
+        state,
+        summary: summarizeCatalog(state, fallbackLaptops),
       });
     }
 

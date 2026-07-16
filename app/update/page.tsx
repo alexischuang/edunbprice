@@ -259,11 +259,11 @@ export default function UpdatePage() {
               <article className="update-card">
                 <p className="eyebrow">照片上傳</p>
                 <h1>一次選很多張</h1>
-                <p className="update-lead">檔名只要包含機型代號就能自動配對。已經配對過的照片會重複沿用，沒配到的會列在缺圖清單。</p>
+                <p className="update-lead">檔名只要包含機型代號就能自動配對。選完照片後，請按「執行更新」開始上傳；已配對過的照片會重複沿用，沒配到的會列在缺圖清單。</p>
 
                 <div className="update-actions">
                   <button className="button-primary" disabled={busy || !photoFiles.length} onClick={handleUploadPhotos} type="button">
-                    上傳照片
+                    執行更新
                   </button>
                   <button className="button-soft" disabled={busy} onClick={() => setPhotoFiles([])} type="button">
                     清除選取
@@ -287,6 +287,9 @@ export default function UpdatePage() {
                   <br />
                   <strong>前五張：</strong>
                   {selectedPhotoPreview || "尚未選擇照片"}
+                  <br />
+                  <strong>提示：</strong>
+                  請先選照片，再按上方「執行更新」。
                 </div>
               </article>
             </section>

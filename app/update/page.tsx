@@ -30,6 +30,7 @@ export default function UpdatePage() {
   }, []);
 
   const missingImages = meta.missingImages ?? [];
+  const storageMissing = meta.storageStatus === "missing";
   const sourceLabel = meta.sourceFile ?? (meta.status === "cleared" ? "已清空" : "目前使用預設資料");
   const updatedLabel = meta.updatedAt ? new Date(meta.updatedAt).toLocaleString("zh-TW") : "尚未更新";
 
@@ -131,6 +132,12 @@ export default function UpdatePage() {
             </Link>
           </div>
         </div>
+
+        {storageMissing ? (
+          <div className="notice" style={{ marginTop: 0, marginBottom: 16 }}>
+            目前沒有連上 Vercel KV，所以後台更新不會同步到所有裝置。請先在 Vercel 連接 KV，之後刪除與上傳才會真正生效。
+          </div>
+        ) : null}
 
         {!isUnlocked ? (
           <section className="update-auth">

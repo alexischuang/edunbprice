@@ -18,9 +18,11 @@ const CATALOG_STATE_KEY = "education:catalog-state:v1";
 const CATALOG_STATE_FILE = path.join(process.cwd(), "temp", "catalog-state.json");
 
 export type CatalogStatus = "default" | "custom" | "cleared";
+export type CatalogStorageStatus = "connected" | "local" | "missing";
 
 export type CatalogState = {
   status: CatalogStatus;
+  storageStatus: CatalogStorageStatus;
   sourceFile: string | null;
   updatedAt: string | null;
   laptops: Laptop[];
@@ -29,7 +31,8 @@ export type CatalogState = {
   totalImageModels: number;
 };
 
-type StoredCatalogState = CatalogState & {
+type StoredCatalogState = Omit<CatalogState, "storageStatus"> & {
+  storageStatus?: CatalogStorageStatus;
   imageFiles?: Record<string, string[]>;
 };
 
@@ -37,6 +40,11 @@ type ExcelRow = Record<string, unknown>;
 
 function hasKvConfig() {
   return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+}
+
+function getStorageStatus(): CatalogStorageStatus {
+  if (hasKvConfig()) return "connected";
+  return process.env.NODE_ENV === "production" ? "missing" : "local";
 }
 
 async function readFileState(): Promise<StoredCatalogState | null> {
@@ -59,11 +67,18 @@ async function readStoredState(): Promise<StoredCatalogState | null> {
       const state = (await kv.get<StoredCatalogState>(CATALOG_STATE_KEY)) ?? null;
       if (state) return state;
     } catch {
-      // Fall back to the local file cache when KV is unavailable.
+      if (process.env.NODE_ENV !== "production") {
+        // Fall back to the local file cache when KV is unavailable during local development.
+        return readFileState();
+      }
     }
   }
 
-  return readFileState();
+  if (process.env.NODE_ENV !== "production") {
+    return readFileState();
+  }
+
+  return null;
 }
 
 async function writeStoredState(state: StoredCatalogState) {
@@ -72,11 +87,20 @@ async function writeStoredState(state: StoredCatalogState) {
       await kv.set(CATALOG_STATE_KEY, state);
       return;
     } catch {
-      // Fall back to the local file cache when KV write fails.
+      if (process.env.NODE_ENV !== "production") {
+        // Fall back to the local file cache when KV write fails during local development.
+        await writeFileState(state);
+        return;
+      }
     }
   }
 
-  await writeFileState(state);
+  if (process.env.NODE_ENV !== "production") {
+    await writeFileState(state);
+    return;
+  }
+
+  throw new Error("Vercel KV 尚未連線，無法儲存更新。");
 }
 
 function getString(row: ExcelRow, keys: string[]) {
@@ -328,6 +352,7 @@ function normalizeState(state: Partial<StoredCatalogState> | null | undefined): 
   if (!state || !Array.isArray(state.laptops)) return null;
   return {
     status: state.status === "cleared" ? "cleared" : state.status === "custom" ? "custom" : "default",
+    storageStatus: getStorageStatus(),
     sourceFile: typeof state.sourceFile === "string" ? state.sourceFile : null,
     updatedAt: typeof state.updatedAt === "string" ? state.updatedAt : null,
     laptops: state.laptops.filter(Boolean) as Laptop[],
@@ -345,6 +370,7 @@ export async function getCatalogState(): Promise<CatalogState> {
     const gallery = await scanGalleryMatch(initial);
     return {
       status: "default",
+      storageStatus: getStorageStatus(),
       sourceFile: null,
       updatedAt: null,
       laptops: initial,
@@ -354,6 +380,7 @@ export async function getCatalogState(): Promise<CatalogState> {
 
   return {
     status: stored.status,
+    storageStatus: getStorageStatus(),
     sourceFile: stored.sourceFile,
     updatedAt: stored.updatedAt,
     laptops: stored.status === "cleared" ? [] : stored.laptops,
@@ -364,18 +391,18 @@ export async function getCatalogState(): Promise<CatalogState> {
 }
 
 export async function clearCatalogState() {
-  const state: StoredCatalogState = {
+  const state: CatalogState = {
     status: "cleared",
+    storageStatus: getStorageStatus(),
     sourceFile: null,
     updatedAt: new Date().toISOString(),
     laptops: [],
     missingImages: [],
     matchedImageModels: 0,
     totalImageModels: 0,
-    imageFiles: {},
   };
 
-  await writeStoredState(state);
+  await writeStoredState(state as StoredCatalogState);
   return state;
 }
 
@@ -397,18 +424,18 @@ export async function importCatalogFromExcel(file: File) {
     .filter(Boolean) as Laptop[];
 
   const gallery = await scanGalleryMatch(laptops);
-  const state: StoredCatalogState = {
+  const state: CatalogState = {
     status: "custom",
+    storageStatus: getStorageStatus(),
     sourceFile: file.name,
     updatedAt: new Date().toISOString(),
     laptops,
     missingImages: gallery.missingImages,
     matchedImageModels: gallery.matchedImageModels,
     totalImageModels: gallery.totalImageModels,
-    imageFiles: {},
   };
 
-  await writeStoredState(state);
+  await writeStoredState(state as StoredCatalogState);
   return state;
 }
 

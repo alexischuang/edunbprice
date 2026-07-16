@@ -40,12 +40,15 @@ export async function POST(request: Request) {
       summary: summarizeCatalog(state, fallbackLaptops),
     });
   } catch (error) {
+    const message = error instanceof Error ? error.message : "更新失敗";
+    const storageMissing = message.includes("Vercel KV");
     return NextResponse.json(
       {
         ok: false,
-        error: error instanceof Error ? error.message : "更新失敗",
+        error: message,
+        storageStatus: storageMissing ? "missing" : undefined,
       },
-      { status: 500 },
+      { status: storageMissing ? 503 : 500 },
     );
   }
 }

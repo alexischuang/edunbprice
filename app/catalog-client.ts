@@ -7,6 +7,7 @@ const CATALOG_ENDPOINT = "/api/catalog";
 
 export type CatalogResponse = {
   status?: "default" | "custom" | "cleared";
+  storageStatus?: "connected" | "local" | "missing";
   sourceFile?: string | null;
   updatedAt?: string | null;
   laptops?: Laptop[];
@@ -24,6 +25,7 @@ export function useCatalog(initialCatalog: Laptop[] = fallbackLaptops) {
   const [catalog, setCatalog] = useState<Laptop[]>(initialCatalog);
   const [meta, setMeta] = useState<CatalogResponse>({
     status: "default",
+    storageStatus: "local",
     sourceFile: null,
     updatedAt: null,
     laptops: initialCatalog,
@@ -45,6 +47,7 @@ export function useCatalog(initialCatalog: Laptop[] = fallbackLaptops) {
       setCatalog(initialCatalog);
       setMeta({
         status: "default",
+        storageStatus: "local",
         sourceFile: null,
         updatedAt: null,
         laptops: initialCatalog,

@@ -4,7 +4,7 @@ import sharp from "sharp";
 
 const root = process.cwd();
 const targetFolders = process.argv.slice(2);
-const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp"]);
+const imageExtensions = new Set([".jpg", ".jpeg", ".png"]);
 
 if (!targetFolders.length) {
   console.log("Usage: node scripts/convert-gallery-folders.mjs <folder> [folder...]");

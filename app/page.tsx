@@ -27,6 +27,7 @@ import {
   gpuOptions,
   getBestDiscount,
   getBudgetRange,
+  getModelDisplayName,
 } from "./catalog";
 import { useCatalog } from "./catalog-client";
 import { laptops as fallbackLaptops, type Laptop } from "./laptop-data";
@@ -216,7 +217,7 @@ export default function HomePage() {
                     <LaptopMedia laptop={laptop} />
                     <div className="mini-card-body">
                       <p className="family">{laptop.family}</p>
-                      <h3>{laptop.model}</h3>
+                      <h3>{getModelDisplayName(laptop)}</h3>
                       <div className="price-stack">
                         <strong className="edu">
                           <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
@@ -341,7 +342,7 @@ export default function HomePage() {
         <div className="compare-bar">
           <div className="summary">
             <strong>{selectedIds.length} 台已勾選</strong>
-            <span>{selectedLaptops.map((item) => item.model).join("、")}</span>
+            <span>{selectedLaptops.map((item) => getModelDisplayName(item)).join("、")}</span>
           </div>
           <div className="topbar-links">
             <button
@@ -408,7 +409,7 @@ function LaptopCard({
         <div className="card-topline">
           <div>
             <p className="family">{laptop.family}</p>
-            <h3>{laptop.model}</h3>
+            <h3>{getModelDisplayName(laptop)}</h3>
           </div>
           <span className="toggle-pill">值 {Math.round(laptop.valueScore)}</span>
         </div>
@@ -526,7 +527,7 @@ function LaptopMedia({ laptop }: { laptop: Laptop }) {
       ) : (
         <div className="fallback-visual">
           <strong>圖片待補</strong>
-          <span>{laptop.model}</span>
+          <span>{getModelDisplayName(laptop)}</span>
         </div>
       )}
     </div>

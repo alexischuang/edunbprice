@@ -9,6 +9,7 @@ import {
   formatMoney,
   formatDiscountFold,
   getGalleryCandidates,
+  getModelDisplayName,
   splitList,
 } from "../catalog";
 import { useCatalog } from "../catalog-client";
@@ -144,7 +145,7 @@ export default function CompareClient() {
                   <CompareMedia laptop={laptop} />
                   <div className="compare-column-body">
                     <p className="family">{laptop.family}</p>
-                    <h3>{laptop.model}</h3>
+                    <h3>{getModelDisplayName(laptop)}</h3>
                     <div className="compare-price">
                       <strong className="edu">
                         <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
@@ -230,7 +231,7 @@ function CompareMedia({ laptop }: { laptop: Laptop }) {
       ) : (
         <div className="fallback-visual">
           <strong>圖片待補</strong>
-          <span>{laptop.model}</span>
+          <span>{getModelDisplayName(laptop)}</span>
         </div>
       )}
     </div>

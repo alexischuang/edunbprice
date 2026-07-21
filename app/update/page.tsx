@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
+import { getModelDisplayName } from "../catalog";
 import { useCatalog } from "../catalog-client";
 import { laptops as fallbackLaptops } from "../laptop-data";
 
@@ -38,6 +39,7 @@ export default function UpdatePage() {
   const updatedLabel = meta.updatedAt ? new Date(meta.updatedAt).toLocaleString("zh-TW") : "尚未更新";
   const selectedPhotoCount = photoFiles.length;
   const selectedPhotoPreview = photoFiles.slice(0, 5).map((file) => file.name).join("、");
+  const modelByName = new Map(catalog.map((item) => [item.model, item]));
 
   function handlePasswordSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -331,7 +333,7 @@ export default function UpdatePage() {
                 <div className="update-list">
                   {missingImages.slice(0, 80).map((model) => (
                     <div className="update-row" key={model}>
-                      <strong>{model}</strong>
+                      <strong>{getModelDisplayName(modelByName.get(model) ?? { ...fallbackLaptops[0], model, title: model })}</strong>
                     </div>
                   ))}
                 </div>

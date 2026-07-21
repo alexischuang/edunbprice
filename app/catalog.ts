@@ -164,6 +164,42 @@ export function buildSearchText(laptop: Laptop) {
   );
 }
 
+function extractModelSuffix(title: string, model: string) {
+  if (!title || !model) return "";
+
+  const index = title.indexOf(model);
+  if (index < 0) return "";
+
+  const afterModel = title
+    .slice(index + model.length)
+    .replace(/^[\s_()\[\]（）【】\/\\\-:：,，]+/, "");
+
+  const suffix = afterModel.match(/^([^\s_()\[\]（）【】\/\\\-:：,，]+(?:[^\s_()\[\]（）【】\/\\\-:：,，]+)*)/)?.[1] ?? "";
+  if (!suffix) return "";
+
+  const normalized = suffix.trim();
+  if (!normalized) return "";
+
+  if (
+    /^(intel|amd|snapdragon|qualcomm|core|ryzen|processor|nvidia|geforce|rtx|windows|win|copilot|oled|mini|led|ips|ddr|lpddr|ssd|ram|wifi|usb|tuf|rog|vivobook|zenbook|expertbook|proart|chromebook)/i.test(
+      normalized,
+    )
+  ) {
+    return "";
+  }
+
+  if (!/[\u4e00-\u9fff]/.test(normalized) && !/^(?:black|white|silver|gray|grey|blue|pink|gold|green)$/i.test(normalized)) {
+    return "";
+  }
+
+  return normalized;
+}
+
+export function getModelDisplayName(laptop: Laptop) {
+  const suffix = extractModelSuffix(laptop.title, laptop.model);
+  return suffix ? `${laptop.model}${suffix}` : laptop.model;
+}
+
 export function getCpuCategory(cpu: string) {
   const value = cpu.toLowerCase();
 

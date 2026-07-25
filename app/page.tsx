@@ -37,11 +37,11 @@ type MobileGpuMode = "all" | "igpu" | "dgpu";
 type MobileBudgetMode = "all" | "under-30000" | "30000-40000" | "40000-50000" | "50000-plus";
 
 const sortOptions = [
-  { value: "match", label: "?�符�?" },
-  { value: "price", label: "?�格?��? },
-  { value: "saving", label: "?�扣?��? },
-  { value: "performance", label: "?�能?��?" },
-  { value: "value", label: "CP ?? },
+  { value: "match", label: "最符合" },
+  { value: "price", label: "價格最低" },
+  { value: "saving", label: "折扣最多" },
+  { value: "performance", label: "效能優先" },
+  { value: "value", label: "CP 值" },
 ] as const;
 
 function EducationPrice({ showEducationPrice, price }: { showEducationPrice: boolean; price: number }) {
@@ -49,7 +49,7 @@ function EducationPrice({ showEducationPrice, price }: { showEducationPrice: boo
     formatMoney(price)
   ) : (
     <Link className="quote-link" href="https://lin.ee/Y9sCx0K" rel="noreferrer" target="_blank">
-      ?�價請洽?��?人員
+      報價請洽服務人員
     </Link>
   );
 }
@@ -101,12 +101,10 @@ function getMobileGpuMode(laptop: Laptop): "igpu" | "dgpu" {
     text.includes("geforce") ||
     text.includes("radeon") ||
     text.includes("arc") ||
-    text.includes("iris") ||
-    text.includes("geforce rtx")
+    text.includes("iris")
   ) {
     return "dgpu";
   }
-
   return "igpu";
 }
 
@@ -118,8 +116,8 @@ function getMobileBudgetMode(price: number): Exclude<MobileBudgetMode, "all"> {
 }
 
 const mobileGpuCards: Array<{ value: Exclude<MobileGpuMode, "all">; label: string; accent: string; note: string }> = [
-  { value: "igpu", label: "?�建顯卡", accent: "mobile-card--red", note: "輕便 / ?�書 / ?�常" },
-  { value: "dgpu", label: "?��?顯卡", accent: "mobile-card--blue", note: "?�戲 / ?��? / ?�能" },
+  { value: "igpu", label: "內建顯卡", accent: "mobile-card--red", note: "輕便 / 文書 / 日常" },
+  { value: "dgpu", label: "獨立顯卡", accent: "mobile-card--blue", note: "遊戲 / 創作 / 效能" },
 ];
 
 const mobileBudgetCards: Array<{
@@ -128,10 +126,10 @@ const mobileBudgetCards: Array<{
   accent: string;
   note: string;
 }> = [
-  { value: "under-30000", label: "30000?�以�?, accent: "mobile-card--yellow", note: "?��??��?" },
-  { value: "30000-40000", label: "30000~40000??, accent: "mobile-card--green", note: "主�??��?" },
-  { value: "40000-50000", label: "40000~50000??, accent: "mobile-card--purple", note: "?��??�能" },
-  { value: "50000-plus", label: "50000?�以�?, accent: "mobile-card--teal", note: "高�??�艦" },
+  { value: "under-30000", label: "30000元以下", accent: "mobile-card--yellow", note: "入門預算" },
+  { value: "30000-40000", label: "30000~40000元", accent: "mobile-card--green", note: "主流選擇" },
+  { value: "40000-50000", label: "40000~50000元", accent: "mobile-card--purple", note: "升級效能" },
+  { value: "50000-plus", label: "50000元以上", accent: "mobile-card--teal", note: "高階旗艦" },
 ];
 
 export default function HomePage() {
@@ -187,12 +185,14 @@ export default function HomePage() {
     [selectedIds],
   );
 
-  const mobileFiltered = useMemo(() => {
-    return [...laptops]
-      .filter((laptop) => mobileGpu === "all" || getMobileGpuMode(laptop) === mobileGpu)
-      .filter((laptop) => mobileBudget === "all" || getMobileBudgetMode(laptop.eduPrice) === mobileBudget)
-      .sort((a, b) => a.eduPrice - b.eduPrice || b.valueScore - a.valueScore);
-  }, [laptops, mobileBudget, mobileGpu]);
+  const mobileFiltered = useMemo(
+    () =>
+      [...laptops]
+        .filter((laptop) => mobileGpu === "all" || getMobileGpuMode(laptop) === mobileGpu)
+        .filter((laptop) => mobileBudget === "all" || getMobileBudgetMode(laptop.eduPrice) === mobileBudget)
+        .sort((a, b) => a.eduPrice - b.eduPrice || b.valueScore - a.valueScore),
+    [laptops, mobileBudget, mobileGpu],
+  );
 
   const mobileHasSelection = mobileGpu !== "all" || mobileBudget !== "all";
 
@@ -234,10 +234,10 @@ export default function HomePage() {
         <div className="topbar">
           <div className="topbar-links">
             <Link className="link-pill" href="/compare">
-              多�?比�?
+              多機比較
             </Link>
             <Link className="link-pill" href="/update">
-              ?�新後台
+              更新後台
             </Link>
           </div>
         </div>
@@ -245,14 +245,14 @@ export default function HomePage() {
         <section className="mobile-launch mobile-only">
           <div className="mobile-launch-copy">
             <p className="eyebrow">mobile quick pick</p>
-            <h1>?��?快速選�?/h1>
-            <p>?��?顯卡，�?點�?算�??�接?�到對�?清單??/p>
+            <h1>手機快速選機</h1>
+            <p>先點顯卡，再點預算，直接進到對應清單。</p>
           </div>
 
           <div className="mobile-card-group">
             <div className="mobile-card-group-head">
-              <strong>顯卡類�?</strong>
-              <span>?�選?��?�?/span>
+              <strong>顯卡類型</strong>
+              <span>先選這一組</span>
             </div>
             <div className="mobile-card-grid mobile-card-grid--two">
               {mobileGpuCards.map((card) => (
@@ -272,8 +272,8 @@ export default function HomePage() {
 
           <div className="mobile-card-group">
             <div className="mobile-card-group-head">
-              <strong>?�育?��???/strong>
-              <span>?�選?��?�?/span>
+              <strong>教育價範圍</strong>
+              <span>再選這一組</span>
             </div>
             <div className="mobile-card-grid mobile-card-grid--four">
               {mobileBudgetCards.map((card) => (
@@ -293,11 +293,11 @@ export default function HomePage() {
 
           <div className="mobile-launch-actions">
             <button className="button-soft mobile-reset" onClick={resetMobileFilters} type="button">
-              ?�設?��?
+              重設選擇
             </button>
             <span className="mobile-launch-tip">
-              已選 {mobileGpu === "all" ? "顯卡" : mobileGpu === "igpu" ? "?�建顯卡" : "?��?顯卡"}
-              {mobileBudget === "all" ? " + ?��?" : ` + ${mobileBudgetCards.find((item) => item.value === mobileBudget)?.label ?? ""}`}
+              已選 {mobileGpu === "all" ? "顯卡" : mobileGpu === "igpu" ? "內建顯卡" : "獨立顯卡"}
+              {mobileBudget === "all" ? " + 預算" : ` + ${mobileBudgetCards.find((item) => item.value === mobileBudget)?.label ?? ""}`}
             </span>
           </div>
         </section>
@@ -309,29 +309,29 @@ export default function HomePage() {
                 className="excel-toggle"
                 onClick={() => setShowEducationPrice((current) => !current)}
                 type="button"
-                aria-label="?��??�育?�顯�?
+                aria-label="切換教育價顯示"
                 title="EDUCATION"
               >
                 EDUCATION
               </button>
               <span> LAPTOP SELECTOR</span>
             </p>
-            <h1>大�??�育?��??��??�器</h1>
+            <h1>大專教育價筆電挑選器</h1>
             <p>
-              �?Excel ?��??��?機�?，快?�用?��??�用?�、CPU?�RAM?�SSD?�螢幕�?顯示?�縮小�??��?
-              ?�設?��??�育?��??��?點�?題�??��? `EDUCATION` ?��??��?顯示，�??��??�扣仍�?保�???
+              依 Excel 內的限定機型，快速用預算、用途、CPU、RAM、SSD、螢幕與顯示卡縮小範圍。
+              預設隱藏教育價，只有點標題前面的 `EDUCATION` 才會切換顯示，市價與折扣仍會保留。
             </p>
             <div className="hero-metrics">
-              <span className="metric">{laptops.length} ?��???/span>
-              <span className="metric">{purposeOptions.length - 1} 種用??/span>
-              <span className="metric">?�佳�???{formatMoney(bestDiscount.discount)}</span>
+              <span className="metric">{laptops.length} 台機型</span>
+              <span className="metric">{purposeOptions.length - 1} 種用途</span>
+              <span className="metric">最佳折扣 {formatMoney(bestDiscount.discount)}</span>
             </div>
           </div>
 
-          <aside className="hero-card carousel-recommend" aria-label="23000 ??30000 ?�薦機�?">
+          <aside className="hero-card carousel-recommend" aria-label="23000 到 30000 推薦機型">
             <div className="hero-card-head">
               <strong>23000 ~ 30000</strong>
-              <span className="toggle-pill">{recommendedLaptops.length} ?�推??/span>
+              <span className="toggle-pill">{recommendedLaptops.length} 台推薦</span>
             </div>
 
             <div className="carousel-shell">
@@ -349,7 +349,7 @@ export default function HomePage() {
                         <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
                       </div>
                       <div className="discount-line">
-                        ?��??�高�???{formatMoney(laptop.discount)}
+                        目前最高折扣 {formatMoney(laptop.discount)}
                         {laptop.discountRate ? ` · ${formatDiscountFold(laptop.discountRate)}` : ""}
                       </div>
                     </div>
@@ -363,17 +363,17 @@ export default function HomePage() {
         <section className="panel section desktop-only">
           <div className="toolbar">
             <div className="search-field" style={{ flex: "1 1 280px" }}>
-              <label htmlFor="search">?��?機�??�CPU?�用??/label>
+              <label htmlFor="search">搜尋機型、CPU、用途</label>
               <input
                 id="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="輸入機�?�???�CPU?�用?��??��?"
+                placeholder="輸入機型代號、CPU、用途關鍵字"
               />
             </div>
 
             <div className="field" style={{ flex: "0 0 200px" }}>
-              <label htmlFor="budget">?��?</label>
+              <label htmlFor="budget">預算</label>
               <select id="budget" value={budget} onChange={(event) => setBudget(event.target.value)}>
                 {budgetOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -384,7 +384,7 @@ export default function HomePage() {
             </div>
 
             <div className="field" style={{ flex: "0 0 180px" }}>
-              <label htmlFor="sort">?��?</label>
+              <label htmlFor="sort">排序</label>
               <select
                 id="sort"
                 value={sortMode}
@@ -404,30 +404,30 @@ export default function HomePage() {
           </div>
 
           <div className="filter-row">
-            <FieldSelect label="?��? value={purpose} onChange={setPurpose} options={purposeOptions} />
+            <FieldSelect label="用途" value={purpose} onChange={setPurpose} options={purposeOptions} />
             <FieldSelect label="CPU" value={cpu} onChange={setCpu} options={cpuOptions} />
             <FieldSelect label="RAM" value={ram} onChange={setRam} options={ramOptions} />
             <FieldSelect label="SSD" value={storage} onChange={setStorage} options={storageOptions} />
             <FieldSelect label="LCD" value={screen} onChange={setScreen} options={screenOptions} />
-            <FieldSelect label="顯示?? value={gpu} onChange={setGpu} options={gpuOptions} />
+            <FieldSelect label="顯示卡" value={gpu} onChange={setGpu} options={gpuOptions} />
           </div>
 
           <div className="summary-strip">
             <div className="summary-stat">
-              <span>?��?顯示</span>
+              <span>目前顯示</span>
               <strong>{filtered.length}</strong>
             </div>
             <div className="summary-stat">
-              <span>已選比�?</span>
+              <span>已選比較</span>
               <strong>{selectedIds.length}</strong>
             </div>
             <div className="summary-stat">
-              <span>?�?��???/span>
+              <span>所有機型</span>
               <strong>{laptops.length}</strong>
             </div>
             <div className="summary-stat">
-              <span>?�格?��?</span>
-              <strong>{showEducationPrice ? "顯示" : "?��?"}</strong>
+              <span>價格切換</span>
+              <strong>{showEducationPrice ? "顯示" : "隱藏"}</strong>
             </div>
           </div>
         </section>
@@ -435,16 +435,16 @@ export default function HomePage() {
         <section className="panel section desktop-only">
           <div className="toolbar" style={{ justifyContent: "space-between", alignItems: "center" }}>
             <div>
-              <p className="eyebrow">?�部結�?</p>
-              <h2>�?Excel 機�?篩選後�?清單</h2>
+              <p className="eyebrow">全部結果</p>
+              <h2>依 Excel 機型篩選後的清單</h2>
             </div>
-            <span className="toggle-pill">{filtered.length} �?/span>
+            <span className="toggle-pill">{filtered.length} 筆</span>
           </div>
 
           {filtered.length === 0 ? (
             <div className="empty-state">
-              <strong>沒�?符�??��???/strong>
-              <span>請放寬�?算�??��??��?下�?條件，Excel 外�?機�?不�?被�??��?/span>
+              <strong>沒有符合的機型</strong>
+              <span>請放寬預算或取消部分下拉條件，Excel 外的機型不會被加入。</span>
             </div>
           ) : (
             <div className="results-grid">
@@ -466,20 +466,20 @@ export default function HomePage() {
         <div className="mobile-results-head">
           <div>
             <p className="eyebrow">matching list</p>
-            <h2>對�?機種清單</h2>
+            <h2>對應機種清單</h2>
           </div>
-          <span className="toggle-pill">{mobileHasSelection ? `${mobileFiltered.length} ?�` : "請�??��?"}</span>
+          <span className="toggle-pill">{mobileHasSelection ? `${mobileFiltered.length} 台` : "請先選擇"}</span>
         </div>
 
         {!mobileHasSelection ? (
           <div className="mobile-empty">
-            <strong>?�選顯卡，�??��?�?/strong>
-            <span>?��??��??�接?��??�縮?��?要�??��??��?/span>
+            <strong>先選顯卡，再選預算</strong>
+            <span>手機版會直接把清單縮到你要看的範圍。</span>
           </div>
         ) : mobileFiltered.length === 0 ? (
           <div className="mobile-empty">
-            <strong>沒�?符�?條件?��?�?/strong>
-            <span>?�以?�另一?�顯?��??��?組�?試試??/span>
+            <strong>沒有符合條件的機種</strong>
+            <span>可以換另一個顯卡或價位組合試試。</span>
           </div>
         ) : (
           <div className="mobile-results-list">
@@ -493,8 +493,8 @@ export default function HomePage() {
       {selectedIds.length > 0 && (
         <div className="compare-bar">
           <div className="summary">
-            <strong>{selectedIds.length} ?�已?�選</strong>
-            <span>{selectedLaptops.map((item) => getModelDisplayName(item)).join("??)}</span>
+            <strong>{selectedIds.length} 台已勾選</strong>
+            <span>{selectedLaptops.map((item) => getModelDisplayName(item)).join("、")}</span>
           </div>
           <div className="topbar-links">
             <button
@@ -505,7 +505,7 @@ export default function HomePage() {
               清空
             </button>
             <Link className="button-action" href={compareUrl}>
-              ?��?比�?
+              前往比較
             </Link>
           </div>
         </div>
@@ -563,7 +563,7 @@ function LaptopCard({
             <p className="family">{laptop.family}</p>
             <h3>{getModelDisplayName(laptop)}</h3>
           </div>
-          <span className="toggle-pill">??{Math.round(laptop.valueScore)}</span>
+          <span className="toggle-pill">值 {Math.round(laptop.valueScore)}</span>
         </div>
 
         <p className="model-title">{laptop.title}</p>
@@ -576,7 +576,7 @@ function LaptopCard({
         </div>
 
         <div className="discount-line">
-          ?��??�高�???{formatMoney(laptop.discount)}
+          目前最高折扣 {formatMoney(laptop.discount)}
           {laptop.discountRate ? ` · ${formatDiscountFold(laptop.discountRate)}` : ""}
         </div>
 
@@ -606,11 +606,11 @@ function LaptopCard({
             <dd>{laptop.display}</dd>
           </div>
           <div>
-            <dt>顯示??/dt>
+            <dt>顯示卡</dt>
             <dd>{laptop.gpu}</dd>
           </div>
           <div>
-            <dt>?��? / 保固</dt>
+            <dt>重量 / 保固</dt>
             <dd>
               {laptop.weight} · {laptop.warranty}
             </dd>
@@ -632,11 +632,53 @@ function LaptopCard({
               onChange={() => onToggleSelected(laptop.id)}
               type="checkbox"
             />
-            ?�選比�?
+            勾選比較
           </label>
           <Link className="link-pill" href={`/compare?ids=${laptop.id}`}>
-            ?��?檢�?
+            單機檢視
           </Link>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function MobileLaptopCard({
+  laptop,
+  showEducationPrice,
+}: {
+  laptop: Laptop;
+  showEducationPrice: boolean;
+}) {
+  return (
+    <article className="mobile-result-card">
+      <div className="mobile-result-media">
+        <LaptopMedia laptop={laptop} />
+      </div>
+      <div className="mobile-result-body">
+        <div className="mobile-result-top">
+          <div>
+            <p className="family">{laptop.family}</p>
+            <h3>{getModelDisplayName(laptop)}</h3>
+          </div>
+          <span className="mobile-score">值 {Math.round(laptop.valueScore)}</span>
+        </div>
+
+        <div className="mobile-result-tags">
+          <span className="mobile-chip mobile-chip--red">{getMobileGpuMode(laptop) === "igpu" ? "內建顯卡" : "獨立顯卡"}</span>
+          <span className="mobile-chip mobile-chip--yellow">{formatMoney(laptop.eduPrice)}</span>
+          <span className="mobile-chip mobile-chip--green">{laptop.screenSize ? `${laptop.screenSize} 吋` : "其他尺寸"}</span>
+        </div>
+
+        <div className="mobile-result-prices">
+          <strong className="edu">
+            <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
+          </strong>
+          <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
+          <span className="discount-line">
+            省下 {formatMoney(laptop.discount)}
+            {laptop.discountRate ? `，${formatDiscountFold(laptop.discountRate)}` : ""}
+          </span>
         </div>
       </div>
     </article>
@@ -678,52 +720,10 @@ function LaptopMedia({ laptop }: { laptop: Laptop }) {
         />
       ) : (
         <div className="fallback-visual">
-          <strong>?��?待�?</strong>
+          <strong>圖片待補</strong>
           <span>{getModelDisplayName(laptop)}</span>
         </div>
       )}
     </div>
-  );
-}
-
-function MobileLaptopCard({
-  laptop,
-  showEducationPrice,
-}: {
-  laptop: Laptop;
-  showEducationPrice: boolean;
-}) {
-  return (
-    <article className="mobile-result-card">
-      <div className="mobile-result-media">
-        <LaptopMedia laptop={laptop} />
-      </div>
-      <div className="mobile-result-body">
-        <div className="mobile-result-top">
-          <div>
-            <p className="family">{laptop.family}</p>
-            <h3>{getModelDisplayName(laptop)}</h3>
-          </div>
-          <span className="mobile-score">??{Math.round(laptop.valueScore)}</span>
-        </div>
-
-        <div className="mobile-result-tags">
-          <span className="mobile-chip mobile-chip--red">{getMobileGpuMode(laptop) === "igpu" ? "?�建顯卡" : "?��?顯卡"}</span>
-          <span className="mobile-chip mobile-chip--yellow">{formatMoney(laptop.eduPrice)}</span>
-          <span className="mobile-chip mobile-chip--green">{laptop.screenSize ? `${laptop.screenSize} ?�` : "?��?尺寸"}</span>
-        </div>
-
-        <div className="mobile-result-prices">
-          <strong className="edu">
-            <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
-          </strong>
-          <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
-          <span className="discount-line">
-            ?��? {formatMoney(laptop.discount)}
-            {laptop.discountRate ? `�?{formatDiscountFold(laptop.discountRate)}` : ""}
-          </span>
-        </div>
-      </div>
-    </article>
   );
 }

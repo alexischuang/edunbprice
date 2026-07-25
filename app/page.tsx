@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   budgetOptions,
   buildSearchText,
@@ -33,13 +33,15 @@ import { useCatalog } from "./catalog-client";
 import { laptops as fallbackLaptops, type Laptop } from "./laptop-data";
 
 type SortMode = "match" | "price" | "saving" | "performance" | "value";
+type MobileGpuMode = "all" | "igpu" | "dgpu";
+type MobileBudgetMode = "all" | "under-30000" | "30000-40000" | "40000-50000" | "50000-plus";
 
 const sortOptions = [
-  { value: "match", label: "æœ€ç¬¦åˆ" },
-  { value: "price", label: "åƒ¹æ ¼æœ€ä½" },
-  { value: "saving", label: "æŠ˜æ‰£æœ€å¤š" },
-  { value: "performance", label: "æ•ˆèƒ½å„ªå…ˆ" },
-  { value: "value", label: "CP å€¼" },
+  { value: "match", label: "?€ç¬¦å?" },
+  { value: "price", label: "?¹æ ¼?€ä½? },
+  { value: "saving", label: "?˜æ‰£?€å¤? },
+  { value: "performance", label: "?ˆèƒ½?ªå?" },
+  { value: "value", label: "CP ?? },
 ] as const;
 
 function EducationPrice({ showEducationPrice, price }: { showEducationPrice: boolean; price: number }) {
@@ -47,7 +49,7 @@ function EducationPrice({ showEducationPrice, price }: { showEducationPrice: boo
     formatMoney(price)
   ) : (
     <Link className="quote-link" href="https://lin.ee/Y9sCx0K" rel="noreferrer" target="_blank">
-      å ±åƒ¹è«‹æ´½æœå‹™äººå“¡
+      ?±åƒ¹è«‹æ´½?å?äººå“¡
     </Link>
   );
 }
@@ -92,6 +94,46 @@ function scoreLaptop(laptop: Laptop, sortMode: SortMode) {
   return laptop.valueScore + laptop.discountRate * 12 + purposeBonus + rangeBonus - distance * 0.05;
 }
 
+function getMobileGpuMode(laptop: Laptop): "igpu" | "dgpu" {
+  const text = `${laptop.gpu} ${laptop.title} ${laptop.model}`.toLowerCase();
+  if (
+    text.includes("rtx") ||
+    text.includes("geforce") ||
+    text.includes("radeon") ||
+    text.includes("arc") ||
+    text.includes("iris") ||
+    text.includes("geforce rtx")
+  ) {
+    return "dgpu";
+  }
+
+  return "igpu";
+}
+
+function getMobileBudgetMode(price: number): Exclude<MobileBudgetMode, "all"> {
+  if (price <= 30000) return "under-30000";
+  if (price <= 40000) return "30000-40000";
+  if (price <= 50000) return "40000-50000";
+  return "50000-plus";
+}
+
+const mobileGpuCards: Array<{ value: Exclude<MobileGpuMode, "all">; label: string; accent: string; note: string }> = [
+  { value: "igpu", label: "?§å»ºé¡¯å¡", accent: "mobile-card--red", note: "è¼•ä¾¿ / ?‡æ›¸ / ?¥å¸¸" },
+  { value: "dgpu", label: "?¨ç?é¡¯å¡", accent: "mobile-card--blue", note: "?Šæˆ² / ?µä? / ?ˆèƒ½" },
+];
+
+const mobileBudgetCards: Array<{
+  value: Exclude<MobileBudgetMode, "all">;
+  label: string;
+  accent: string;
+  note: string;
+}> = [
+  { value: "under-30000", label: "30000?ƒä»¥ä¸?, accent: "mobile-card--yellow", note: "?¥é??ç?" },
+  { value: "30000-40000", label: "30000~40000??, accent: "mobile-card--green", note: "ä¸»æ??¸æ?" },
+  { value: "40000-50000", label: "40000~50000??, accent: "mobile-card--purple", note: "?‡ç??ˆèƒ½" },
+  { value: "50000-plus", label: "50000?ƒä»¥ä¸?, accent: "mobile-card--teal", note: "é«˜é??—è‰¦" },
+];
+
 export default function HomePage() {
   const { catalog: laptops } = useCatalog(fallbackLaptops);
   const [showEducationPrice, setShowEducationPrice] = usePersistentBoolean(
@@ -108,6 +150,9 @@ export default function HomePage() {
   const [gpu, setGpu] = useState("all");
   const [sortMode, setSortMode] = useState<SortMode>("match");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [mobileGpu, setMobileGpu] = useState<MobileGpuMode>("all");
+  const [mobileBudget, setMobileBudget] = useState<MobileBudgetMode>("all");
+  const mobileResultsRef = useRef<HTMLDivElement | null>(null);
   const bestDiscount = useMemo(() => getBestDiscount(laptops), []);
   const recommendedLaptops = useMemo(() => selectRecommended(laptops, 6), []);
 
@@ -142,6 +187,15 @@ export default function HomePage() {
     [selectedIds],
   );
 
+  const mobileFiltered = useMemo(() => {
+    return [...laptops]
+      .filter((laptop) => mobileGpu === "all" || getMobileGpuMode(laptop) === mobileGpu)
+      .filter((laptop) => mobileBudget === "all" || getMobileBudgetMode(laptop.eduPrice) === mobileBudget)
+      .sort((a, b) => a.eduPrice - b.eduPrice || b.valueScore - a.valueScore);
+  }, [laptops, mobileBudget, mobileGpu]);
+
+  const mobileHasSelection = mobileGpu !== "all" || mobileBudget !== "all";
+
   const compareUrl = selectedIds.length ? `/compare?ids=${selectedIds.join(",")}` : "/compare";
 
   function toggleSelected(id: string) {
@@ -164,50 +218,120 @@ export default function HomePage() {
     setSortMode("match");
   }
 
+  function resetMobileFilters() {
+    setMobileGpu("all");
+    setMobileBudget("all");
+  }
+
+  useEffect(() => {
+    if (!mobileHasSelection) return;
+    mobileResultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [mobileBudget, mobileGpu, mobileHasSelection]);
+
   return (
     <main className="site-shell">
       <div className="page-frame">
         <div className="topbar">
           <div className="topbar-links">
             <Link className="link-pill" href="/compare">
-              å¤šæ©Ÿæ¯”è¼ƒ
+              å¤šæ?æ¯”è?
             </Link>
             <Link className="link-pill" href="/update">
-              æ›´æ–°å¾Œå°
+              ?´æ–°å¾Œå°
             </Link>
           </div>
         </div>
 
-        <section className="hero section">
+        <section className="mobile-launch mobile-only">
+          <div className="mobile-launch-copy">
+            <p className="eyebrow">mobile quick pick</p>
+            <h1>?‹æ?å¿«é€Ÿé¸æ©?/h1>
+            <p>?ˆé?é¡¯å¡ï¼Œå?é»é?ç®—ï??´æ¥?²åˆ°å°æ?æ¸…å–®??/p>
+          </div>
+
+          <div className="mobile-card-group">
+            <div className="mobile-card-group-head">
+              <strong>é¡¯å¡é¡å?</strong>
+              <span>?ˆé¸?™ä?çµ?/span>
+            </div>
+            <div className="mobile-card-grid mobile-card-grid--two">
+              {mobileGpuCards.map((card) => (
+                <button
+                  key={card.value}
+                  type="button"
+                  className={`mobile-choice-card ${card.accent} ${mobileGpu === card.value ? "is-active" : ""}`}
+                  onClick={() => setMobileGpu(card.value)}
+                >
+                  <span className="mobile-choice-kicker">GPU</span>
+                  <strong>{card.label}</strong>
+                  <span>{card.note}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mobile-card-group">
+            <div className="mobile-card-group-head">
+              <strong>?™è‚²?¹ç???/strong>
+              <span>?é¸?™ä?çµ?/span>
+            </div>
+            <div className="mobile-card-grid mobile-card-grid--four">
+              {mobileBudgetCards.map((card) => (
+                <button
+                  key={card.value}
+                  type="button"
+                  className={`mobile-choice-card ${card.accent} ${mobileBudget === card.value ? "is-active" : ""}`}
+                  onClick={() => setMobileBudget(card.value)}
+                >
+                  <span className="mobile-choice-kicker">PRICE</span>
+                  <strong>{card.label}</strong>
+                  <span>{card.note}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mobile-launch-actions">
+            <button className="button-soft mobile-reset" onClick={resetMobileFilters} type="button">
+              ?è¨­?¸æ?
+            </button>
+            <span className="mobile-launch-tip">
+              å·²é¸ {mobileGpu === "all" ? "é¡¯å¡" : mobileGpu === "igpu" ? "?§å»ºé¡¯å¡" : "?¨ç?é¡¯å¡"}
+              {mobileBudget === "all" ? " + ?ç?" : ` + ${mobileBudgetCards.find((item) => item.value === mobileBudget)?.label ?? ""}`}
+            </span>
+          </div>
+        </section>
+
+        <section className="hero section desktop-only">
           <div className="hero-copy">
             <p className="eyebrow hero-strap">
               <button
                 className="excel-toggle"
                 onClick={() => setShowEducationPrice((current) => !current)}
                 type="button"
-                aria-label="åˆ‡æ›æ•™è‚²åƒ¹é¡¯ç¤º"
+                aria-label="?‡æ??™è‚²?¹é¡¯ç¤?
                 title="EDUCATION"
               >
                 EDUCATION
               </button>
               <span> LAPTOP SELECTOR</span>
             </p>
-            <h1>å¤§å°ˆæ•™è‚²åƒ¹ç­†é›»æŒ‘é¸å™¨</h1>
+            <h1>å¤§å??™è‚²?¹ç??»æ??¸å™¨</h1>
             <p>
-              ä¾ Excel å…§çš„é™å®šæ©Ÿå‹ï¼Œå¿«é€Ÿç”¨é ç®—ã€ç”¨é€”ã€CPUã€RAMã€SSDã€è¢å¹•èˆ‡é¡¯ç¤ºå¡ç¸®å°ç¯„åœã€‚
-              é è¨­éš±è—æ•™è‚²åƒ¹ï¼Œåªæœ‰é»æ¨™é¡Œå‰é¢çš„ `EDUCATION` æ‰æœƒåˆ‡æ›é¡¯ç¤ºï¼Œå¸‚åƒ¹èˆ‡æŠ˜æ‰£ä»æœƒä¿ç•™ã€‚
+              ä¾?Excel ?§ç??å?æ©Ÿå?ï¼Œå¿«?Ÿç”¨?ç??ç”¨?”ã€CPU?RAM?SSD?è¢å¹•è?é¡¯ç¤º?¡ç¸®å°ç??ã€?
+              ?è¨­?±è??™è‚²?¹ï??ªæ?é»æ?é¡Œå??¢ç? `EDUCATION` ?æ??‡æ?é¡¯ç¤ºï¼Œå??¹è??˜æ‰£ä»æ?ä¿ç???
             </p>
             <div className="hero-metrics">
-              <span className="metric">{laptops.length} å°æ©Ÿå‹</span>
-              <span className="metric">{purposeOptions.length - 1} ç¨®ç”¨é€”</span>
-              <span className="metric">æœ€ä½³æŠ˜æ‰£ {formatMoney(bestDiscount.discount)}</span>
+              <span className="metric">{laptops.length} ?°æ???/span>
+              <span className="metric">{purposeOptions.length - 1} ç¨®ç”¨??/span>
+              <span className="metric">?€ä½³æ???{formatMoney(bestDiscount.discount)}</span>
             </div>
           </div>
 
-          <aside className="hero-card carousel-recommend" aria-label="23000 åˆ° 30000 æ¨è–¦æ©Ÿå‹">
+          <aside className="hero-card carousel-recommend" aria-label="23000 ??30000 ?¨è–¦æ©Ÿå?">
             <div className="hero-card-head">
               <strong>23000 ~ 30000</strong>
-              <span className="toggle-pill">{recommendedLaptops.length} å°æ¨è–¦</span>
+              <span className="toggle-pill">{recommendedLaptops.length} ?°æ¨??/span>
             </div>
 
             <div className="carousel-shell">
@@ -225,7 +349,7 @@ export default function HomePage() {
                         <span className="market">å¸‚åƒ¹ {formatMoney(laptop.marketPrice)}</span>
                       </div>
                       <div className="discount-line">
-                        ç›®å‰æœ€é«˜æŠ˜æ‰£ {formatMoney(laptop.discount)}
+                        ?®å??€é«˜æ???{formatMoney(laptop.discount)}
                         {laptop.discountRate ? ` Â· ${formatDiscountFold(laptop.discountRate)}` : ""}
                       </div>
                     </div>
@@ -236,20 +360,20 @@ export default function HomePage() {
           </aside>
         </section>
 
-        <section className="panel section">
+        <section className="panel section desktop-only">
           <div className="toolbar">
             <div className="search-field" style={{ flex: "1 1 280px" }}>
-              <label htmlFor="search">æœå°‹æ©Ÿå‹ã€CPUã€ç”¨é€”</label>
+              <label htmlFor="search">?œå?æ©Ÿå??CPU?ç”¨??/label>
               <input
                 id="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="è¼¸å…¥æ©Ÿå‹ä»£è™Ÿã€CPUã€ç”¨é€”é—œéµå­—"
+                placeholder="è¼¸å…¥æ©Ÿå?ä»???CPU?ç”¨?”é??µå?"
               />
             </div>
 
             <div className="field" style={{ flex: "0 0 200px" }}>
-              <label htmlFor="budget">é ç®—</label>
+              <label htmlFor="budget">?ç?</label>
               <select id="budget" value={budget} onChange={(event) => setBudget(event.target.value)}>
                 {budgetOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -260,7 +384,7 @@ export default function HomePage() {
             </div>
 
             <div className="field" style={{ flex: "0 0 180px" }}>
-              <label htmlFor="sort">æ’åº</label>
+              <label htmlFor="sort">?’å?</label>
               <select
                 id="sort"
                 value={sortMode}
@@ -280,47 +404,47 @@ export default function HomePage() {
           </div>
 
           <div className="filter-row">
-            <FieldSelect label="ç”¨é€”" value={purpose} onChange={setPurpose} options={purposeOptions} />
+            <FieldSelect label="?¨é€? value={purpose} onChange={setPurpose} options={purposeOptions} />
             <FieldSelect label="CPU" value={cpu} onChange={setCpu} options={cpuOptions} />
             <FieldSelect label="RAM" value={ram} onChange={setRam} options={ramOptions} />
             <FieldSelect label="SSD" value={storage} onChange={setStorage} options={storageOptions} />
             <FieldSelect label="LCD" value={screen} onChange={setScreen} options={screenOptions} />
-            <FieldSelect label="é¡¯ç¤ºå¡" value={gpu} onChange={setGpu} options={gpuOptions} />
+            <FieldSelect label="é¡¯ç¤º?? value={gpu} onChange={setGpu} options={gpuOptions} />
           </div>
 
           <div className="summary-strip">
             <div className="summary-stat">
-              <span>ç›®å‰é¡¯ç¤º</span>
+              <span>?®å?é¡¯ç¤º</span>
               <strong>{filtered.length}</strong>
             </div>
             <div className="summary-stat">
-              <span>å·²é¸æ¯”è¼ƒ</span>
+              <span>å·²é¸æ¯”è?</span>
               <strong>{selectedIds.length}</strong>
             </div>
             <div className="summary-stat">
-              <span>æ‰€æœ‰æ©Ÿå‹</span>
+              <span>?€?‰æ???/span>
               <strong>{laptops.length}</strong>
             </div>
             <div className="summary-stat">
-              <span>åƒ¹æ ¼åˆ‡æ›</span>
-              <strong>{showEducationPrice ? "é¡¯ç¤º" : "éš±è—"}</strong>
+              <span>?¹æ ¼?‡æ?</span>
+              <strong>{showEducationPrice ? "é¡¯ç¤º" : "?±è?"}</strong>
             </div>
           </div>
         </section>
 
-        <section className="panel section">
+        <section className="panel section desktop-only">
           <div className="toolbar" style={{ justifyContent: "space-between", alignItems: "center" }}>
             <div>
-              <p className="eyebrow">å…¨éƒ¨çµæœ</p>
-              <h2>ä¾ Excel æ©Ÿå‹ç¯©é¸å¾Œçš„æ¸…å–®</h2>
+              <p className="eyebrow">?¨éƒ¨çµæ?</p>
+              <h2>ä¾?Excel æ©Ÿå?ç¯©é¸å¾Œç?æ¸…å–®</h2>
             </div>
-            <span className="toggle-pill">{filtered.length} ç­†</span>
+            <span className="toggle-pill">{filtered.length} ç­?/span>
           </div>
 
           {filtered.length === 0 ? (
             <div className="empty-state">
-              <strong>æ²’æœ‰ç¬¦åˆçš„æ©Ÿå‹</strong>
-              <span>è«‹æ”¾å¯¬é ç®—æˆ–å–æ¶ˆéƒ¨åˆ†ä¸‹æ‹‰æ¢ä»¶ï¼ŒExcel å¤–çš„æ©Ÿå‹ä¸æœƒè¢«åŠ å…¥ã€‚</span>
+              <strong>æ²’æ?ç¬¦å??„æ???/strong>
+              <span>è«‹æ”¾å¯¬é?ç®—æ??–æ??¨å?ä¸‹æ?æ¢ä»¶ï¼ŒExcel å¤–ç?æ©Ÿå?ä¸æ?è¢«å??¥ã€?/span>
             </div>
           ) : (
             <div className="results-grid">
@@ -338,11 +462,39 @@ export default function HomePage() {
         </section>
       </div>
 
+      <section className="mobile-results mobile-only" ref={mobileResultsRef}>
+        <div className="mobile-results-head">
+          <div>
+            <p className="eyebrow">matching list</p>
+            <h2>å°æ?æ©Ÿç¨®æ¸…å–®</h2>
+          </div>
+          <span className="toggle-pill">{mobileHasSelection ? `${mobileFiltered.length} ?°` : "è«‹å??¸æ?"}</span>
+        </div>
+
+        {!mobileHasSelection ? (
+          <div className="mobile-empty">
+            <strong>?ˆé¸é¡¯å¡ï¼Œå??¸é?ç®?/strong>
+            <span>?‹æ??ˆæ??´æ¥?Šæ??®ç¸®?°ä?è¦ç??„ç??ã€?/span>
+          </div>
+        ) : mobileFiltered.length === 0 ? (
+          <div className="mobile-empty">
+            <strong>æ²’æ?ç¬¦å?æ¢ä»¶?„æ?ç¨?/strong>
+            <span>?¯ä»¥?›å¦ä¸€?‹é¡¯?¡æ??¹ä?çµ„å?è©¦è©¦??/span>
+          </div>
+        ) : (
+          <div className="mobile-results-list">
+            {mobileFiltered.map((laptop) => (
+              <MobileLaptopCard key={laptop.id} laptop={laptop} showEducationPrice={showEducationPrice} />
+            ))}
+          </div>
+        )}
+      </section>
+
       {selectedIds.length > 0 && (
         <div className="compare-bar">
           <div className="summary">
-            <strong>{selectedIds.length} å°å·²å‹¾é¸</strong>
-            <span>{selectedLaptops.map((item) => getModelDisplayName(item)).join("ã€")}</span>
+            <strong>{selectedIds.length} ?°å·²?¾é¸</strong>
+            <span>{selectedLaptops.map((item) => getModelDisplayName(item)).join("??)}</span>
           </div>
           <div className="topbar-links">
             <button
@@ -353,7 +505,7 @@ export default function HomePage() {
               æ¸…ç©º
             </button>
             <Link className="button-action" href={compareUrl}>
-              å‰å¾€æ¯”è¼ƒ
+              ?å?æ¯”è?
             </Link>
           </div>
         </div>
@@ -411,7 +563,7 @@ function LaptopCard({
             <p className="family">{laptop.family}</p>
             <h3>{getModelDisplayName(laptop)}</h3>
           </div>
-          <span className="toggle-pill">å€¼ {Math.round(laptop.valueScore)}</span>
+          <span className="toggle-pill">??{Math.round(laptop.valueScore)}</span>
         </div>
 
         <p className="model-title">{laptop.title}</p>
@@ -424,7 +576,7 @@ function LaptopCard({
         </div>
 
         <div className="discount-line">
-          ç›®å‰æœ€é«˜æŠ˜æ‰£ {formatMoney(laptop.discount)}
+          ?®å??€é«˜æ???{formatMoney(laptop.discount)}
           {laptop.discountRate ? ` Â· ${formatDiscountFold(laptop.discountRate)}` : ""}
         </div>
 
@@ -454,11 +606,11 @@ function LaptopCard({
             <dd>{laptop.display}</dd>
           </div>
           <div>
-            <dt>é¡¯ç¤ºå¡</dt>
+            <dt>é¡¯ç¤º??/dt>
             <dd>{laptop.gpu}</dd>
           </div>
           <div>
-            <dt>é‡é‡ / ä¿å›º</dt>
+            <dt>?é? / ä¿å›º</dt>
             <dd>
               {laptop.weight} Â· {laptop.warranty}
             </dd>
@@ -480,10 +632,10 @@ function LaptopCard({
               onChange={() => onToggleSelected(laptop.id)}
               type="checkbox"
             />
-            å‹¾é¸æ¯”è¼ƒ
+            ?¾é¸æ¯”è?
           </label>
           <Link className="link-pill" href={`/compare?ids=${laptop.id}`}>
-            å–®æ©Ÿæª¢è¦–
+            ?®æ?æª¢è?
           </Link>
         </div>
       </div>
@@ -526,10 +678,52 @@ function LaptopMedia({ laptop }: { laptop: Laptop }) {
         />
       ) : (
         <div className="fallback-visual">
-          <strong>åœ–ç‰‡å¾…è£œ</strong>
+          <strong>?–ç?å¾…è?</strong>
           <span>{getModelDisplayName(laptop)}</span>
         </div>
       )}
     </div>
+  );
+}
+
+function MobileLaptopCard({
+  laptop,
+  showEducationPrice,
+}: {
+  laptop: Laptop;
+  showEducationPrice: boolean;
+}) {
+  return (
+    <article className="mobile-result-card">
+      <div className="mobile-result-media">
+        <LaptopMedia laptop={laptop} />
+      </div>
+      <div className="mobile-result-body">
+        <div className="mobile-result-top">
+          <div>
+            <p className="family">{laptop.family}</p>
+            <h3>{getModelDisplayName(laptop)}</h3>
+          </div>
+          <span className="mobile-score">??{Math.round(laptop.valueScore)}</span>
+        </div>
+
+        <div className="mobile-result-tags">
+          <span className="mobile-chip mobile-chip--red">{getMobileGpuMode(laptop) === "igpu" ? "?§å»ºé¡¯å¡" : "?¨ç?é¡¯å¡"}</span>
+          <span className="mobile-chip mobile-chip--yellow">{formatMoney(laptop.eduPrice)}</span>
+          <span className="mobile-chip mobile-chip--green">{laptop.screenSize ? `${laptop.screenSize} ?‹` : "?¶ä?å°ºå¯¸"}</span>
+        </div>
+
+        <div className="mobile-result-prices">
+          <strong className="edu">
+            <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
+          </strong>
+          <span className="market">å¸‚åƒ¹ {formatMoney(laptop.marketPrice)}</span>
+          <span className="discount-line">
+            ?ä? {formatMoney(laptop.discount)}
+            {laptop.discountRate ? `ï¼?{formatDiscountFold(laptop.discountRate)}` : ""}
+          </span>
+        </div>
+      </div>
+    </article>
   );
 }

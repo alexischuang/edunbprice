@@ -1242,6 +1242,9 @@ a {
 
 .mobile-result-media .card-media {
   border-radius: 24px 24px 0 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.95)),
+    #ffffff;
   min-height: 220px;
 }
 

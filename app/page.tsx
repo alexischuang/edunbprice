@@ -321,7 +321,6 @@ export default function HomePage() {
             <h1>大專教育價筆電挑選器</h1>
             <p>
               依 Excel 內的限定機型，快速用預算、用途、CPU、RAM、SSD、螢幕與顯示卡縮小範圍。
-              預設隱藏教育價，只有點標題前面的 `EDUCATION` 才會切換顯示，市價與折扣仍會保留。
             </p>
             <div className="hero-metrics">
               <span className="metric">{laptops.length} 台機型</span>

@@ -234,7 +234,7 @@ export default function HomePage() {
     <main className="site-shell">
       <div className="page-frame">
         <div className="topbar">
-          <div className="topbar-links">
+          <div className="topbar-links desktop-only">
             <Link className="link-pill" href="/compare">
               多機比較
             </Link>
@@ -332,7 +332,6 @@ export default function HomePage() {
           <aside className="hero-card carousel-recommend" aria-label="23000 到 30000 推薦機型">
             <div className="hero-card-head">
               <strong>23000 ~ 30000</strong>
-              <span className="toggle-pill">{recommendedLaptops.length} 台推薦</span>
             </div>
 
             <div className="carousel-shell">
@@ -439,7 +438,6 @@ export default function HomePage() {
               <p className="eyebrow">全部結果</p>
               <h2>依 Excel 機型篩選後的清單</h2>
             </div>
-            <span className="toggle-pill">{filtered.length} 筆</span>
           </div>
 
           {filtered.length === 0 ? (
@@ -469,7 +467,6 @@ export default function HomePage() {
             <p className="eyebrow">matching list</p>
             <h2>對應機種清單</h2>
           </div>
-          <span className="toggle-pill">{mobileHasSelection ? `${mobileFiltered.length} 台` : "請先選擇"}</span>
         </div>
 
         {!mobileHasSelection ? (
@@ -572,7 +569,6 @@ function LaptopCard({
             <p className="family">{laptop.family}</p>
             <h3>{getModelDisplayName(laptop)}</h3>
           </div>
-          <span className="toggle-pill">值 {Math.round(laptop.valueScore)}</span>
         </div>
 
         <p className="model-title">{laptop.title}</p>
@@ -687,7 +683,6 @@ function MobileLaptopCard({
             <p className="family">{laptop.family}</p>
             <h3>{getModelDisplayName(laptop)}</h3>
           </div>
-          <span className="mobile-score">值 {Math.round(laptop.valueScore)}</span>
         </div>
 
         <div className="mobile-result-tags">

@@ -1128,14 +1128,21 @@ a {
 }
 
 .mobile-choice-card strong {
-  font-size: 20px;
-  line-height: 1.1;
+  font-size: clamp(16px, 4.2vw, 18px);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .mobile-choice-card span:last-child {
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 1.35;
   opacity: 0.88;
   overflow-wrap: anywhere;
+}
+
+.mobile-card-group-head {
+  font-size: 12px;
 }
 
 .mobile-choice-kicker {
@@ -1256,17 +1263,6 @@ a {
   line-height: 1.2;
   margin: 4px 0 0;
   overflow-wrap: anywhere;
-}
-
-.mobile-score {
-  background: rgba(10, 111, 101, 0.12);
-  border-radius: 999px;
-  color: var(--teal-strong);
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1;
-  padding: 8px 10px;
-  white-space: nowrap;
 }
 
 .mobile-result-tags {

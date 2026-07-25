@@ -150,6 +150,7 @@ export default function HomePage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [mobileGpu, setMobileGpu] = useState<MobileGpuMode>("all");
   const [mobileBudget, setMobileBudget] = useState<MobileBudgetMode>("all");
+  const [mobileExpandedId, setMobileExpandedId] = useState<string | null>(null);
   const mobileResultsRef = useRef<HTMLDivElement | null>(null);
   const bestDiscount = useMemo(() => getBestDiscount(laptops), []);
   const recommendedLaptops = useMemo(() => selectRecommended(laptops, 6), []);
@@ -221,6 +222,7 @@ export default function HomePage() {
   function resetMobileFilters() {
     setMobileGpu("all");
     setMobileBudget("all");
+    setMobileExpandedId(null);
   }
 
   useEffect(() => {
@@ -484,7 +486,15 @@ export default function HomePage() {
         ) : (
           <div className="mobile-results-list">
             {mobileFiltered.map((laptop) => (
-              <MobileLaptopCard key={laptop.id} laptop={laptop} showEducationPrice={showEducationPrice} />
+              <MobileLaptopCard
+                key={laptop.id}
+                laptop={laptop}
+                onToggleExpanded={() =>
+                  setMobileExpandedId((current) => (current === laptop.id ? null : laptop.id))
+                }
+                selected={mobileExpandedId === laptop.id}
+                showEducationPrice={showEducationPrice}
+              />
             ))}
           </div>
         )}
@@ -645,13 +655,30 @@ function LaptopCard({
 
 function MobileLaptopCard({
   laptop,
+  onToggleExpanded,
+  selected,
   showEducationPrice,
 }: {
   laptop: Laptop;
+  onToggleExpanded: () => void;
+  selected: boolean;
   showEducationPrice: boolean;
 }) {
+  const highlightItems = splitList(laptop.highlights);
+  const purposeItems = splitList(laptop.purposes).slice(0, 4);
+
   return (
-    <article className="mobile-result-card">
+    <article
+      className={`mobile-result-card ${selected ? "is-expanded" : ""}`}
+      onClick={onToggleExpanded}
+      onKeyDown={(event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        onToggleExpanded();
+      }}
+      role="button"
+      tabIndex={0}
+    >
       <div className="mobile-result-media">
         <LaptopMedia laptop={laptop} />
       </div>
@@ -680,6 +707,69 @@ function MobileLaptopCard({
             {laptop.discountRate ? `，${formatDiscountFold(laptop.discountRate)}` : ""}
           </span>
         </div>
+        <div className="mobile-result-detail">
+          <strong>{selected ? "點擊收合詳細規格" : "點選查看詳細規格"}</strong>
+          <span>{selected ? "已展開完整資訊" : "包含 CPU、RAM、SSD、LCD、顯示卡、重量與保固"}</span>
+        </div>
+
+        {selected && (
+          <div className="mobile-result-detail-panel">
+            <dl className="mobile-spec-list">
+              <div>
+                <dt>CPU</dt>
+                <dd>{laptop.cpu}</dd>
+              </div>
+              <div>
+                <dt>RAM</dt>
+                <dd>{laptop.memory}</dd>
+              </div>
+              <div>
+                <dt>SSD</dt>
+                <dd>{laptop.storage}</dd>
+              </div>
+              <div>
+                <dt>LCD</dt>
+                <dd>{laptop.display}</dd>
+              </div>
+              <div>
+                <dt>顯示卡</dt>
+                <dd>{laptop.gpu}</dd>
+              </div>
+              <div>
+                <dt>重量</dt>
+                <dd>{laptop.weight}</dd>
+              </div>
+              <div>
+                <dt>保固</dt>
+                <dd>{laptop.warranty}</dd>
+              </div>
+              <div>
+                <dt>配件</dt>
+                <dd>{laptop.bundle}</dd>
+              </div>
+            </dl>
+
+            {purposeItems.length > 0 && (
+              <div className="mobile-detail-chips">
+                {purposeItems.map((item) => (
+                  <span className="mobile-chip mobile-chip--green" key={item}>
+                    {getPurposeLabel(item)}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {highlightItems.length > 0 && (
+              <div className="mobile-detail-highlights">
+                {highlightItems.map((item) => (
+                  <span className="filter-chip" key={item}>
+                    {item}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </article>
   );

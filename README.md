@@ -64,33 +64,27 @@ export default async function Home() {
 - `npm run build`: verify the vinext build output
 - `npm run db:generate`: generate Drizzle migrations after schema changes
 
-## Slack Bot
+## Microsoft Teams Bot
 
-This project now includes a Slack Events API endpoint for direct-message style chat.
+This project now includes a Microsoft Teams webhook endpoint for direct-message
+style chat.
 
 ### Environment variables
 
-- `SLACK_SIGNING_SECRET`
-- `SLACK_BOT_TOKEN`
+- `TEAMS_APP_ID`
+- `TEAMS_APP_PASSWORD`
+- `TEAMS_APP_TENANT_ID`
 
-### Slack app setup
+### Teams app setup
 
-1. Create a Slack app in your workspace.
-2. Enable Event Subscriptions.
-3. Set the request URL to `https://<your-domain>/api/slack/events`.
-4. Subscribe to `message.im` for direct messages.
-5. Optionally subscribe to `app_mention` if you want channel mentions too.
-6. Install the app to your workspace.
-
-### Required bot scopes
-
-- `chat:write`
-- `im:history`
-- `app_mentions:read` if you enable channel mentions
+1. Create or open your Microsoft Teams bot registration.
+2. Set the messaging endpoint to `https://<your-domain>/api/webhooks/teams`.
+3. Enable the bot to receive personal chat messages and channel mentions.
+4. Install the app into your Teams tenant or workspace.
 
 ### How to use
 
-- Send a DM to the bot in Slack.
+- Send a chat message to the bot in Teams.
 - Ask for a model, CPU, GPU, budget, or screen size.
 - Try `help`, `stats`, `UX5606SA`, or `14吋 內顯 3萬以下`.
 

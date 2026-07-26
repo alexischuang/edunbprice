@@ -64,6 +64,36 @@ export default async function Home() {
 - `npm run build`: verify the vinext build output
 - `npm run db:generate`: generate Drizzle migrations after schema changes
 
+## Slack Bot
+
+This project now includes a Slack Events API endpoint for direct-message style chat.
+
+### Environment variables
+
+- `SLACK_SIGNING_SECRET`
+- `SLACK_BOT_TOKEN`
+
+### Slack app setup
+
+1. Create a Slack app in your workspace.
+2. Enable Event Subscriptions.
+3. Set the request URL to `https://<your-domain>/api/slack/events`.
+4. Subscribe to `message.im` for direct messages.
+5. Optionally subscribe to `app_mention` if you want channel mentions too.
+6. Install the app to your workspace.
+
+### Required bot scopes
+
+- `chat:write`
+- `im:history`
+- `app_mentions:read` if you enable channel mentions
+
+### How to use
+
+- Send a DM to the bot in Slack.
+- Ask for a model, CPU, GPU, budget, or screen size.
+- Try `help`, `stats`, `UX5606SA`, or `14吋 內顯 3萬以下`.
+
 ## Learn More
 
 - [vinext Documentation](https://github.com/cloudflare/vinext)

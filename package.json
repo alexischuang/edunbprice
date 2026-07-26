@@ -13,11 +13,8 @@
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
-    "@chat-adapter/state-memory": "^4.35.0",
-    "@chat-adapter/teams": "^4.35.0",
     "@vercel/blob": "^2.6.1",
     "@vercel/kv": "^3.0.0",
-    "chat": "^4.35.0",
     "drizzle-orm": "0.45.2",
     "next": "16.2.6",
     "react": "19.2.6",

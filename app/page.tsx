@@ -197,6 +197,15 @@ export default function HomePage() {
   const normalizedSearch = normalizeText(search);
   const searchTokens = useMemo(() => normalizedSearch.split(/\s+/).filter(Boolean), [normalizedSearch]);
   const desktopSearchActive = searchTokens.length > 0;
+  const desktopFiltersActive =
+    desktopSearchActive ||
+    budget !== "all" ||
+    purpose !== "all" ||
+    cpu !== "all" ||
+    ram !== "all" ||
+    storage !== "all" ||
+    screen !== "all" ||
+    gpu !== "all";
 
   const filtered = useMemo(() => {
     const budgetRange = getBudgetRange(budget);
@@ -469,33 +478,35 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="panel section desktop-only">
-          <div className="toolbar" style={{ justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <p className="eyebrow">{desktopSearchActive ? "搜尋結果" : "全部結果"}</p>
-              <h2>{desktopSearchActive ? "符合搜尋條件的機種" : "依 Excel 機型篩選後的清單"}</h2>
+        {desktopFiltersActive && (
+          <section className="panel section desktop-only">
+            <div className="toolbar" style={{ justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <p className="eyebrow">搜尋結果</p>
+                <h2>符合條件的機種</h2>
+              </div>
             </div>
-          </div>
 
-          {filtered.length === 0 ? (
-            <div className="empty-state">
-              <strong>沒有符合的機型</strong>
-              <span>請放寬預算或取消部分下拉條件，Excel 外的機型不會被加入。</span>
-            </div>
-          ) : (
-            <div className="results-grid">
-              {filtered.map(({ laptop }, index) => (
-                <LaptopCard
-                  key={laptop.id}
-                  laptop={laptop}
-                  onToggleSelected={toggleSelected}
-                  selected={selectedIds.includes(laptop.id)}
-                  showEducationPrice={showEducationPrice}
-                />
-              ))}
-            </div>
-          )}
-        </section>
+            {filtered.length === 0 ? (
+              <div className="empty-state">
+                <strong>沒有符合的機型</strong>
+                <span>請放寬預算或取消部分下拉條件，Excel 外的機型不會被加入。</span>
+              </div>
+            ) : (
+              <div className="results-grid">
+                {filtered.map(({ laptop }) => (
+                  <LaptopCard
+                    key={laptop.id}
+                    laptop={laptop}
+                    onToggleSelected={toggleSelected}
+                    selected={selectedIds.includes(laptop.id)}
+                    showEducationPrice={showEducationPrice}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
       </div>
 
       <section className="mobile-results mobile-only" ref={mobileResultsRef}>

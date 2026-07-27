@@ -193,8 +193,9 @@ async function main() {
       const warranty = getString(row, ["保固"]) || fallback?.warranty || "";
       const bundle = getString(row, ["標配", "bundle"]) || fallback?.bundle || "";
       const marketPrice =
-        getNumber(row, ["建議售價", "marketPrice"]) || fallback?.marketPrice || 0;
-      const eduPrice = getNumber(row, ["教育價", "eduPrice"]) || fallback?.eduPrice || 0;
+        getNumber(row, ["建議售價", "市價", "marketPrice"]) || fallback?.marketPrice || 0;
+      const eduPrice =
+        getNumber(row, ["專案價", "教育價", "eduPrice"]) || fallback?.eduPrice || 0;
       const discount = Math.max(0, marketPrice - eduPrice);
       const discountRate = marketPrice > 0 ? Number(((discount / marketPrice) * 100).toFixed(1)) : 0;
       const screenSize = parseScreenSize(display) ?? fallback?.screenSize ?? null;

@@ -152,7 +152,12 @@ function parseRamGB(value: string) {
   const text = value.toLowerCase();
   const match = text.match(/(\d{1,3})\s*g/);
   if (!match) return null;
-  return Number(match[1]);
+  const base = Number(match[1]);
+  if (!Number.isFinite(base)) return null;
+  if (text.includes("*2") || text.includes("2x") || text.includes("×2")) {
+    return base * 2;
+  }
+  return base;
 }
 
 function parseStorageGB(value: string) {

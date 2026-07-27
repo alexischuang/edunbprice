@@ -133,6 +133,7 @@ function matchesSearchTokens(laptop: Laptop, tokens: string[]) {
     if (["32g", "32gb"].includes(token)) return ramCategory === "32g";
     if (["32g2", "32g*2", "32gx2"].includes(token)) return ramCategory === "32g-2";
     if (["64g", "64gb"].includes(token)) return ramCategory === "64g";
+    if (["128g", "128gb"].includes(token)) return ramCategory === "128g";
 
     if (["512g", "512gb", "512ssd"].includes(token)) return storageCategory === "512";
     if (["1t", "1tb", "1024gb"].includes(token)) return storageCategory === "1024";

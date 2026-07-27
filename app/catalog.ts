@@ -55,6 +55,7 @@ export const ramOptions: FilterOption[] = [
   { value: "32g", label: "32G" },
   { value: "32g-2", label: "32G*2" },
   { value: "64g", label: "64G" },
+  { value: "128g", label: "128G" },
 ];
 
 export const storageOptions: FilterOption[] = [
@@ -219,20 +220,25 @@ export function getRamCategory(laptop: Laptop) {
   const memory = laptop.memory.toLowerCase();
   const ramGB = laptop.ramGB ?? null;
 
-  if (memory.includes("*2") || memory.includes("2x") || memory.includes("雙通道")) {
-    if (ramGB === 16) return "16g-2";
-    if (ramGB === 32) return "32g-2";
+  if (memory.includes("*2") || memory.includes("2x") || memory.includes("×2")) {
+    if (ramGB === 8) return "16g";
+    if (ramGB === 16) return "32g";
+    if (ramGB === 32) return "64g";
+    if (ramGB === 64) return "128g";
+    if (ramGB === 128) return "128g";
   }
 
   if (ramGB === 8) return "8g";
   if (ramGB === 16) return "16g";
   if (ramGB === 32) return "32g";
   if (ramGB === 64) return "64g";
+  if (ramGB === 128) return "128g";
 
   if (memory.includes("8g")) return "8g";
   if (memory.includes("16g")) return memory.includes("*2") ? "16g-2" : "16g";
   if (memory.includes("32g")) return memory.includes("*2") ? "32g-2" : "32g";
-  if (memory.includes("64g")) return "64g";
+  if (memory.includes("64g")) return memory.includes("*2") ? "128g" : "64g";
+  if (memory.includes("128g")) return "128g";
 
   return "other";
 }

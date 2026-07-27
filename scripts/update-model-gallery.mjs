@@ -6,6 +6,8 @@ const root = process.cwd();
 const maxImages = Number(
   process.argv.find((arg) => arg.startsWith("--max="))?.split("=")[1] || 4,
 );
+const sourceRoot =
+  process.argv.find((arg) => arg.startsWith("--source-root="))?.split("=")[1] || root;
 
 const dataPath = path.join(root, "app", "laptop-data.ts");
 const outputRoot = path.join(root, "public", "laptop-images", "model-gallery");
@@ -89,7 +91,7 @@ function toWebPath(...segments) {
 
 async function main() {
   const laptops = await readLaptops();
-  const images = await listImageFiles(root);
+  const images = await listImageFiles(sourceRoot);
   await ensureOutputRoot();
 
   const modelGalleryMap = {};
@@ -142,6 +144,7 @@ async function main() {
     JSON.stringify(
       {
         generatedAt: new Date().toISOString(),
+        sourceRoot,
         totalModels: laptops.length,
         matchedModels: Object.keys(modelGalleryMap).length,
         maxImages,

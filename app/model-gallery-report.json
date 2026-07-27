@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-27T14:33:25.468Z",
+  "generatedAt": "2026-07-27T14:55:33.293Z",
   "sourceRoot": "D:\\校園筆電寢具專案\\ASUS\\202605PIC",
   "totalModels": 88,
-  "matchedModels": 82,
+  "matchedModels": 87,
   "maxImages": 4,
   "report": [
     {
@@ -488,9 +488,14 @@
     },
     {
       "model": "S3407QA-0042G26100",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S3407QA-0042G26100夜幕黑\\ASUS Vivobook S14_S3407QA_Product photo_2G_Matte Gray_03_001.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S3407QA-0042G26100夜幕黑\\ASUS Vivobook S14_S3407QA_Product photo_2G_Matte Gray_07_001.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S3407QA-0042G26100夜幕黑\\ASUS Vivobook S14_S3407QA_Product photo_2G_Matte Gray_10_001.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S3407QA-0042G26100夜幕黑\\ASUS Vivobook S14_S3407QA_Product photo_2S_Cool Silver_09_Backlit_001.jpg"
+      ]
     },
     {
       "model": "X1607CA-0021B225H",
@@ -626,9 +631,13 @@
     },
     {
       "model": "GU606AX-0048H386H-NBLO",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 3,
+      "exported": 3,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\GU606AX-0048H386H-NBLO鉑月銀\\Zephyrus G16_MB1_white_AL_KBL_11.png",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\GU606AX-0048H386H-NBLO鉑月銀\\Zephyrus G16_MB1_white_KBL_01.png",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\GU606AX-0048H386H-NBLO鉑月銀\\Zephyrus G16_MB1_white_KBL_04.png"
+      ]
     },
     {
       "model": "G835LXG-0081A290HX-NBLM",
@@ -665,9 +674,14 @@
     },
     {
       "model": "GU606AR-0058I386H-NBLO",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\GU606AR-0058I386H-NBLO日蝕灰\\Zephyrus G16_MB1_grey_AL_KBL_11.png",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\GU606AR-0058I386H-NBLO日蝕灰\\Zephyrus G16_MB1_grey_KBL_01.png",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\GU606AR-0058I386H-NBLO日蝕灰\\Zephyrus G16_MB1_grey_KBL_04.png",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\GU606AR-0058I386H-NBLO日蝕灰\\Zephyrus G16_MB1_grey_KBL_05.png"
+      ]
     },
     {
       "model": "GU405AR-0028H386H-NBLO",
@@ -693,9 +707,13 @@
     },
     {
       "model": "GU606AM-0022H386H-NBLO",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 3,
+      "exported": 3,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\GU606AM-0022H386H-NBLO鉑月銀\\Zephyrus G16_MB1_white_AL_KBL_11.png",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\GU606AM-0022H386H-NBLO鉑月銀\\Zephyrus G16_MB1_white_KBL_01.png",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\GU606AM-0022H386H-NBLO鉑月銀\\Zephyrus G16_MB1_white_KBL_04.png"
+      ]
     },
     {
       "model": "FX608JMR-0041A14650HX",
@@ -787,9 +805,14 @@
     },
     {
       "model": "G614PW-0034C8940HX-NBL",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\G614PW-0034C8940HX-NBL 幻潮黑\\16_Green_4-Zone_12_L.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\G614PW-0034C8940HX-NBL 幻潮黑\\16_Green_perkey_02_L.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\G614PW-0034C8940HX-NBL 幻潮黑\\16_Green_perkey_09_L.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\G614PW-0034C8940HX-NBL 幻潮黑\\16_Green_perkey_11_L.jpg"
+      ]
     },
     {
       "model": "G814PP-0064C8940HX-NBL",

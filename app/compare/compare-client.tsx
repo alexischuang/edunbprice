@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -105,11 +105,7 @@ export default function CompareClient() {
           <div className="topbar-links">
             <Link className="link-pill" href="/">
               回到挑選器
-            </Link>
-            <Link className="link-pill" href="/update">
-              更新後台
-            </Link>
-          </div>
+            </Link>          </div>
         </div>
 
         <section className="compare-header">
@@ -237,3 +233,4 @@ function CompareMedia({ laptop }: { laptop: Laptop }) {
     </div>
   );
 }
+

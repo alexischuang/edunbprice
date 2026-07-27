@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -237,11 +237,7 @@ export default function HomePage() {
           <div className="topbar-links desktop-only">
             <Link className="link-pill" href="/compare">
               多機比較
-            </Link>
-            <Link className="link-pill" href="/update">
-              更新後台
-            </Link>
-          </div>
+            </Link>          </div>
         </div>
 
         <section className="mobile-launch mobile-only">
@@ -811,3 +807,4 @@ function LaptopMedia({ laptop }: { laptop: Laptop }) {
     </div>
   );
 }
+

@@ -2,7 +2,6 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import * as XLSX from "xlsx";
 import { put } from "@vercel/blob";
-import { kv } from "@vercel/kv";
 import {
   buildSearchText,
   getCpuCategory,
@@ -14,8 +13,9 @@ import {
   normalizeText,
 } from "./catalog";
 import { laptops as fallbackLaptops, type Laptop } from "./laptop-data";
+import { readBlobJson, writeBlobJson } from "./storage-json";
 
-const CATALOG_STATE_KEY = "education:catalog-state:v1";
+const CATALOG_STATE_BLOB = "education/catalog-state/state.json";
 const CATALOG_STATE_FILE = path.join(process.cwd(), "temp", "catalog-state.json");
 
 export type CatalogStatus = "default" | "custom" | "cleared";
@@ -43,7 +43,7 @@ type StoredCatalogState = Omit<CatalogState, "storageStatus"> & {
 type ExcelRow = Record<string, unknown>;
 
 function hasKvConfig() {
-  return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
 
 function getStorageStatus(): CatalogStorageStatus {
@@ -105,17 +105,8 @@ async function writeFileState(state: StoredCatalogState) {
 }
 
 async function readStoredState(): Promise<StoredCatalogState | null> {
-  if (hasKvConfig()) {
-    try {
-      const state = (await kv.get<StoredCatalogState>(CATALOG_STATE_KEY)) ?? null;
-      if (state) return state;
-    } catch {
-      if (process.env.NODE_ENV !== "production") {
-        // Fall back to the local file cache when KV is unavailable during local development.
-        return readFileState();
-      }
-    }
-  }
+  const state = await readBlobJson<StoredCatalogState>(CATALOG_STATE_BLOB, CATALOG_STATE_FILE);
+  if (state) return state;
 
   if (process.env.NODE_ENV !== "production") {
     return readFileState();
@@ -125,25 +116,7 @@ async function readStoredState(): Promise<StoredCatalogState | null> {
 }
 
 async function writeStoredState(state: StoredCatalogState) {
-  if (hasKvConfig()) {
-    try {
-      await kv.set(CATALOG_STATE_KEY, state);
-      return;
-    } catch {
-      if (process.env.NODE_ENV !== "production") {
-        // Fall back to the local file cache when KV write fails during local development.
-        await writeFileState(state);
-        return;
-      }
-    }
-  }
-
-  if (process.env.NODE_ENV !== "production") {
-    await writeFileState(state);
-    return;
-  }
-
-  throw new Error("Vercel KV 尚未連線，無法儲存更新。");
+  await writeBlobJson(CATALOG_STATE_BLOB, CATALOG_STATE_FILE, state);
 }
 
 function getString(row: ExcelRow, keys: string[]) {

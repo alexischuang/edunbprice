@@ -1,7 +1,8 @@
-import { kv } from "@vercel/kv";
 import { NextResponse } from "next/server";
+import { readBlobJson, writeBlobJson } from "../../storage-json";
 
-const HIDDEN_MODELS_KEY = "education:hidden-models";
+const HIDDEN_MODELS_BLOB = "education/hidden-models/models.json";
+const HIDDEN_MODELS_FILE = "temp/hidden-models.json";
 const DEFAULT_HIDDEN_MODELS = [
   "X1504VA-0281B120U",
   "X1504VA-0291C120U",
@@ -15,11 +16,11 @@ function normalizeModels(value: unknown) {
 
 export async function GET() {
   try {
-    const stored = normalizeModels(await kv.get(HIDDEN_MODELS_KEY));
+    const stored = normalizeModels(await readBlobJson<unknown>(HIDDEN_MODELS_BLOB, HIDDEN_MODELS_FILE));
     const models = stored.length > 0 ? stored : DEFAULT_HIDDEN_MODELS;
 
     if (stored.length === 0) {
-      await kv.set(HIDDEN_MODELS_KEY, models);
+      await writeBlobJson(HIDDEN_MODELS_BLOB, HIDDEN_MODELS_FILE, models);
     }
 
     return NextResponse.json({ models });
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
   try {
     const body = (await request.json()) as { models?: unknown };
     const models = normalizeModels(body.models);
-    await kv.set(HIDDEN_MODELS_KEY, models);
+    await writeBlobJson(HIDDEN_MODELS_BLOB, HIDDEN_MODELS_FILE, models);
     return NextResponse.json({ models });
   } catch {
     return NextResponse.json({ models: [] }, { status: 200 });

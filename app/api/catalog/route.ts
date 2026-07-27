@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "更新失敗";
-    const storageMissing = message.includes("Vercel KV");
+    const storageMissing = message.includes("Vercel Blob");
     return NextResponse.json(
       {
         ok: false,

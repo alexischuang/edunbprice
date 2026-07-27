@@ -184,7 +184,7 @@ export default function UpdatePage() {
 
         {storageMissing || photoStorageMissing ? (
           <div className="notice" style={{ marginTop: 0, marginBottom: 16 }}>
-            {storageMissing ? "Vercel KV 尚未連線，資料更新無法同步。" : null}
+            {storageMissing ? "Vercel Blob 尚未連線，資料更新無法同步。" : null}
             {storageMissing && photoStorageMissing ? " " : null}
             {photoStorageMissing ? "Vercel Blob 尚未連線，照片無法永久儲存。" : null}
           </div>

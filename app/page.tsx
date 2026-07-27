@@ -138,6 +138,7 @@ function matchesSearchTokens(laptop: Laptop, tokens: string[]) {
     if (["512g", "512gb", "512ssd"].includes(token)) return storageCategory === "512";
     if (["1t", "1tb", "1024gb"].includes(token)) return storageCategory === "1024";
     if (["2t", "2tb", "2048gb"].includes(token)) return storageCategory === "2048";
+    if (["4t", "4tb", "4096gb"].includes(token)) return storageCategory === "4096";
 
     if (["igpu", "內顯", "內建顯卡"].includes(token)) return gpuCategory === "igpu";
     if (["dgpu", "獨顯", "獨立顯卡"].includes(token)) return gpuCategory !== "igpu";

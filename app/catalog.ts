@@ -63,6 +63,7 @@ export const storageOptions: FilterOption[] = [
   { value: "512", label: "512G" },
   { value: "1024", label: "1T" },
   { value: "2048", label: "2T" },
+  { value: "4096", label: "4T" },
 ];
 
 export const screenOptions: FilterOption[] = [
@@ -246,11 +247,13 @@ export function getRamCategory(laptop: Laptop) {
 export function getStorageCategory(laptop: Laptop) {
   const storageGB = laptop.storageGB ?? 0;
 
+  if (storageGB >= 3500) return "4096";
   if (storageGB >= 1800) return "2048";
   if (storageGB >= 900) return "1024";
   if (storageGB >= 450) return "512";
 
   const text = laptop.storage.toLowerCase();
+  if (text.includes("4t")) return "4096";
   if (text.includes("2t")) return "2048";
   if (text.includes("1t")) return "1024";
   if (text.includes("512")) return "512";

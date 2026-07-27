@@ -154,6 +154,7 @@ export default function HomePage() {
   const mobileResultsRef = useRef<HTMLDivElement | null>(null);
   const bestDiscount = useMemo(() => getBestDiscount(laptops), []);
   const recommendedLaptops = useMemo(() => selectRecommended(laptops, 6), []);
+  const desktopSearchActive = normalizeText(search).length > 0;
 
   const filtered = useMemo(() => {
     const searchQuery = normalizeText(search);
@@ -325,35 +326,37 @@ export default function HomePage() {
             </div>
           </div>
 
-          <aside className="hero-card carousel-recommend" aria-label="23000 到 30000 推薦機型">
-            <div className="hero-card-head">
-              <strong>23000 ~ 30000</strong>
-            </div>
-
-            <div className="carousel-shell">
-              <div className="carousel">
-                {recommendedLaptops.map((laptop) => (
-                  <article className="mini-card" key={laptop.id}>
-                    <LaptopMedia laptop={laptop} />
-                    <div className="mini-card-body">
-                      <p className="family">{laptop.family}</p>
-                      <h3>{getModelDisplayName(laptop)}</h3>
-                      <div className="price-stack">
-                        <strong className="edu">
-                          <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
-                        </strong>
-                        <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
-                      </div>
-                      <div className="discount-line">
-                        目前最高折扣 {formatMoney(laptop.discount)}
-                        {laptop.discountRate ? ` · ${formatDiscountFold(laptop.discountRate)}` : ""}
-                      </div>
-                    </div>
-                  </article>
-                ))}
+          {!desktopSearchActive && (
+            <aside className="hero-card carousel-recommend" aria-label="23000 到 30000 推薦機型">
+              <div className="hero-card-head">
+                <strong>23000 ~ 30000</strong>
               </div>
-            </div>
-          </aside>
+
+              <div className="carousel-shell">
+                <div className="carousel">
+                  {recommendedLaptops.map((laptop) => (
+                    <article className="mini-card" key={laptop.id}>
+                      <LaptopMedia laptop={laptop} />
+                      <div className="mini-card-body">
+                        <p className="family">{laptop.family}</p>
+                        <h3>{getModelDisplayName(laptop)}</h3>
+                        <div className="price-stack">
+                          <strong className="edu">
+                            <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
+                          </strong>
+                          <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
+                        </div>
+                        <div className="discount-line">
+                          目前最高折扣 {formatMoney(laptop.discount)}
+                          {laptop.discountRate ? ` · ${formatDiscountFold(laptop.discountRate)}` : ""}
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </aside>
+          )}
         </section>
 
         <section className="panel section desktop-only">
@@ -431,8 +434,8 @@ export default function HomePage() {
         <section className="panel section desktop-only">
           <div className="toolbar" style={{ justifyContent: "space-between", alignItems: "center" }}>
             <div>
-              <p className="eyebrow">全部結果</p>
-              <h2>依 Excel 機型篩選後的清單</h2>
+              <p className="eyebrow">{desktopSearchActive ? "搜尋結果" : "全部結果"}</p>
+              <h2>{desktopSearchActive ? "符合搜尋條件的機種" : "依 Excel 機型篩選後的清單"}</h2>
             </div>
           </div>
 

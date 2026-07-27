@@ -115,6 +115,46 @@ function getMobileBudgetMode(price: number): Exclude<MobileBudgetMode, "all"> {
   return "50000-plus";
 }
 
+function matchesSearchTokens(laptop: Laptop, tokens: string[]) {
+  if (!tokens.length) return true;
+
+  const haystack = buildSearchText(laptop);
+  const ramCategory = getRamCategory(laptop);
+  const storageCategory = getStorageCategory(laptop);
+  const gpuCategory = getGpuCategory(laptop);
+  const screenCategory = getScreenCategory(laptop);
+
+  return tokens.every((token) => {
+    if (haystack.includes(token)) return true;
+
+    if (["8g", "8gb"].includes(token)) return ramCategory === "8g";
+    if (["16g", "16gb"].includes(token)) return ramCategory === "16g";
+    if (["16g2", "16g*2", "16gx2"].includes(token)) return ramCategory === "16g-2";
+    if (["32g", "32gb"].includes(token)) return ramCategory === "32g";
+    if (["32g2", "32g*2", "32gx2"].includes(token)) return ramCategory === "32g-2";
+    if (["64g", "64gb"].includes(token)) return ramCategory === "64g";
+
+    if (["512g", "512gb", "512ssd"].includes(token)) return storageCategory === "512";
+    if (["1t", "1tb", "1024gb"].includes(token)) return storageCategory === "1024";
+    if (["2t", "2tb", "2048gb"].includes(token)) return storageCategory === "2048";
+
+    if (["igpu", "內顯", "內建顯卡"].includes(token)) return gpuCategory === "igpu";
+    if (["dgpu", "獨顯", "獨立顯卡"].includes(token)) return gpuCategory !== "igpu";
+    if (["rtx4050", "rtx-4050"].includes(token)) return gpuCategory === "rtx-4050";
+    if (["rtx4060", "rtx-4060"].includes(token)) return gpuCategory === "rtx-4060";
+    if (["rtx4070", "rtx-4070"].includes(token)) return gpuCategory === "rtx-4070";
+    if (["rtx5060", "rtx-5060"].includes(token)) return gpuCategory === "rtx-5060";
+    if (["rtx5070", "rtx-5070"].includes(token)) return gpuCategory === "rtx-5070";
+
+    if (["13吋", "13", "13inch"].includes(token)) return screenCategory === "13";
+    if (["14吋", "14", "14inch"].includes(token)) return screenCategory === "14";
+    if (["15吋", "15", "15inch"].includes(token)) return screenCategory === "15";
+    if (["16吋", "16", "16inch"].includes(token)) return screenCategory === "16";
+
+    return false;
+  });
+}
+
 const mobileGpuCards: Array<{ value: Exclude<MobileGpuMode, "all">; label: string; accent: string; note: string }> = [
   { value: "igpu", label: "內建顯卡", accent: "mobile-card--red", note: "輕便 / 文書 / 日常" },
   { value: "dgpu", label: "獨立顯卡", accent: "mobile-card--blue", note: "遊戲 / 創作 / 效能" },
@@ -154,17 +194,15 @@ export default function HomePage() {
   const mobileResultsRef = useRef<HTMLDivElement | null>(null);
   const bestDiscount = useMemo(() => getBestDiscount(laptops), []);
   const recommendedLaptops = useMemo(() => selectRecommended(laptops, 6), []);
-  const desktopSearchActive = normalizeText(search).length > 0;
+  const normalizedSearch = normalizeText(search);
+  const searchTokens = useMemo(() => normalizedSearch.split(/\s+/).filter(Boolean), [normalizedSearch]);
+  const desktopSearchActive = searchTokens.length > 0;
 
   const filtered = useMemo(() => {
-    const searchQuery = normalizeText(search);
     const budgetRange = getBudgetRange(budget);
 
     return laptops
-      .map((laptop) => ({
-        laptop,
-        searchIndex: buildSearchText(laptop),
-      }))
+      .map((laptop) => ({ laptop }))
       .filter(({ laptop }) => laptop.eduPrice >= budgetRange.min && laptop.eduPrice <= budgetRange.max)
       .filter(({ laptop }) => purpose === "all" || laptop.purposes.includes(purpose))
       .filter(({ laptop }) => cpu === "all" || getCpuCategory(laptop.cpu) === cpu)
@@ -172,9 +210,9 @@ export default function HomePage() {
       .filter(({ laptop }) => storage === "all" || getStorageCategory(laptop) === storage)
       .filter(({ laptop }) => screen === "all" || getScreenCategory(laptop) === screen)
       .filter(({ laptop }) => gpu === "all" || getGpuCategory(laptop) === gpu)
-      .filter(({ searchIndex }) => !searchQuery || searchIndex.includes(searchQuery))
+      .filter(({ laptop }) => matchesSearchTokens(laptop, searchTokens))
       .sort((a, b) => scoreLaptop(b.laptop, sortMode) - scoreLaptop(a.laptop, sortMode));
-  }, [budget, cpu, gpu, purpose, ram, screen, search, sortMode, storage]);
+  }, [budget, cpu, gpu, purpose, ram, screen, searchTokens, sortMode, storage]);
 
   useEffect(() => {
     setSelectedIds((current) =>
@@ -421,8 +459,8 @@ export default function HomePage() {
               <strong>{selectedIds.length}</strong>
             </div>
             <div className="summary-stat">
-              <span>所有機型</span>
-              <strong>{laptops.length}</strong>
+              <span>{desktopSearchActive ? "搜尋命中" : "所有機型"}</span>
+              <strong>{desktopSearchActive ? filtered.length : laptops.length}</strong>
             </div>
             <div className="summary-stat">
               <span>價格切換</span>

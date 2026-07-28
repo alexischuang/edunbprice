@@ -239,7 +239,7 @@ export default function HomePage() {
     [laptops, mobileBudget, mobileGpu],
   );
 
-  const mobileHasSelection = mobileGpu !== "all" || mobileBudget !== "all";
+  const mobileHasSelection = mobileGpu !== "all" && mobileBudget !== "all";
 
   const compareUrl = selectedIds.length ? `/compare?ids=${selectedIds.join(",")}` : "/compare";
 

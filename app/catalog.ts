@@ -72,11 +72,14 @@ export const screenOptions: FilterOption[] = [
   { value: "14", label: "14 吋" },
   { value: "15", label: "15 吋" },
   { value: "16", label: "16 吋" },
+  { value: "17.3", label: "17.3 吋" },
+  { value: "18", label: "18 吋" },
 ];
 
 export const gpuOptions: FilterOption[] = [
   { value: "all", label: "所有顯示卡" },
   { value: "igpu", label: "內顯" },
+  { value: "rtx-3050", label: "RTX 3050" },
   { value: "rtx-4050", label: "RTX 4050" },
   { value: "rtx-4060", label: "RTX 4060" },
   { value: "rtx-4070", label: "RTX 4070" },
@@ -267,11 +270,13 @@ export function getScreenCategory(laptop: Laptop) {
   if (size < 14.5) return "14";
   if (size < 15.5) return "15";
   if (size < 16.5) return "16";
-  return "other";
+  if (size < 17.8) return "17.3";
+  return "18";
 }
 
 export function getGpuCategory(laptop: Laptop) {
   const value = `${laptop.gpu} ${laptop.gpuTier ?? ""}`.toLowerCase();
+  if (value.includes("3050") || value.includes("rtx 3050") || value.includes("rtx3050")) return "rtx-3050";
   if (value.includes("rtx 4050") || value.includes("rtx4050")) return "rtx-4050";
   if (value.includes("rtx 4060") || value.includes("rtx4060")) return "rtx-4060";
   if (value.includes("rtx 4070") || value.includes("rtx4070")) return "rtx-4070";

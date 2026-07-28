@@ -35,6 +35,7 @@ import { laptops as fallbackLaptops, type Laptop } from "./laptop-data";
 type SortMode = "match" | "price" | "saving" | "performance" | "value";
 type MobileGpuMode = "all" | "igpu" | "dgpu";
 type MobileBudgetMode = "all" | "under-30000" | "30000-40000" | "40000-50000" | "50000-plus";
+type MobileQuickMode = "all" | "office" | "ultralight" | "entry-gaming" | "creator-gaming";
 
 const sortOptions = [
   { value: "match", label: "最符合" },
@@ -168,6 +169,18 @@ const mobileBudgetCards: Array<{
   { value: "50000-plus", label: "50000元以上", accent: "mobile-card--teal", note: "高階旗艦" },
 ];
 
+const mobileQuickCards: Array<{
+  value: Exclude<MobileQuickMode, "all">;
+  label: string;
+  accent: string;
+  note: string;
+}> = [
+  { value: "office", label: "文書經濟型", accent: "mobile-card--yellow", note: "23000元以下" },
+  { value: "ultralight", label: "超輕薄機型", accent: "mobile-card--green", note: "1.49公斤以下" },
+  { value: "entry-gaming", label: "入門電競型", accent: "mobile-card--red", note: "RTX 3050" },
+  { value: "creator-gaming", label: "電競繪圖級", accent: "mobile-card--purple", note: "RTX 4050以上 + 16G" },
+];
+
 export default function HomePage() {
   const { catalog: laptops } = useCatalog(fallbackLaptops);
   const [showEducationPrice, setShowEducationPrice] = usePersistentBoolean(
@@ -184,6 +197,7 @@ export default function HomePage() {
   const [gpu, setGpu] = useState("all");
   const [sortMode, setSortMode] = useState<SortMode>("match");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [mobileQuick, setMobileQuick] = useState<MobileQuickMode>("all");
   const [mobileGpu, setMobileGpu] = useState<MobileGpuMode>("all");
   const [mobileBudget, setMobileBudget] = useState<MobileBudgetMode>("all");
   const [mobileExpandedId, setMobileExpandedId] = useState<string | null>(null);
@@ -233,13 +247,31 @@ export default function HomePage() {
   const mobileFiltered = useMemo(
     () =>
       [...laptops]
-        .filter((laptop) => mobileGpu === "all" || getMobileGpuMode(laptop) === mobileGpu)
-        .filter((laptop) => mobileBudget === "all" || getMobileBudgetMode(laptop.eduPrice) === mobileBudget)
+        .filter((laptop) => {
+          if (mobileQuick === "office") return laptop.eduPrice <= 23000;
+          if (mobileQuick === "ultralight") return (laptop.weightKg ?? Number.POSITIVE_INFINITY) <= 1.49;
+          if (mobileQuick === "entry-gaming") return getGpuCategory(laptop) === "rtx-3050";
+          if (mobileQuick === "creator-gaming") {
+            const gpuCategory = getGpuCategory(laptop);
+            const ramCategory = getRamCategory(laptop);
+            return (
+              ["rtx-4050", "rtx-4060", "rtx-4070", "rtx-5060", "rtx-5070"].includes(gpuCategory) &&
+              ["16g", "16g-2", "32g", "32g-2", "64g", "128g"].includes(ramCategory)
+            );
+          }
+          return mobileGpu === "all" || getMobileGpuMode(laptop) === mobileGpu;
+        })
+        .filter((laptop) =>
+          mobileQuick !== "all" ? true : mobileBudget === "all" || getMobileBudgetMode(laptop.eduPrice) === mobileBudget,
+        )
+        .filter((laptop) =>
+          mobileQuick !== "all" ? true : mobileGpu === "all" || getMobileGpuMode(laptop) === mobileGpu,
+        )
         .sort((a, b) => a.eduPrice - b.eduPrice || b.valueScore - a.valueScore),
-    [laptops, mobileBudget, mobileGpu],
+    [laptops, mobileBudget, mobileGpu, mobileQuick],
   );
 
-  const mobileHasSelection = mobileGpu !== "all" && mobileBudget !== "all";
+  const mobileHasSelection = mobileQuick !== "all" || (mobileGpu !== "all" && mobileBudget !== "all");
 
   const compareUrl = selectedIds.length ? `/compare?ids=${selectedIds.join(",")}` : "/compare";
 
@@ -264,6 +296,7 @@ export default function HomePage() {
   }
 
   function resetMobileFilters() {
+    setMobileQuick("all");
     setMobileGpu("all");
     setMobileBudget("all");
     setMobileExpandedId(null);
@@ -299,7 +332,33 @@ export default function HomePage() {
               <span> QUICK PICK</span>
             </p>
             <h1>手機快速選機</h1>
-            <p>先點顯卡，再點預算，直接進到對應清單。</p>
+            <p>先選快速分類，或再用顯卡與預算微調，直接進到對應清單。</p>
+          </div>
+
+          <div className="mobile-card-group">
+            <div className="mobile-card-group-head">
+              <strong>快速選擇</strong>
+              <span>直接看機型</span>
+            </div>
+            <div className="mobile-card-grid mobile-card-grid--two">
+              {mobileQuickCards.map((card) => (
+                <button
+                  key={card.value}
+                  type="button"
+                  className={`mobile-choice-card ${card.accent} ${mobileQuick === card.value ? "is-active" : ""}`}
+                  onClick={() => {
+                    setMobileQuick(card.value);
+                    setMobileGpu("all");
+                    setMobileBudget("all");
+                    setMobileExpandedId(null);
+                  }}
+                >
+                  <span className="mobile-choice-kicker">QUICK</span>
+                  <strong>{card.label}</strong>
+                  <span>{card.note}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="mobile-card-group">
@@ -349,8 +408,13 @@ export default function HomePage() {
               重設選擇
             </button>
             <span className="mobile-launch-tip">
-              已選 {mobileGpu === "all" ? "顯卡" : mobileGpu === "igpu" ? "內建顯卡" : "獨立顯卡"}
-              {mobileBudget === "all" ? " + 預算" : ` + ${mobileBudgetCards.find((item) => item.value === mobileBudget)?.label ?? ""}`}
+              {mobileQuick !== "all"
+                ? `已選 ${mobileQuickCards.find((item) => item.value === mobileQuick)?.label ?? ""}`
+                : `已選 ${mobileGpu === "all" ? "顯卡" : mobileGpu === "igpu" ? "內建顯卡" : "獨立顯卡"}${
+                    mobileBudget === "all"
+                      ? " + 預算"
+                      : ` + ${mobileBudgetCards.find((item) => item.value === mobileBudget)?.label ?? ""}`
+                  }`}
             </span>
           </div>
         </section>

@@ -96,13 +96,7 @@ function scoreLaptop(laptop: Laptop, sortMode: SortMode) {
 
 function getMobileGpuMode(laptop: Laptop): "igpu" | "dgpu" {
   const text = `${laptop.gpu} ${laptop.title} ${laptop.model}`.toLowerCase();
-  if (
-    text.includes("rtx") ||
-    text.includes("geforce") ||
-    text.includes("radeon") ||
-    text.includes("arc") ||
-    text.includes("iris")
-  ) {
+  if (text.includes("rtx")) {
     return "dgpu";
   }
   return "igpu";
@@ -292,7 +286,18 @@ export default function HomePage() {
 
         <section className="mobile-launch mobile-only">
           <div className="mobile-launch-copy">
-            <p className="eyebrow">mobile quick pick</p>
+            <p className="eyebrow">
+              <button
+                className="excel-toggle"
+                onClick={() => setShowEducationPrice((current) => !current)}
+                type="button"
+                aria-label="切換手機版教育價顯示"
+                title="MOBILE"
+              >
+                MOBILE
+              </button>
+              <span> QUICK PICK</span>
+            </p>
             <h1>手機快速選機</h1>
             <p>先點顯卡，再點預算，直接進到對應清單。</p>
           </div>
@@ -737,7 +742,9 @@ function MobileLaptopCard({
 
         <div className="mobile-result-tags">
           <span className="mobile-chip mobile-chip--red">{getMobileGpuMode(laptop) === "igpu" ? "內建顯卡" : "獨立顯卡"}</span>
-          <span className="mobile-chip mobile-chip--yellow">{formatMoney(laptop.eduPrice)}</span>
+          <span className="mobile-chip mobile-chip--yellow mobile-chip--price">
+            <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
+          </span>
           <span className="mobile-chip mobile-chip--green">{laptop.screenSize ? `${laptop.screenSize} 吋` : "其他尺寸"}</span>
         </div>
 

@@ -745,7 +745,9 @@ function MobileLaptopCard({
           <span className="mobile-chip mobile-chip--yellow mobile-chip--price">
             <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
           </span>
-          <span className="mobile-chip mobile-chip--green">{laptop.screenSize ? `${laptop.screenSize} 吋` : "其他尺寸"}</span>
+          {laptop.screenSize ? (
+            <span className="mobile-chip mobile-chip--green">{laptop.screenSize} 吋</span>
+          ) : null}
         </div>
 
         <div className="mobile-result-prices">

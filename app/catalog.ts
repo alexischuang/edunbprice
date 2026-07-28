@@ -72,7 +72,6 @@ export const screenOptions: FilterOption[] = [
   { value: "14", label: "14 吋" },
   { value: "15", label: "15 吋" },
   { value: "16", label: "16 吋" },
-  { value: "other", label: "其他尺寸" },
 ];
 
 export const gpuOptions: FilterOption[] = [
@@ -273,16 +272,12 @@ export function getScreenCategory(laptop: Laptop) {
 
 export function getGpuCategory(laptop: Laptop) {
   const value = `${laptop.gpu} ${laptop.gpuTier ?? ""}`.toLowerCase();
-  if (!laptop.rtx && !value.includes("radeon") && !value.includes("arc") && !value.includes("iris")) {
-    return "igpu";
-  }
   if (value.includes("rtx 4050") || value.includes("rtx4050")) return "rtx-4050";
   if (value.includes("rtx 4060") || value.includes("rtx4060")) return "rtx-4060";
   if (value.includes("rtx 4070") || value.includes("rtx4070")) return "rtx-4070";
   if (value.includes("rtx 5060") || value.includes("rtx5060")) return "rtx-5060";
   if (value.includes("rtx 5070") || value.includes("rtx5070")) return "rtx-5070";
-  if (!laptop.rtx) return "igpu";
-  return "other";
+  return "igpu";
 }
 
 export function getPurposeLabel(value: string) {

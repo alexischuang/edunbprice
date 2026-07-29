@@ -55,6 +55,11 @@ function EducationPrice({ showEducationPrice, price }: { showEducationPrice: boo
   );
 }
 
+function formatSavingsText(discount: number, discountRate: number) {
+  if (!discountRate) return `最多省下 ${formatMoney(discount)}`;
+  return `最多省下 ${formatMoney(discount)}，約為 ${formatDiscountFold(discountRate)}`;
+}
+
 function usePersistentBoolean(key: string, defaultValue: boolean) {
   const [value, setValue] = useState(defaultValue);
   const [ready, setReady] = useState(false);
@@ -700,8 +705,7 @@ function LaptopCard({
         </div>
 
         <div className="discount-line">
-          目前最高折扣 {formatMoney(laptop.discount)}
-          {laptop.discountRate ? ` · ${formatDiscountFold(laptop.discountRate)}` : ""}
+          {formatSavingsText(laptop.discount, laptop.discountRate)}
         </div>
 
         <div className="tag-row">
@@ -820,8 +824,7 @@ function MobileLaptopCard({
           </strong>
           <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
           <span className="discount-line">
-            省下 {formatMoney(laptop.discount)}
-            {laptop.discountRate ? `，${formatDiscountFold(laptop.discountRate)}` : ""}
+            {formatSavingsText(laptop.discount, laptop.discountRate)}
           </span>
         </div>
         <div className="mobile-result-detail">

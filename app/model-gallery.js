@@ -1,16 +1,4 @@
 window.modelGalleryMap = {
-  "UX3405MA-0122B125H": [
-    "public/laptop-images/model-gallery/UX3405MA-0122B125H/01.webp",
-    "public/laptop-images/model-gallery/UX3405MA-0122B125H/02.webp",
-    "public/laptop-images/model-gallery/UX3405MA-0122B125H/03.webp",
-    "public/laptop-images/model-gallery/UX3405MA-0122B125H/04.webp"
-  ],
-  "UX3405CA-0182S225H": [
-    "public/laptop-images/model-gallery/UX3405CA-0182S225H/01.webp",
-    "public/laptop-images/model-gallery/UX3405CA-0182S225H/02.webp",
-    "public/laptop-images/model-gallery/UX3405CA-0182S225H/03.webp",
-    "public/laptop-images/model-gallery/UX3405CA-0182S225H/04.webp"
-  ],
   "UX3405CA-0202B255H": [
     "public/laptop-images/model-gallery/UX3405CA-0202B255H/01.webp",
     "public/laptop-images/model-gallery/UX3405CA-0202B255H/02.webp",
@@ -22,6 +10,18 @@ window.modelGalleryMap = {
     "public/laptop-images/model-gallery/UX3405CA-0192S255H/02.webp",
     "public/laptop-images/model-gallery/UX3405CA-0192S255H/03.webp",
     "public/laptop-images/model-gallery/UX3405CA-0192S255H/04.webp"
+  ],
+  "UX3405MA-0122B125H": [
+    "public/laptop-images/model-gallery/UX3405MA-0122B125H/01.webp",
+    "public/laptop-images/model-gallery/UX3405MA-0122B125H/02.webp",
+    "public/laptop-images/model-gallery/UX3405MA-0122B125H/03.webp",
+    "public/laptop-images/model-gallery/UX3405MA-0122B125H/04.webp"
+  ],
+  "UX3405CA-0182S225H": [
+    "public/laptop-images/model-gallery/UX3405CA-0182S225H/01.webp",
+    "public/laptop-images/model-gallery/UX3405CA-0182S225H/02.webp",
+    "public/laptop-images/model-gallery/UX3405CA-0182S225H/03.webp",
+    "public/laptop-images/model-gallery/UX3405CA-0182S225H/04.webp"
   ],
   "UX5406AA-0042G386H": [
     "public/laptop-images/model-gallery/UX5406AA-0042G386H/01.webp",
@@ -64,6 +64,9 @@ window.modelGalleryMap = {
     "public/laptop-images/model-gallery/S5406SA-0078C226V/02.webp",
     "public/laptop-images/model-gallery/S5406SA-0078C226V/03.webp",
     "public/laptop-images/model-gallery/S5406SA-0078C226V/04.webp"
+  ],
+  "S5406SAL-0198F226V": [
+    "public/laptop-images/model-gallery/S5406SAL-0198F226V/01.webp"
   ],
   "S3607AA-0052G325": [
     "public/laptop-images/model-gallery/S3607AA-0052G325/01.webp",
@@ -256,9 +259,6 @@ window.modelGalleryMap = {
     "public/laptop-images/model-gallery/S3607QA-0042G26100/02.webp",
     "public/laptop-images/model-gallery/S3607QA-0042G26100/03.webp",
     "public/laptop-images/model-gallery/S3607QA-0042G26100/04.webp"
-  ],
-  "S5406SAL-0198F226V": [
-    "public/laptop-images/model-gallery/S5406SAL-0198F226V/01.webp"
   ],
   "S3407QA-0042G26100": [
     "public/laptop-images/model-gallery/S3407QA-0042G26100/01.webp",
@@ -515,5 +515,11 @@ window.modelGalleryMap = {
     "public/laptop-images/model-gallery/FA707NUG-0122A7445HS/02.webp",
     "public/laptop-images/model-gallery/FA707NUG-0122A7445HS/03.webp",
     "public/laptop-images/model-gallery/FA707NUG-0122A7445HS/04.webp"
+  ],
+  "FA506NCQ-0032B170H": [
+    "public/laptop-images/model-gallery/FA506NCQ-0032B170H/01.webp",
+    "public/laptop-images/model-gallery/FA506NCQ-0032B170H/02.webp",
+    "public/laptop-images/model-gallery/FA506NCQ-0032B170H/03.webp",
+    "public/laptop-images/model-gallery/FA506NCQ-0032B170H/04.webp"
   ]
 };

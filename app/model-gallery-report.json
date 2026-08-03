@@ -1,32 +1,10 @@
 {
-  "generatedAt": "2026-07-27T14:55:33.293Z",
-  "sourceRoot": "D:\\校園筆電寢具專案\\ASUS\\202605PIC",
-  "totalModels": 88,
-  "matchedModels": 87,
+  "generatedAt": "2026-08-03T04:05:02.695Z",
+  "sourceRoot": "D:/校園筆電寢具專案/ASUS/202605PIC",
+  "totalModels": 90,
+  "matchedModels": 88,
   "maxImages": 4,
   "report": [
-    {
-      "model": "UX3405MA-0122B125H",
-      "matched": 4,
-      "exported": 4,
-      "sources": [
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405MA-0122B125H紳士藍\\Zenbook 14 OLED_UX3405MA_Product photo_3B_Ponder Blue_03.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405MA-0122B125H紳士藍\\Zenbook 14 OLED_UX3405MA_Product photo_3B_Ponder Blue_06.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405MA-0122B125H紳士藍\\Zenbook 14 OLED_UX3405MA_Product photo_3B_Ponder Blue_08.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405MA-0122B125H紳士藍\\Zenbook 14 OLED_UX3405MA_Product photo_3B_Ponder Blue_10.jpg"
-      ]
-    },
-    {
-      "model": "UX3405CA-0182S225H",
-      "matched": 4,
-      "exported": 4,
-      "sources": [
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405CA-0182S225H白霧銀\\Zenbook 14 OLED_UX3405MA_Product photo_3S_Foggy Silver_03.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405CA-0182S225H白霧銀\\Zenbook 14 OLED_UX3405MA_Product photo_3S_Foggy Silver_04.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405CA-0182S225H白霧銀\\Zenbook 14 OLED_UX3405MA_Product photo_3S_Foggy Silver_06.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405CA-0182S225H白霧銀\\Zenbook 14 OLED_UX3405MA_Product photo_3S_Foggy Silver_10.jpg"
-      ]
-    },
     {
       "model": "UX3405CA-0202B255H",
       "matched": 4,
@@ -47,6 +25,28 @@
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405CA-0192S255H_銀\\Zenbook 14 OLED_UX3405MA_Product photo_3S_Foggy Silver_06.jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405CA-0192S255H_銀\\Zenbook 14 OLED_UX3405MA_Product photo_3S_Foggy Silver_07.jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405CA-0192S255H_銀\\Zenbook 14 OLED_UX3405MA_Product photo_3S_Foggy Silver_08.jpg"
+      ]
+    },
+    {
+      "model": "UX3405MA-0122B125H",
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405MA-0122B125H紳士藍\\Zenbook 14 OLED_UX3405MA_Product photo_3B_Ponder Blue_03.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405MA-0122B125H紳士藍\\Zenbook 14 OLED_UX3405MA_Product photo_3B_Ponder Blue_06.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405MA-0122B125H紳士藍\\Zenbook 14 OLED_UX3405MA_Product photo_3B_Ponder Blue_08.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405MA-0122B125H紳士藍\\Zenbook 14 OLED_UX3405MA_Product photo_3B_Ponder Blue_10.jpg"
+      ]
+    },
+    {
+      "model": "UX3405CA-0182S225H",
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405CA-0182S225H白霧銀\\Zenbook 14 OLED_UX3405MA_Product photo_3S_Foggy Silver_03.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405CA-0182S225H白霧銀\\Zenbook 14 OLED_UX3405MA_Product photo_3S_Foggy Silver_04.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405CA-0182S225H白霧銀\\Zenbook 14 OLED_UX3405MA_Product photo_3S_Foggy Silver_06.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3405CA-0182S225H白霧銀\\Zenbook 14 OLED_UX3405MA_Product photo_3S_Foggy Silver_10.jpg"
       ]
     },
     {
@@ -127,6 +127,14 @@
       ]
     },
     {
+      "model": "S5406SAL-0198F226V",
+      "matched": 1,
+      "exported": 1,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5406SAL-0198F226V莓果粉\\ASUS Vivobook S 14 OLED_S5406M_Product photo_8C_Rose Gold_13.jpg"
+      ]
+    },
+    {
       "model": "S3607AA-0052G325",
       "matched": 4,
       "exported": 4,
@@ -169,6 +177,12 @@
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S3607AA-0082E325開心果綠\\ASUS Vivobook S3607AA_M3607HA_Product photo_2E_Salvia Green_09.jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S3607AA-0082E325開心果綠\\ASUS Vivobook S3607AA_M3607HA_Product photo_2E_Salvia Green_10.jpg"
       ]
+    },
+    {
+      "model": "S5652MA-0052G350",
+      "matched": 0,
+      "exported": 0,
+      "sources": []
     },
     {
       "model": "X1407AA-0041D325",
@@ -476,14 +490,6 @@
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S3607QA-0042G26100_夜幕黑\\ASUS Vivobook S16_S3607QA_Product photo_2G_Matte Gray_07_001.jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S3607QA-0042G26100_夜幕黑\\ASUS Vivobook S16_S3607QA_Product photo_2G_Matte Gray_09_001.jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S3607QA-0042G26100_夜幕黑\\ASUS Vivobook S16_S3607QA_Product photo_2G_Matte Gray_10_001.jpg"
-      ]
-    },
-    {
-      "model": "S5406SAL-0198F226V",
-      "matched": 1,
-      "exported": 1,
-      "sources": [
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5406SAL-0198F226V莓果粉\\ASUS Vivobook S 14 OLED_S5406M_Product photo_8C_Rose Gold_13.jpg"
       ]
     },
     {
@@ -961,6 +967,17 @@
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA707NUG-0122A7445HS機甲灰\\02_FA707_001.jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA707NUG-0122A7445HS機甲灰\\12_FA707_001.jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA707NUG-0122A7445HS機甲灰\\17_FA707_A_001.jpg"
+      ]
+    },
+    {
+      "model": "FA506NCQ-0032B170H",
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCQ-0032B170H石墨黑\\03-FX506_L_001.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCQ-0032B170H石墨黑\\05-FX506_L_001.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCQ-0032B170H石墨黑\\22-FX506_L_001.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCQ-0032B170H石墨黑\\24-FX506_001.jpg"
       ]
     }
   ]

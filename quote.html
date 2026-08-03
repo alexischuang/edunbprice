@@ -1534,6 +1534,21 @@
       function render(laptops) {
         const results = getResults(laptops);
         const bestSaving = laptops.reduce((best, item) => (item.discount > best.discount ? item : best), laptops[0]);
+        const activeFilters =
+          state.query.trim() ||
+          state.family !== "all" ||
+          state.intent !== "all" ||
+          state.sort !== "match" ||
+          state.rtx ||
+          state.ai ||
+          state.oled ||
+          state.tb ||
+          state.cpu !== "all" ||
+          state.ram !== "all" ||
+          state.ssd !== "all" ||
+          state.lcd !== "all" ||
+          state.gpu !== "all" ||
+          state.budget < Math.max(...laptops.map((item) => item.eduPrice));
         budgetText.textContent = money(state.budget);
         renderMetrics(laptops);
         renderHero(laptops);
@@ -1544,7 +1559,9 @@
           <div><span>目前最高折扣</span><strong>${money(bestSaving.discount)}</strong></div>
         `;
 
-        picks.innerHTML = results.slice(0, 3).map((item, index) => card(item, index + 1)).join("");
+        const picksSection = picks.closest("section");
+        if (picksSection) picksSection.style.display = activeFilters ? "none" : "";
+        picks.innerHTML = activeFilters ? "" : results.slice(0, 3).map((item, index) => card(item, index + 1)).join("");
         catalog.innerHTML = results.length
           ? results.map((item) => card(item)).join("")
           : '<div class="empty">沒有符合條件的機型，請放寬預算或取消部分規格條件。</div>';

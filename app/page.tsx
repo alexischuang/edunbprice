@@ -449,7 +449,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {!desktopSearchActive && (
+          {!desktopFiltersActive && (
             <aside className="hero-card carousel-recommend" aria-label="23000 到 30000 推薦機型">
               <div className="hero-card-head">
                 <strong>23000 ~ 30000</strong>

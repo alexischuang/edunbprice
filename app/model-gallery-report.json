@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-03T04:05:02.695Z",
-  "sourceRoot": "D:/校園筆電寢具專案/ASUS/202605PIC",
-  "totalModels": 90,
-  "matchedModels": 88,
+  "generatedAt": "2026-08-05T16:13:43.884Z",
+  "sourceRoot": "D:\\校園筆電寢具專案\\ASUS\\202605PIC",
+  "totalModels": 87,
+  "matchedModels": 86,
   "maxImages": 4,
   "report": [
     {
@@ -180,9 +180,14 @@
     },
     {
       "model": "S5652MA-0052G350",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0052G350夜幕灰\\ASUS_Vivobook S16_S5652MA_Product photo_1G_Matte Gray_01.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0052G350夜幕灰\\ASUS_Vivobook S16_S5652MA_Product photo_1G_Matte Gray_05.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0052G350夜幕灰\\ASUS_Vivobook S16_S5652MA_Product photo_1G_Matte Gray_06.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0052G350夜幕灰\\ASUS_Vivobook S16_S5652MA_Product photo_1G_Matte Gray_24.jpg"
+      ]
     },
     {
       "model": "X1407AA-0041D325",
@@ -722,17 +727,6 @@
       ]
     },
     {
-      "model": "FX608JMR-0041A14650HX",
-      "matched": 4,
-      "exported": 4,
-      "sources": [
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX608JMR-0041A14650HX御鐵灰\\ASUS_TUF_-GAMING_F16_24.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX608JMR-0041A14650HX御鐵灰\\ASUS_TUF_GAMING_F16_05_L.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX608JMR-0041A14650HX御鐵灰\\ASUS_TUF_GAMING_F16_11_L.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX608JMR-0041A14650HX御鐵灰\\ASUS_TUF_GAMING_F16_26_L.jpg"
-      ]
-    },
-    {
       "model": "GU606AM-0032I386H-NBLO",
       "matched": 4,
       "exported": 4,
@@ -785,17 +779,6 @@
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX707VJB-0032A210H月影灰\\10_FX707_B [最大闊度 2400 最大高度 1800]_001.jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX707VJB-0032A210H月影灰\\11_FX707_B [最大闊度 2400 最大高度 1800].jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX707VJB-0032A210H月影灰\\19_FX707 [最大闊度 2400 最大高度 1800]_001.jpg"
-      ]
-    },
-    {
-      "model": "FX607VJB-0053A210H",
-      "matched": 4,
-      "exported": 4,
-      "sources": [
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX607VJB-0053A210H機甲灰\\01_FX607VB_L.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX607VJB-0053A210H機甲灰\\03_FX607VB_L.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX607VJB-0053A210H機甲灰\\10_FX607VB_L.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX607VJB-0053A210H機甲灰\\20_FX607VB_L.jpg"
       ]
     },
     {
@@ -862,17 +845,6 @@
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA401GM-0021A465H御鐵灰\\ASUS_TUF_-GAMING_A14_Jaeger-Grey_07.jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA401GM-0021A465H御鐵灰\\ASUS_TUF_-GAMING_A14_Jaeger-Grey_11_L.jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA401GM-0021A465H御鐵灰\\ASUS_TUF_-GAMING_A14_Jaeger-Grey_28.jpg"
-      ]
-    },
-    {
-      "model": "FA401GM-0031C465H",
-      "matched": 4,
-      "exported": 4,
-      "sources": [
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA401GM-0031C465H月光銀\\ASUS_TUF_-GAMING_A14_Moonlight-White (16).jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA401GM-0031C465H月光銀\\ASUS_TUF_-GAMING_A14_Moonlight-White (17).jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA401GM-0031C465H月光銀\\ASUS_TUF_-GAMING_A14_Moonlight-White_04.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA401GM-0031C465H月光銀\\ASUS_TUF_-GAMING_A14_Moonlight-White_06_L.jpg"
       ]
     },
     {
@@ -959,17 +931,6 @@
       ]
     },
     {
-      "model": "FA707NUG-0122A7445HS",
-      "matched": 4,
-      "exported": 4,
-      "sources": [
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA707NUG-0122A7445HS機甲灰\\01_FA707_001.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA707NUG-0122A7445HS機甲灰\\02_FA707_001.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA707NUG-0122A7445HS機甲灰\\12_FA707_001.jpg",
-        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA707NUG-0122A7445HS機甲灰\\17_FA707_A_001.jpg"
-      ]
-    },
-    {
       "model": "FA506NCQ-0032B170H",
       "matched": 4,
       "exported": 4,
@@ -978,6 +939,17 @@
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCQ-0032B170H石墨黑\\05-FX506_L_001.jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCQ-0032B170H石墨黑\\22-FX506_L_001.jpg",
         "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCQ-0032B170H石墨黑\\24-FX506_001.jpg"
+      ]
+    },
+    {
+      "model": "FA506NCG-0162B8845HS",
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCG-0162B8845HS曜石黑\\01-FX506_L.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCG-0162B8845HS曜石黑\\06-FX506_L.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCG-0162B8845HS曜石黑\\11-FX506_L.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCG-0162B8845HS曜石黑\\21-FX506.jpg"
       ]
     }
   ]

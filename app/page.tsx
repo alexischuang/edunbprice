@@ -119,6 +119,9 @@ function matchesSearchTokens(laptop: Laptop, tokens: string[]) {
   if (!tokens.length) return true;
 
   const searchableTerms = new Set(buildSearchText(laptop).split(/\s+/).filter(Boolean));
+  const identityTerms = normalizeText([laptop.model, laptop.family, laptop.title, laptop.barcode].filter(Boolean).join(" "))
+    .split(/\s+/)
+    .filter(Boolean);
   const ramCategory = getRamCategory(laptop);
   const storageCategory = getStorageCategory(laptop);
   const gpuCategory = getGpuCategory(laptop);
@@ -126,6 +129,11 @@ function matchesSearchTokens(laptop: Laptop, tokens: string[]) {
 
   return tokens.every((token) => {
     if (searchableTerms.has(token)) return true;
+
+    const looksLikeModelCode = /[a-z]/.test(token) && /\d/.test(token);
+    if (looksLikeModelCode) {
+      return identityTerms.some((term) => term.startsWith(token) || token.startsWith(term));
+    }
 
     if (["8g", "8gb"].includes(token)) return ramCategory === "8g";
     if (["16g", "16gb"].includes(token)) return ramCategory === "16g";

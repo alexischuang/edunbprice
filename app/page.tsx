@@ -119,12 +119,18 @@ function matchesSearchTokens(laptop: Laptop, tokens: string[]) {
   if (!tokens.length) return true;
 
   const haystack = buildSearchText(laptop);
+  const identityHaystack = normalizeText([laptop.model, laptop.family, laptop.title, laptop.barcode].filter(Boolean).join(" "));
   const ramCategory = getRamCategory(laptop);
   const storageCategory = getStorageCategory(laptop);
   const gpuCategory = getGpuCategory(laptop);
   const screenCategory = getScreenCategory(laptop);
 
   return tokens.every((token) => {
+    const looksLikeModelCode = /[a-z]/.test(token) && /\d/.test(token);
+    if (looksLikeModelCode) {
+      return identityHaystack.includes(token);
+    }
+
     if (haystack.includes(token)) return true;
 
     if (["8g", "8gb"].includes(token)) return ramCategory === "8g";

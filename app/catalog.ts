@@ -76,17 +76,45 @@ export const screenOptions: FilterOption[] = [
   { value: "18", label: "18 吋" },
 ];
 
-export const gpuOptions: FilterOption[] = [
-  { value: "all", label: "所有顯示卡" },
-  { value: "igpu", label: "內顯" },
-  { value: "rtx-3050", label: "RTX 3050" },
-  { value: "rtx-4050", label: "RTX 4050" },
-  { value: "rtx-4060", label: "RTX 4060" },
-  { value: "rtx-4070", label: "RTX 4070" },
-  { value: "rtx-5060", label: "RTX 5060" },
-  { value: "rtx-5070", label: "RTX 5070" },
-  { value: "other", label: "其他等級" },
-];
+const gpuOptionLabels: Record<string, string> = {
+  igpu: "內顯",
+  "rtx-3050": "RTX 3050",
+  "rtx-4050": "RTX 4050",
+  "rtx-5050": "RTX 5050",
+  "rtx-5060": "RTX 5060",
+  "rtx-5070": "RTX 5070",
+  other: "其他等級",
+};
+
+const gpuOptionOrder = ["igpu", "rtx-3050", "rtx-4050", "rtx-5050", "rtx-5060", "rtx-5070", "other"];
+
+export function getGpuOptions(laptops: Laptop[]): FilterOption[] {
+  const present = new Set<string>();
+  let hasOther = false;
+
+  for (const laptop of laptops) {
+    const category = getGpuCategory(laptop) as string;
+    if (category === "other") {
+      hasOther = true;
+      continue;
+    }
+    present.add(category);
+  }
+
+  const options = [{ value: "all", label: "所有顯示卡" }];
+
+  for (const category of gpuOptionOrder) {
+    if (category === "other") continue;
+    if (!present.has(category)) continue;
+    options.push({ value: category, label: gpuOptionLabels[category] });
+  }
+
+  if (hasOther) {
+    options.push({ value: "other", label: gpuOptionLabels.other });
+  }
+
+  return options;
+}
 
 export const budgetOptions: FilterOption[] = [
   { value: "all", label: "所有預算" },
@@ -278,6 +306,7 @@ export function getGpuCategory(laptop: Laptop) {
   const value = `${laptop.gpu} ${laptop.gpuTier ?? ""}`.toLowerCase();
   if (value.includes("3050") || value.includes("rtx 3050") || value.includes("rtx3050")) return "rtx-3050";
   if (value.includes("rtx 4050") || value.includes("rtx4050")) return "rtx-4050";
+  if (value.includes("rtx 5050") || value.includes("rtx5050")) return "rtx-5050";
   if (value.includes("rtx 4060") || value.includes("rtx4060")) return "rtx-4060";
   if (value.includes("rtx 4070") || value.includes("rtx4070")) return "rtx-4070";
   if (value.includes("rtx 5060") || value.includes("rtx5060")) return "rtx-5060";

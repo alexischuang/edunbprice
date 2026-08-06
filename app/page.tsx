@@ -24,7 +24,7 @@ import {
   selectRecommended,
   splitList,
   storageOptions,
-  gpuOptions,
+  getGpuOptions,
   getBestDiscount,
   getBudgetRange,
   getModelDisplayName,
@@ -151,6 +151,7 @@ function matchesSearchTokens(laptop: Laptop, tokens: string[]) {
     if (["igpu", "內顯", "內建顯卡"].includes(token)) return gpuCategory === "igpu";
     if (["dgpu", "獨顯", "獨立顯卡"].includes(token)) return gpuCategory !== "igpu";
     if (["rtx4050", "rtx-4050"].includes(token)) return gpuCategory === "rtx-4050";
+    if (["rtx5050", "rtx-5050"].includes(token)) return gpuCategory === "rtx-5050";
     if (["rtx4060", "rtx-4060"].includes(token)) return gpuCategory === "rtx-4060";
     if (["rtx4070", "rtx-4070"].includes(token)) return gpuCategory === "rtx-4070";
     if (["rtx5060", "rtx-5060"].includes(token)) return gpuCategory === "rtx-5060";
@@ -216,6 +217,7 @@ export default function HomePage() {
   const [mobileExpandedId, setMobileExpandedId] = useState<string | null>(null);
   const mobileResultsRef = useRef<HTMLDivElement | null>(null);
   const bestDiscount = useMemo(() => getBestDiscount(laptops), []);
+  const gpuOptions = useMemo(() => getGpuOptions(laptops), [laptops]);
   const recommendedLaptops = useMemo(() => selectRecommended(laptops, 6), []);
   const normalizedSearch = normalizeText(search);
   const searchTokens = useMemo(() => normalizedSearch.split(/\s+/).filter(Boolean), [normalizedSearch]);

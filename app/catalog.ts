@@ -303,14 +303,15 @@ export function getScreenCategory(laptop: Laptop) {
 }
 
 export function getGpuCategory(laptop: Laptop) {
-  const value = `${laptop.gpu} ${laptop.gpuTier ?? ""}`.toLowerCase();
-  if (value.includes("rtx 5050") || value.includes("rtx5050")) return "rtx-5050";
-  if (value.includes("3050") || value.includes("rtx 3050") || value.includes("rtx3050")) return "rtx-3050";
-  if (value.includes("rtx 4050") || value.includes("rtx4050")) return "rtx-4050";
-  if (value.includes("rtx 4060") || value.includes("rtx4060")) return "rtx-4060";
-  if (value.includes("rtx 4070") || value.includes("rtx4070")) return "rtx-4070";
-  if (value.includes("rtx 5060") || value.includes("rtx5060")) return "rtx-5060";
-  if (value.includes("rtx 5070") || value.includes("rtx5070")) return "rtx-5070";
+  const value = normalizeText(`${laptop.gpu} ${laptop.gpuTier ?? ""}`);
+
+  if (value.includes("5050")) return "rtx-5050";
+  if (value.includes("3050")) return "rtx-3050";
+  if (value.includes("4050")) return "rtx-4050";
+  if (value.includes("4060")) return "rtx-4060";
+  if (value.includes("4070")) return "rtx-4070";
+  if (value.includes("5060")) return "rtx-5060";
+  if (value.includes("5070")) return "rtx-5070";
   return "igpu";
 }
 

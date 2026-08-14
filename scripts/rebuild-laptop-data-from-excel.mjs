@@ -176,7 +176,7 @@ function buildLaptop(row, fallback, index) {
   const memory = readCell(row, 6) || fallback?.memory || "";
   const storage = readCell(row, 7) || fallback?.storage || "";
   const gpu = readCell(row, 8) || fallback?.gpu || "";
-  const display = readCell(row, 4) || fallback?.display || "";
+  const display = readCell(row, 7) || fallback?.display || "";
   const weight = readCell(row, 9) || fallback?.weight || "";
   const warranty = readCell(row, 11) || fallback?.warranty || "";
   const bundle = readCell(row, 10) || fallback?.bundle || "";

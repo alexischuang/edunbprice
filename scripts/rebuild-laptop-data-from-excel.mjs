@@ -33,6 +33,11 @@ function readNumber(row, index) {
   return text ? Number(text) : 0;
 }
 
+function readPositiveNumber(row, index) {
+  const value = readNumber(row, index);
+  return value > 0 ? value : 0;
+}
+
 function parseWeightKg(value) {
   const match = String(value ?? "").match(/([0-9]+(?:\.[0-9]+)?)/);
   return match ? Number(match[1]) : null;
@@ -160,8 +165,8 @@ function buildLaptop(row, fallback, index) {
   const model = readCell(row, 1);
   if (!model) return null;
 
-  const marketPriceFromExcel = readNumber(row, 13);
-  const eduPriceFromExcel = readNumber(row, 15);
+  const marketPriceFromExcel = readPositiveNumber(row, 12);
+  const eduPriceFromExcel = readPositiveNumber(row, 14);
   const hasExcelPrice = marketPriceFromExcel > 0 || eduPriceFromExcel > 0;
   const hasFallbackPrice = Boolean(fallback && (fallback.marketPrice > 0 || fallback.eduPrice > 0));
   if (!hasExcelPrice && !hasFallbackPrice) return null;
@@ -189,6 +194,7 @@ function buildLaptop(row, fallback, index) {
   const gpuTier = fallback?.gpuTier ?? deriveGpuTier(gpu);
   const image = fallback?.image || `/laptop-images/model-gallery/${model}/01.webp`;
   const imageKind = fallback?.imageKind || (image ? "產品圖" : "圖片待補");
+  const featureIntro = readCell(row, 15) || fallback?.featureIntro || "";
   const highlights = buildFeatureTags(row, fallback);
   const tags = highlights.length
     ? highlights
@@ -221,7 +227,7 @@ function buildLaptop(row, fallback, index) {
     eduPrice,
     discount,
     discountRate,
-    featureIntro: readCell(row, 3) || fallback?.featureIntro || "",
+    featureIntro,
     highlights,
     tags,
     purposes,

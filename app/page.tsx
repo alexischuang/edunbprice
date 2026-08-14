@@ -6,11 +6,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   budgetOptions,
   buildSearchText,
-  cpuOptions,
   formatMoney,
   formatDiscountFold,
   getBudgetLimit,
-  getCpuCategory,
   getGalleryCandidates,
   getGpuCategory,
   getPurposeLabel,
@@ -36,6 +34,21 @@ type SortMode = "match" | "price" | "saving" | "performance" | "value";
 type MobileGpuMode = "all" | "igpu" | "dgpu";
 type MobileBudgetMode = "all" | "under-30000" | "30000-40000" | "40000-50000" | "50000-plus";
 type MobileQuickMode = "all" | "office" | "ultralight" | "entry-gaming" | "creator-gaming";
+type CpuMenuCategory =
+  | "intel-core-ultra-x9"
+  | "intel-core-ultra-9"
+  | "intel-core-ultra-7"
+  | "intel-core-ultra-5"
+  | "intel-core-9"
+  | "intel-core-7"
+  | "intel-core-5"
+  | "amd-ryzen-ai-9"
+  | "amd-ryzen-ai-7"
+  | "amd-ryzen-ai-5"
+  | "amd-ryzen-9"
+  | "amd-ryzen-7"
+  | "amd-ryzen-5"
+  | "qualcomm-snapdragon-x";
 
 const sortOptions = [
   { value: "match", label: "最符合" },
@@ -113,6 +126,90 @@ function getMobileBudgetMode(price: number): Exclude<MobileBudgetMode, "all"> {
   if (price <= 40000) return "30000-40000";
   if (price <= 50000) return "40000-50000";
   return "50000-plus";
+}
+
+const cpuMenuOrder: CpuMenuCategory[] = [
+  "intel-core-ultra-x9",
+  "intel-core-ultra-9",
+  "intel-core-ultra-7",
+  "intel-core-ultra-5",
+  "intel-core-9",
+  "intel-core-7",
+  "intel-core-5",
+  "amd-ryzen-ai-9",
+  "amd-ryzen-ai-7",
+  "amd-ryzen-ai-5",
+  "amd-ryzen-9",
+  "amd-ryzen-7",
+  "amd-ryzen-5",
+  "qualcomm-snapdragon-x",
+];
+
+const cpuMenuLabels: Record<CpuMenuCategory, string> = {
+  "intel-core-ultra-x9": "Intel Core Ultra X9",
+  "intel-core-ultra-9": "Intel Core Ultra 9",
+  "intel-core-ultra-7": "Intel Core Ultra 7",
+  "intel-core-ultra-5": "Intel Core Ultra 5",
+  "intel-core-9": "Intel Core 9",
+  "intel-core-7": "Intel Core 7",
+  "intel-core-5": "Intel Core 5",
+  "amd-ryzen-ai-9": "AMD Ryzen AI 9",
+  "amd-ryzen-ai-7": "AMD Ryzen AI 7",
+  "amd-ryzen-ai-5": "AMD Ryzen AI 5",
+  "amd-ryzen-9": "AMD Ryzen 9",
+  "amd-ryzen-7": "AMD Ryzen 7",
+  "amd-ryzen-5": "AMD Ryzen 5",
+  "qualcomm-snapdragon-x": "Qualcomm Snapdragon X",
+};
+
+function getCpuMenuCategory(cpu: string): CpuMenuCategory | "other" {
+  const value = normalizeText(cpu);
+
+  if (value.includes("ryzen") && value.includes("ai")) {
+    if (value.includes("9")) return "amd-ryzen-ai-9";
+    if (value.includes("7")) return "amd-ryzen-ai-7";
+    if (value.includes("5")) return "amd-ryzen-ai-5";
+    return "amd-ryzen-ai-9";
+  }
+
+  if (value.includes("core ultra")) {
+    if (value.includes("x9")) return "intel-core-ultra-x9";
+    if (value.includes("9")) return "intel-core-ultra-9";
+    if (value.includes("7")) return "intel-core-ultra-7";
+    if (value.includes("5")) return "intel-core-ultra-5";
+    return "intel-core-ultra-7";
+  }
+
+  if (value.includes("core i9")) return "intel-core-9";
+  if (value.includes("core i7")) return "intel-core-7";
+  if (value.includes("core i5")) return "intel-core-5";
+  if (value.includes("core 9")) return "intel-core-9";
+  if (value.includes("core 7")) return "intel-core-7";
+  if (value.includes("core 5")) return "intel-core-5";
+
+  if (value.includes("ryzen 9")) return "amd-ryzen-9";
+  if (value.includes("ryzen 7")) return "amd-ryzen-7";
+  if (value.includes("ryzen 5")) return "amd-ryzen-5";
+
+  if (value.includes("snapdragon")) return "qualcomm-snapdragon-x";
+
+  return "other";
+}
+
+function buildCpuOptions(laptops: Laptop[]) {
+  const present = new Set<CpuMenuCategory>();
+
+  for (const laptop of laptops) {
+    const category = getCpuMenuCategory(laptop.cpu);
+    if (category !== "other") present.add(category);
+  }
+
+  return [
+    { value: "all", label: "所有 CPU" },
+    ...cpuMenuOrder
+      .filter((category) => present.has(category))
+      .map((category) => ({ value: category, label: cpuMenuLabels[category] })),
+  ];
 }
 
 function matchesSearchTokens(laptop: Laptop, tokens: string[]) {
@@ -217,6 +314,7 @@ export default function HomePage() {
   const [mobileExpandedId, setMobileExpandedId] = useState<string | null>(null);
   const mobileResultsRef = useRef<HTMLDivElement | null>(null);
   const bestDiscount = useMemo(() => getBestDiscount(laptops), []);
+  const cpuOptions = useMemo(() => buildCpuOptions(laptops), [laptops]);
   const gpuOptions = useMemo(() => getGpuOptions(laptops), [laptops]);
   const recommendedLaptops = useMemo(() => selectRecommended(laptops, 6), []);
   const normalizedSearch = normalizeText(search);
@@ -239,7 +337,7 @@ export default function HomePage() {
       .map((laptop) => ({ laptop }))
       .filter(({ laptop }) => laptop.eduPrice >= budgetRange.min && laptop.eduPrice <= budgetRange.max)
       .filter(({ laptop }) => purpose === "all" || laptop.purposes.includes(purpose))
-      .filter(({ laptop }) => cpu === "all" || getCpuCategory(laptop.cpu) === cpu)
+      .filter(({ laptop }) => cpu === "all" || getCpuMenuCategory(laptop.cpu) === cpu)
       .filter(({ laptop }) => ram === "all" || getRamCategory(laptop) === ram)
       .filter(({ laptop }) => storage === "all" || getStorageCategory(laptop) === storage)
       .filter(({ laptop }) => screen === "all" || getScreenCategory(laptop) === screen)

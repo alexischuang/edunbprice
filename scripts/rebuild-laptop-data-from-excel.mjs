@@ -100,11 +100,10 @@ function buildFeatureTags(row, fallback) {
 
   const text = [
     readCell(row, 3),
-    readCell(row, 5),
     readCell(row, 6),
     readCell(row, 7),
     readCell(row, 8),
-    readCell(row, 4),
+    readCell(row, 15),
   ]
     .filter(Boolean)
     .join(" ")
@@ -126,11 +125,11 @@ function buildPurposes(row, fallback) {
     return [...new Set(fallback.purposes.map(String))];
   }
 
-  const text = `${readCell(row, 5)} ${readCell(row, 8)} ${readCell(row, 4)}`.toLowerCase();
+  const text = `${readCell(row, 3)} ${readCell(row, 6)} ${readCell(row, 15)}`.toLowerCase();
   const purposes = new Set(["study", "office"]);
   if (/rtx|gaming|geforce|radeon/.test(text)) purposes.add("gaming");
   if (/ai|creator|xdna/.test(text)) purposes.add("creator");
-  const screenSize = parseScreenSize(readCell(row, 4));
+  const screenSize = parseScreenSize(readCell(row, 7));
   if (screenSize && screenSize >= 15) purposes.add("large");
   const weightKg = parseWeightKg(readCell(row, 9));
   if (weightKg && weightKg <= 1.6) purposes.add("portable");
@@ -172,13 +171,13 @@ function buildLaptop(row, fallback, index) {
   if (!hasExcelPrice && !hasFallbackPrice) return null;
 
   const title = readCell(row, 2) || fallback?.title || model;
-  const cpu = readCell(row, 5) || fallback?.cpu || "";
-  const memory = readCell(row, 6) || fallback?.memory || "";
-  const storage = readCell(row, 7) || fallback?.storage || "";
-  const gpu = readCell(row, 8) || fallback?.gpu || "";
+  const cpu = readCell(row, 3) || fallback?.cpu || "";
+  const memory = readCell(row, 4) || fallback?.memory || "";
+  const storage = readCell(row, 5) || fallback?.storage || "";
+  const gpu = readCell(row, 6) || fallback?.gpu || "";
   const display = readCell(row, 7) || fallback?.display || "";
-  const weight = readCell(row, 9) || fallback?.weight || "";
-  const warranty = readCell(row, 11) || fallback?.warranty || "";
+  const weight = readCell(row, 8) || fallback?.weight || "";
+  const warranty = readCell(row, 9) || fallback?.warranty || "";
   const bundle = readCell(row, 10) || fallback?.bundle || "";
   const marketPrice = marketPriceFromExcel > 0 ? marketPriceFromExcel : fallback?.marketPrice || 0;
   const eduPrice = eduPriceFromExcel > 0 ? eduPriceFromExcel : fallback?.eduPrice || 0;

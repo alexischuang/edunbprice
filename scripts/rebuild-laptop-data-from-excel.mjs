@@ -3,9 +3,9 @@ import path from "node:path";
 import * as XLSX from "xlsx";
 
 const root = process.cwd();
-const excelPath = process.argv.find((arg) => arg.startsWith("--excel="))?.split("=")[1];
-const sourceExcel =
-  excelPath || "D:\\校園筆電寢具專案\\ASUS\\202605PIC\\20260715.xlsx";
+const excelPath =
+  process.argv.find((arg) => arg.startsWith("--excel="))?.split("=")[1] ??
+  "D:\\校園筆電寢具專案\\ASUS\\0814.xlsx";
 const dataPath = path.join(root, "app", "laptop-data.ts");
 const marker = "export const laptops: Laptop[] = ";
 
@@ -20,58 +20,59 @@ function normalizeText(value) {
 
 function splitList(value) {
   if (!value) return [];
-  const parts = Array.isArray(value) ? value : String(value).split(/[\n|/、,]+/);
-  return parts.map((item) => String(item).trim()).filter(Boolean);
+  const list = Array.isArray(value) ? value : String(value).split(/[\n|/]+/);
+  return list.map((item) => String(item).trim()).filter(Boolean);
 }
 
-function formatMoney(value) {
-  return Number(value || 0);
+function readCell(row, index) {
+  return String(row?.[index] ?? "").trim();
 }
 
-function getString(row, keys) {
-  for (const key of keys) {
-    const value = row[key];
-    if (value !== undefined && value !== null && String(value).trim() !== "") {
-      return String(value).trim();
-    }
-  }
-  return "";
-}
-
-function getNumber(row, keys) {
-  const text = getString(row, keys).replace(/[^0-9.-]/g, "");
+function readNumber(row, index) {
+  const text = String(row?.[index] ?? "").replace(/[^0-9.-]/g, "");
   return text ? Number(text) : 0;
 }
 
+function parseWeightKg(value) {
+  const match = String(value ?? "").match(/([0-9]+(?:\.[0-9]+)?)/);
+  return match ? Number(match[1]) : null;
+}
+
 function parseScreenSize(value) {
-  const match = String(value).match(/(^|[^0-9])(\d{2}(?:\.\d)?|\d(?:\.\d)?)/);
+  const match = String(value ?? "").match(/(^|[^0-9])(\d{2}(?:\.\d)?|\d(?:\.\d)?)/);
   if (!match) return null;
   const size = Number(match[2]);
   return Number.isFinite(size) && size >= 10 ? size : null;
 }
 
 function parseRamGB(value) {
-  const text = String(value).toLowerCase();
+  const text = String(value ?? "").toLowerCase();
   const match = text.match(/(\d{1,3})\s*g/);
-  return match ? Number(match[1]) : null;
+  if (!match) return null;
+  const base = Number(match[1]);
+  if (!Number.isFinite(base)) return null;
+  if (text.includes("*2") || text.includes("2x")) return base * 2;
+  return base;
 }
 
 function parseStorageGB(value) {
-  const text = String(value).toLowerCase();
+  const text = String(value ?? "").toLowerCase();
   const matchT = text.match(/(\d+(?:\.\d+)?)\s*t/);
   if (matchT) return Math.round(Number(matchT[1]) * 1000);
   const matchG = text.match(/(\d+(?:\.\d+)?)\s*g/);
-  return matchG ? Math.round(Number(matchG[1])) : null;
+  if (matchG) return Math.round(Number(matchG[1]));
+  return null;
 }
 
 function deriveGpuTier(gpu) {
-  const text = String(gpu).toLowerCase();
+  const text = String(gpu ?? "").toLowerCase();
   if (text.includes("5070")) return 5070;
   if (text.includes("5060")) return 5060;
   if (text.includes("5050")) return 5050;
   if (text.includes("4070")) return 4070;
   if (text.includes("4060")) return 4060;
   if (text.includes("4050")) return 4050;
+  if (text.includes("3050")) return 3050;
   if (text.includes("rtx")) return 1000;
   return 0;
 }
@@ -82,51 +83,52 @@ function inferFamily(model, fallback) {
   return prefix || "ASUS";
 }
 
-function getCpuCategory(cpu) {
-  const value = String(cpu).toLowerCase();
-  if (value.includes("ryzen") && value.includes("ai")) return "amd-ryzen-ai";
-  if (value.includes("core ultra")) return "intel-core-ultra";
-  if (value.includes("core i9")) return "intel-core-i9";
-  if (value.includes("core i7")) return "intel-core-i7";
-  if (value.includes("core i5")) return "intel-core-i5";
-  if (value.includes("ryzen 9")) return "amd-ryzen-9";
-  if (value.includes("ryzen 7")) return "amd-ryzen-7";
-  if (value.includes("ryzen 5")) return "amd-ryzen-5";
-  return "other";
+function asArray(value) {
+  if (!value) return [];
+  return Array.isArray(value) ? value.map(String) : splitList(value);
 }
 
 function buildFeatureTags(row, fallback) {
+  if (fallback && Array.isArray(fallback.tags) && fallback.tags.length) {
+    return [...new Set(fallback.tags.map(String))].slice(0, 6);
+  }
+
   const text = [
-    getString(row, ["特色介紹", "featureIntro"]),
-    getString(row, ["CPU"]),
-    getString(row, ["顯示卡"]),
-    getString(row, ["記憶體"]),
-    getString(row, ["硬碟"]),
-    getString(row, ["螢幕"]),
+    readCell(row, 3),
+    readCell(row, 5),
+    readCell(row, 6),
+    readCell(row, 7),
+    readCell(row, 8),
+    readCell(row, 4),
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(" ")
+    .toLowerCase();
 
-  const tags = new Set(Array.isArray(fallback?.tags) ? fallback.tags : []);
-  if (/ai|xdna/i.test(text)) tags.add("AI 加速");
-  if (/rtx|radeon|arc/i.test(text)) tags.add("獨顯效能");
-  if (/oled/i.test(text)) tags.add("OLED");
-  if (/1t|1024|1000/i.test(text)) tags.add("1TB SSD");
-  if (/16g\*2|32g\*2|2x/i.test(text)) tags.add("大記憶體");
+  const tags = new Set();
+  if (/ai|npu|xdna/.test(text)) tags.add("AI 加速");
+  if (/rtx|radeon|arc/.test(text)) tags.add("獨顯效能");
+  if (/oled/.test(text)) tags.add("OLED");
+  if (/1t|1024|1000/.test(text)) tags.add("1TB SSD");
+  if (/16g\*2|32g\*2|2x/.test(text)) tags.add("雙通道");
   if (/13|14/.test(text)) tags.add("輕薄便攜");
+  if (/15|16|17|18/.test(text)) tags.add("大螢幕");
   return Array.from(tags).slice(0, 6);
 }
 
 function buildPurposes(row, fallback) {
   if (fallback && Array.isArray(fallback.purposes) && fallback.purposes.length) {
-    return fallback.purposes;
+    return [...new Set(fallback.purposes.map(String))];
   }
 
-  const text = `${getString(row, ["CPU"])} ${getString(row, ["顯示卡"])} ${getString(row, ["螢幕"])}`.toLowerCase();
+  const text = `${readCell(row, 5)} ${readCell(row, 8)} ${readCell(row, 4)}`.toLowerCase();
   const purposes = new Set(["study", "office"]);
-  if (/rtx|gaming|geforce/.test(text)) purposes.add("gaming");
-  if (/ai|creator|xdna/i.test(text)) purposes.add("creator");
-  if ((parseScreenSize(getString(row, ["螢幕"])) ?? 0) >= 15) purposes.add("large");
+  if (/rtx|gaming|geforce|radeon/.test(text)) purposes.add("gaming");
+  if (/ai|creator|xdna/.test(text)) purposes.add("creator");
+  const screenSize = parseScreenSize(readCell(row, 4));
+  if (screenSize && screenSize >= 15) purposes.add("large");
+  const weightKg = parseWeightKg(readCell(row, 9));
+  if (weightKg && weightKg <= 1.6) purposes.add("portable");
   return Array.from(purposes);
 }
 
@@ -141,16 +143,105 @@ function buildSearchText(laptop) {
       laptop.storage,
       laptop.gpu,
       laptop.display,
+      laptop.weight,
       laptop.warranty,
       laptop.bundle,
       laptop.barcode,
       ...splitList(laptop.highlights),
       ...splitList(laptop.tags),
-      ...splitList(laptop.purposes),
+      ...asArray(laptop.purposes),
     ]
       .filter(Boolean)
       .join(" "),
   );
+}
+
+function buildLaptop(row, fallback, index) {
+  const model = readCell(row, 1);
+  if (!model) return null;
+
+  const marketPriceFromExcel = readNumber(row, 13);
+  const eduPriceFromExcel = readNumber(row, 15);
+  const hasExcelPrice = marketPriceFromExcel > 0 || eduPriceFromExcel > 0;
+  const hasFallbackPrice = Boolean(fallback && (fallback.marketPrice > 0 || fallback.eduPrice > 0));
+  if (!hasExcelPrice && !hasFallbackPrice) return null;
+
+  const title = readCell(row, 2) || fallback?.title || model;
+  const cpu = readCell(row, 5) || fallback?.cpu || "";
+  const memory = readCell(row, 6) || fallback?.memory || "";
+  const storage = readCell(row, 7) || fallback?.storage || "";
+  const gpu = readCell(row, 8) || fallback?.gpu || "";
+  const display = readCell(row, 4) || fallback?.display || "";
+  const weight = readCell(row, 9) || fallback?.weight || "";
+  const warranty = readCell(row, 11) || fallback?.warranty || "";
+  const bundle = readCell(row, 10) || fallback?.bundle || "";
+  const marketPrice = marketPriceFromExcel > 0 ? marketPriceFromExcel : fallback?.marketPrice || 0;
+  const eduPrice = eduPriceFromExcel > 0 ? eduPriceFromExcel : fallback?.eduPrice || 0;
+  const discount = Math.max(0, marketPrice - eduPrice);
+  const discountRate = marketPrice > 0 ? Number(((discount / marketPrice) * 100).toFixed(1)) : 0;
+  const screenSize = parseScreenSize(display) ?? fallback?.screenSize ?? null;
+  const weightKg = parseWeightKg(weight) ?? fallback?.weightKg ?? null;
+  const ramGB = parseRamGB(memory) ?? fallback?.ramGB ?? null;
+  const storageGB = parseStorageGB(storage) ?? fallback?.storageGB ?? null;
+  const rtx = fallback?.rtx ?? /rtx/i.test(gpu);
+  const oled = fallback?.oled ?? /oled/i.test(display);
+  const ai = fallback?.ai ?? /ai|xdna|core ultra/i.test(cpu);
+  const gpuTier = fallback?.gpuTier ?? deriveGpuTier(gpu);
+  const image = fallback?.image || `/laptop-images/model-gallery/${model}/01.webp`;
+  const imageKind = fallback?.imageKind || (image ? "產品圖" : "圖片待補");
+  const highlights = buildFeatureTags(row, fallback);
+  const tags = highlights.length
+    ? highlights
+    : fallback && Array.isArray(fallback.tags)
+      ? [...new Set(fallback.tags.map(String))]
+      : [];
+  const purposes = buildPurposes(row, fallback);
+  const performance =
+    fallback?.performance ??
+    Math.round((marketPrice > 0 ? 100000 / marketPrice : 0) + (ai ? 12 : 0) + (rtx ? 18 : 0));
+  const valueScore =
+    fallback?.valueScore ??
+    Math.round((marketPrice > 0 ? 120000 / marketPrice : 0) + discountRate * 2 + (ai ? 8 : 0));
+
+  const laptop = {
+    id: fallback?.id ?? `laptop-${String(index + 1).padStart(3, "0")}`,
+    barcode: readCell(row, 0) || fallback?.barcode || "",
+    model,
+    title,
+    family: inferFamily(model, fallback),
+    cpu,
+    memory,
+    storage,
+    gpu,
+    display,
+    weight,
+    warranty,
+    bundle,
+    marketPrice,
+    eduPrice,
+    discount,
+    discountRate,
+    featureIntro: readCell(row, 3) || fallback?.featureIntro || "",
+    highlights,
+    tags,
+    purposes,
+    image,
+    imageKind,
+    screenSize,
+    weightKg,
+    ramGB,
+    storageGB,
+    rtx,
+    oled,
+    ai,
+    gpuTier,
+    performance,
+    valueScore,
+    searchText: "",
+  };
+
+  laptop.searchText = buildSearchText(laptop);
+  return laptop;
 }
 
 async function readFallbackLaptops() {
@@ -160,142 +251,80 @@ async function readFallbackLaptops() {
   return JSON.parse(text.slice(start + marker.length).trim().replace(/;$/, ""));
 }
 
-function resolvePrimaryImage(model, fallbackImage) {
-  if (fallbackImage) return fallbackImage;
-  const folder = String(model);
-  const candidate = `/laptop-images/model-gallery/${folder}/01.webp`;
-  return candidate;
-}
-
 async function main() {
   const fallbackLaptops = await readFallbackLaptops();
-  const workbook = XLSX.read(await fs.readFile(sourceExcel), { cellDates: true });
+  const fallbackByModel = new Map(fallbackLaptops.map((item) => [normalizeText(item.model), item]));
+  const workbook = XLSX.read(await fs.readFile(excelPath), { cellDates: true });
   const firstSheet = workbook.SheetNames[0];
-  if (!firstSheet) throw new Error("Excel does not contain a sheet.");
 
-  const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], { defval: "" });
-  const fallbackByModel = new Map(
-    fallbackLaptops.map((item) => [normalizeText(item.model), item]),
-  );
+  if (!firstSheet) {
+    throw new Error("Excel does not contain a sheet.");
+  }
 
-  const laptops = rows
-    .map((row, index) => {
-      const model = getString(row, ["型號", "model", "Model"]);
-      if (!model) return null;
-      const fallback = fallbackByModel.get(normalizeText(model));
-      const title = getString(row, ["建檔檔名", "標題", "title"]) || fallback?.title || model;
-      const cpu = getString(row, ["CPU"]) || fallback?.cpu || "";
-      const memory = getString(row, ["記憶體", "RAM"]) || fallback?.memory || "";
-      const storage = getString(row, ["硬碟", "SSD"]) || fallback?.storage || "";
-      const gpu = getString(row, ["顯示卡", "GPU"]) || fallback?.gpu || "";
-      const display = getString(row, ["螢幕", "LCD"]) || fallback?.display || "";
-      const weight = getString(row, ["重量"]) || fallback?.weight || "";
-      const warranty = getString(row, ["保固"]) || fallback?.warranty || "";
-      const bundle = getString(row, ["標配", "bundle"]) || fallback?.bundle || "";
-      const marketPrice =
-        getNumber(row, ["建議售價", "市價", "marketPrice"]) || fallback?.marketPrice || 0;
-      const eduPrice =
-        getNumber(row, ["專案價", "教育價", "eduPrice"]) || fallback?.eduPrice || 0;
-      const discount = Math.max(0, marketPrice - eduPrice);
-      const discountRate = marketPrice > 0 ? Number(((discount / marketPrice) * 100).toFixed(1)) : 0;
-      const screenSize = parseScreenSize(display) ?? fallback?.screenSize ?? null;
-      const weightKg = Number(weight.match(/([0-9]+(?:\.[0-9]+)?)/)?.[1] ?? NaN);
-      const ramGB = parseRamGB(memory) ?? fallback?.ramGB ?? null;
-      const storageGB = parseStorageGB(storage) ?? fallback?.storageGB ?? null;
-      const rtx = fallback?.rtx ?? /rtx/i.test(gpu);
-      const oled = fallback?.oled ?? /oled/i.test(display);
-      const ai = fallback?.ai ?? /ai|xdna|core ultra/i.test(cpu);
-      const gpuTier = fallback?.gpuTier ?? deriveGpuTier(gpu);
-      const image = resolvePrimaryImage(model, fallback?.image ?? "");
-      const highlights = buildFeatureTags(row, fallback);
-      const tags = buildFeatureTags(row, fallback);
-      const purposes = buildPurposes(row, fallback);
-      const next = {
-        id: fallback?.id ?? `laptop-${String(index + 1).padStart(3, "0")}`,
-        barcode: getString(row, ["條碼", "國條", "barcode"]) || fallback?.barcode || "",
-        model,
-        title,
-        family: inferFamily(model, fallback),
-        cpu,
-        memory,
-        storage,
-        gpu,
-        display,
-        weight,
-        warranty,
-        bundle,
-        marketPrice: formatMoney(marketPrice),
-        eduPrice: formatMoney(eduPrice),
-        discount,
-        discountRate,
-        featureIntro: getString(row, ["特色介紹", "featureIntro"]) || fallback?.featureIntro || "",
-        highlights,
-        tags,
-        purposes,
-        image,
-        imageKind: image ? fallback?.imageKind || "產品圖" : "缺圖",
-        screenSize,
-        weightKg: Number.isFinite(weightKg) ? Number(weightKg.toFixed(2)) : fallback?.weightKg ?? null,
-        ramGB,
-        storageGB,
-        rtx,
-        oled,
-        ai,
-        gpuTier,
-        performance: fallback?.performance ?? Math.round((marketPrice > 0 ? 100000 / marketPrice : 0) + (ai ? 12 : 0) + (rtx ? 18 : 0)),
-        valueScore: fallback?.valueScore ?? Math.round((marketPrice > 0 ? 120000 / marketPrice : 0) + (discountRate * 2) + (ai ? 8 : 0)),
-      };
-      next.searchText = buildSearchText(next);
-      return next;
-    })
-    .filter(Boolean);
+  const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], { header: 1, defval: "" });
+  const laptops = [];
+  const seenModels = new Set();
+  let skipped = 0;
+
+  for (const row of rows.slice(1)) {
+    const model = readCell(row, 1);
+    if (!model || seenModels.has(model)) continue;
+    seenModels.add(model);
+    const fallback = fallbackByModel.get(normalizeText(model));
+    const laptop = buildLaptop(row, fallback, laptops.length);
+    if (!laptop) {
+      skipped += 1;
+      continue;
+    }
+    laptops.push(laptop);
+  }
 
   const content = [
-    'export type Laptop = {',
-    '  id: string;',
-    '  barcode: string;',
-    '  model: string;',
-    '  title: string;',
-    '  family: string;',
-    '  cpu: string;',
-    '  memory: string;',
-    '  storage: string;',
-    '  gpu: string;',
-    '  display: string;',
-    '  weight: string;',
-    '  warranty: string;',
-    '  bundle: string;',
-    '  marketPrice: number;',
-    '  eduPrice: number;',
-    '  discount: number;',
-    '  discountRate: number;',
-    '  featureIntro: string;',
-    '  highlights: string[] | string;',
-    '  tags: string[] | string;',
-    '  purposes: string[] | string;',
-    '  image: string;',
-    '  imageKind: string;',
-    '  screenSize: number | null;',
-    '  weightKg: number | null;',
-    '  ramGB: number | null;',
-    '  storageGB: number | null;',
-    '  rtx: boolean;',
-    '  oled: boolean;',
-    '  ai: boolean;',
-    '  gpuTier: number;',
-    '  performance: number;',
-    '  valueScore: number;',
-    '  searchText: string;',
-    '};',
-    '',
-    'export const laptops: Laptop[] = ',
+    "export type Laptop = {",
+    "  id: string;",
+    "  barcode: string;",
+    "  model: string;",
+    "  title: string;",
+    "  family: string;",
+    "  cpu: string;",
+    "  memory: string;",
+    "  storage: string;",
+    "  gpu: string;",
+    "  display: string;",
+    "  weight: string;",
+    "  warranty: string;",
+    "  bundle: string;",
+    "  marketPrice: number;",
+    "  eduPrice: number;",
+    "  discount: number;",
+    "  discountRate: number;",
+    "  featureIntro: string;",
+    "  highlights: string[] | string;",
+    "  tags: string[] | string;",
+    "  purposes: string[] | string;",
+    "  image: string;",
+    "  imageKind: string;",
+    "  screenSize: number | null;",
+    "  weightKg: number | null;",
+    "  ramGB: number | null;",
+    "  storageGB: number | null;",
+    "  rtx: boolean;",
+    "  oled: boolean;",
+    "  ai: boolean;",
+    "  gpuTier: number;",
+    "  performance: number;",
+    "  valueScore: number;",
+    "  searchText: string;",
+    "};",
+    "",
+    "export const laptops: Laptop[] = ",
     JSON.stringify(laptops, null, 2),
-    ';',
-    '',
-  ].join('\n');
+    ";",
+    "",
+  ].join("\n");
 
-  await fs.writeFile(dataPath, content, 'utf8');
-  console.log(JSON.stringify({ total: laptops.length, file: dataPath }, null, 2));
+  await fs.writeFile(dataPath, content, "utf8");
+  console.log(JSON.stringify({ total: laptops.length, skipped, file: dataPath }, null, 2));
 }
 
 main().catch((error) => {

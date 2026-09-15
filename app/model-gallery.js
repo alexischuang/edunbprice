@@ -371,6 +371,12 @@ window.modelGalleryMap = {
     "public/laptop-images/model-gallery/G815LP-0071C290HX-NBL/03.webp",
     "public/laptop-images/model-gallery/G815LP-0071C290HX-NBL/04.webp"
   ],
+  "FX610JH-0031D14450HX": [
+    "public/laptop-images/model-gallery/FX610JH-0031D14450HX/01.webp",
+    "public/laptop-images/model-gallery/FX610JH-0031D14450HX/02.webp",
+    "public/laptop-images/model-gallery/FX610JH-0031D14450HX/03.webp",
+    "public/laptop-images/model-gallery/FX610JH-0031D14450HX/04.webp"
+  ],
   "FX608JHR-0031A14450HX": [
     "public/laptop-images/model-gallery/FX608JHR-0031A14450HX/01.webp",
     "public/laptop-images/model-gallery/FX608JHR-0031A14450HX/02.webp",

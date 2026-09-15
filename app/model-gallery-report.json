@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-09-15T05:44:54.857Z",
+  "generatedAt": "2026-09-15T05:50:22.340Z",
   "sourceRoot": "D:\\校園筆電寢具專案\\ASUS\\202605PIC",
   "totalModels": 77,
-  "matchedModels": 76,
+  "matchedModels": 77,
   "maxImages": 4,
   "report": [
     {
@@ -694,9 +694,14 @@
     },
     {
       "model": "FX610JH-0031D14450HX",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX610JH-0031D14450HX\\P1.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX610JH-0031D14450HX\\P2.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX610JH-0031D14450HX\\P4.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FX610JH-0031D14450HX\\P6.jpg"
+      ]
     },
     {
       "model": "FX608JHR-0031A14450HX",

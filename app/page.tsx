@@ -7,7 +7,6 @@ import {
   budgetOptions,
   buildSearchText,
   formatMoney,
-  formatDiscountFold,
   getBudgetLimit,
   getGalleryCandidates,
   getGpuCategory,
@@ -66,11 +65,6 @@ function EducationPrice({ showEducationPrice, price }: { showEducationPrice: boo
       報價請洽服務人員
     </Link>
   );
-}
-
-function formatSavingsText(discount: number, discountRate: number) {
-  if (!discountRate) return `最多省下 ${formatMoney(discount)}`;
-  return `最多省下 ${formatMoney(discount)}，約為 ${formatDiscountFold(discountRate)}`;
 }
 
 function usePersistentBoolean(key: string, defaultValue: boolean) {
@@ -778,10 +772,6 @@ function LaptopCard({
           <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
         </div>
 
-        <div className="discount-line">
-          {formatSavingsText(laptop.discount, laptop.discountRate)}
-        </div>
-
         <div className="tag-row">
           {purposes.map((item) => (
             <span className="tag" key={item}>
@@ -897,9 +887,6 @@ function MobileLaptopCard({
             <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
           </strong>
           <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
-          <span className="discount-line">
-            {formatSavingsText(laptop.discount, laptop.discountRate)}
-          </span>
         </div>
         <div className="mobile-result-detail">
           <strong>{selected ? "點擊收合詳細規格" : "點選查看詳細規格"}</strong>

@@ -441,16 +441,6 @@ a {
   font-size: 13px;
 }
 
-.discount-line {
-  background: rgba(155, 93, 32, 0.08);
-  border: 1px solid rgba(155, 93, 32, 0.2);
-  border-radius: 12px;
-  color: var(--gold);
-  font-size: 13px;
-  font-weight: 850;
-  padding: 9px 11px;
-}
-
 .section {
   margin-bottom: 18px;
 }

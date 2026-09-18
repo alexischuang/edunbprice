@@ -7,7 +7,6 @@ import { useSearchParams } from "next/navigation";
 import {
   compareFields,
   formatMoney,
-  formatDiscountFold,
   getGalleryCandidates,
   getModelDisplayName,
   splitList,
@@ -63,7 +62,6 @@ function formatField(
 ) {
   if (key === "eduPrice") return <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />;
   if (key === "marketPrice") return formatMoney(laptop.marketPrice);
-  if (key === "discount") return formatMoney(laptop.discount);
   return String(laptop[key as keyof Laptop] ?? "");
 }
 
@@ -113,7 +111,7 @@ export default function CompareClient() {
             <p className="eyebrow">comparison</p>
             <h1>多機比較</h1>
             <p className="compare-lead">
-              圖片先放上方，接著逐欄比較 CPU、RAM、SSD、LCD、顯示卡、教育價、市價、折扣、重量與保固。
+              圖片先放上方，接著逐欄比較 CPU、RAM、SSD、LCD、顯示卡、教育價、市價、重量與保固。
             </p>
           </div>
 
@@ -147,10 +145,6 @@ export default function CompareClient() {
                         <EducationPrice showEducationPrice={showEducationPrice} price={laptop.eduPrice} />
                       </strong>
                       <span className="market">市價 {formatMoney(laptop.marketPrice)}</span>
-                      <span className="market">
-                        目前最高折扣 {formatMoney(laptop.discount)}
-                        {laptop.discountRate ? ` · ${formatDiscountFold(laptop.discountRate)}` : ""}
-                      </span>
                     </div>
                   </div>
                 </article>

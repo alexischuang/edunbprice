@@ -19,7 +19,6 @@ export const compareFields = [
   { key: "gpu", label: "顯示卡" },
   { key: "eduPrice", label: "教育價" },
   { key: "marketPrice", label: "市價" },
-  { key: "discount", label: "目前最高折扣" },
   { key: "weight", label: "重量" },
   { key: "warranty", label: "保固" },
 ] as const;

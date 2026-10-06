@@ -167,8 +167,7 @@ function buildLaptop(row, fallback, index) {
   const marketPriceFromExcel = readPositiveNumber(row, 12);
   const eduPriceFromExcel = readPositiveNumber(row, 14);
   const hasExcelPrice = marketPriceFromExcel > 0 || eduPriceFromExcel > 0;
-  const hasFallbackPrice = Boolean(fallback && (fallback.marketPrice > 0 || fallback.eduPrice > 0));
-  if (!hasExcelPrice && !hasFallbackPrice) return null;
+  if (!hasExcelPrice) return null;
 
   const title = readCell(row, 2) || fallback?.title || model;
   const cpu = readCell(row, 3) || fallback?.cpu || "";
@@ -179,18 +178,18 @@ function buildLaptop(row, fallback, index) {
   const weight = readCell(row, 8) || fallback?.weight || "";
   const warranty = readCell(row, 9) || fallback?.warranty || "";
   const bundle = readCell(row, 10) || fallback?.bundle || "";
-  const marketPrice = marketPriceFromExcel > 0 ? marketPriceFromExcel : fallback?.marketPrice || 0;
-  const eduPrice = eduPriceFromExcel > 0 ? eduPriceFromExcel : fallback?.eduPrice || 0;
+  const marketPrice = marketPriceFromExcel;
+  const eduPrice = eduPriceFromExcel;
   const discount = Math.max(0, marketPrice - eduPrice);
   const discountRate = marketPrice > 0 ? Number(((discount / marketPrice) * 100).toFixed(1)) : 0;
   const screenSize = parseScreenSize(display) ?? fallback?.screenSize ?? null;
   const weightKg = parseWeightKg(weight) ?? fallback?.weightKg ?? null;
   const ramGB = parseRamGB(memory) ?? fallback?.ramGB ?? null;
   const storageGB = parseStorageGB(storage) ?? fallback?.storageGB ?? null;
-  const rtx = fallback?.rtx ?? /rtx/i.test(gpu);
-  const oled = fallback?.oled ?? /oled/i.test(display);
-  const ai = fallback?.ai ?? /ai|xdna|core ultra/i.test(cpu);
-  const gpuTier = fallback?.gpuTier ?? deriveGpuTier(gpu);
+  const rtx = /rtx/i.test(gpu);
+  const oled = /oled/i.test(display);
+  const ai = /ai|xdna|core ultra/i.test(cpu);
+  const gpuTier = deriveGpuTier(gpu);
   const image = fallback?.image || `/laptop-images/model-gallery/${model}/01.webp`;
   const imageKind = fallback?.imageKind || (image ? "產品圖" : "圖片待補");
   const featureIntro = readCell(row, 15) || fallback?.featureIntro || "";

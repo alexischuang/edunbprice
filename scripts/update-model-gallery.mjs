@@ -124,6 +124,9 @@ async function main() {
       modelGalleryMap[model] = webPaths;
     }
 
+    laptop.image = webPaths[0] || "";
+    laptop.imageKind = webPaths.length ? "產品圖" : "缺圖";
+
     report.push({
       model,
       matched: matches.length,
@@ -137,6 +140,15 @@ async function main() {
     JSON.stringify(modelGalleryMap, null, 2),
     ";\n",
   ].join("");
+
+  const dataSource = await fs.readFile(dataPath, "utf8");
+  const dataStart = dataSource.indexOf(marker);
+  if (dataStart < 0) throw new Error("Cannot find laptop data marker.");
+  await fs.writeFile(
+    dataPath,
+    `${dataSource.slice(0, dataStart + marker.length)}${JSON.stringify(laptops, null, 2)};\n`,
+    "utf8",
+  );
 
   await fs.writeFile(mapPath, mapSource, "utf8");
   await fs.writeFile(

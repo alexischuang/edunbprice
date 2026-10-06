@@ -73,7 +73,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX3405CA-0202B255H/01.webp",
+    "image": "/laptop-images/model-gallery/UX3405CA-0202B255H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.22,
@@ -124,7 +124,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX3405CA-0192S255H/01.webp",
+    "image": "/laptop-images/model-gallery/UX3405CA-0192S255H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.22,
@@ -174,7 +174,7 @@ export const laptops: Laptop[] = [
       "office",
       "creator"
     ],
-    "image": "public/laptop-images/model-gallery/UX3405CA-0122B225H/01.webp",
+    "image": "/laptop-images/model-gallery/UX3405CA-0122B225H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.22,
@@ -223,7 +223,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX3405CA-0182S225H/01.webp",
+    "image": "/laptop-images/model-gallery/UX3405CA-0182S225H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.22,
@@ -274,7 +274,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX5406AA-0042G386H/01.webp",
+    "image": "/laptop-images/model-gallery/UX5406AA-0042G386H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.2,
@@ -326,7 +326,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/UX5406AA-0082G355/01.webp",
+    "image": "/laptop-images/model-gallery/UX5406AA-0082G355/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.2,
@@ -378,7 +378,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/UX5406AA-0092W355/01.webp",
+    "image": "/laptop-images/model-gallery/UX5406AA-0092W355/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.2,
@@ -428,7 +428,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/S5406SA-0108B256V/01.webp",
+    "image": "/laptop-images/model-gallery/S5406SA-0108B256V/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.3,
@@ -480,7 +480,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/S5406SA-0068B226V/01.webp",
+    "image": "/laptop-images/model-gallery/S5406SA-0068B226V/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.3,
@@ -530,7 +530,7 @@ export const laptops: Laptop[] = [
       "office",
       "creator"
     ],
-    "image": "public/laptop-images/model-gallery/S5406SAL-0198F226V/01.webp",
+    "image": "/laptop-images/model-gallery/S5406SAL-0198F226V/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.3,
@@ -579,7 +579,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/S3607AA-0052G325/01.webp",
+    "image": "/laptop-images/model-gallery/S3607AA-0052G325/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.7,
@@ -625,7 +625,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/S3607AA-0072C325/01.webp",
+    "image": "/laptop-images/model-gallery/S3607AA-0072C325/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.7,
@@ -671,7 +671,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/S3607AA-0082E325/01.webp",
+    "image": "/laptop-images/model-gallery/S3607AA-0082E325/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.7,
@@ -715,7 +715,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/S5652MA-0052G350/01.webp",
+    "image": "/laptop-images/model-gallery/S5652MA-0052G350/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.5,
@@ -956,7 +956,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/X1407QA-0041D26100/01.webp",
+    "image": "/laptop-images/model-gallery/X1407QA-0041D26100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.49,
@@ -1106,7 +1106,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UM3406GA-0042K430H/01.webp",
+    "image": "/laptop-images/model-gallery/UM3406GA-0042K430H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.2,
@@ -1156,7 +1156,7 @@ export const laptops: Laptop[] = [
       "office",
       "creator"
     ],
-    "image": "public/laptop-images/model-gallery/UX3480QA-0022B26100/01.webp",
+    "image": "/laptop-images/model-gallery/UX3480QA-0022B26100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.1,
@@ -1206,7 +1206,7 @@ export const laptops: Laptop[] = [
       "office",
       "creator"
     ],
-    "image": "public/laptop-images/model-gallery/UX3480QA-0112D26100/01.webp",
+    "image": "/laptop-images/model-gallery/UX3480QA-0112D26100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.1,
@@ -1257,7 +1257,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/M1807GA-0061B445H/01.webp",
+    "image": "/laptop-images/model-gallery/M1807GA-0061B445H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 18,
     "weightKg": 2.6,
@@ -1303,7 +1303,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/X1504MA-0081B350/01.webp",
+    "image": "/laptop-images/model-gallery/X1504MA-0081B350/01.webp",
     "imageKind": "產品圖",
     "screenSize": 15.6,
     "weightKg": 1.7,
@@ -1349,7 +1349,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/X1504MA-0031B320/01.webp",
+    "image": "/laptop-images/model-gallery/X1504MA-0031B320/01.webp",
     "imageKind": "產品圖",
     "screenSize": 15.6,
     "weightKg": 1.7,
@@ -1395,7 +1395,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/X1504MA-0061C320/01.webp",
+    "image": "/laptop-images/model-gallery/X1504MA-0061C320/01.webp",
     "imageKind": "產品圖",
     "screenSize": 15.6,
     "weightKg": 1.7,
@@ -1441,7 +1441,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/X1504MA-0051B304/01.webp",
+    "image": "/laptop-images/model-gallery/X1504MA-0051B304/01.webp",
     "imageKind": "產品圖",
     "screenSize": 15.6,
     "weightKg": 1.7,
@@ -1485,7 +1485,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/M1502XA-0021B7840HS/01.webp",
+    "image": "/laptop-images/model-gallery/M1502XA-0021B7840HS/01.webp",
     "imageKind": "產品圖",
     "screenSize": 15.6,
     "weightKg": 1.7,
@@ -1529,7 +1529,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/X1504VA-0581B120U/01.webp",
+    "image": "/laptop-images/model-gallery/X1504VA-0581B120U/01.webp",
     "imageKind": "產品圖",
     "screenSize": 15.6,
     "weightKg": 1.7,
@@ -1573,7 +1573,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/X1504VA-0591C120U/01.webp",
+    "image": "/laptop-images/model-gallery/X1504VA-0591C120U/01.webp",
     "imageKind": "產品圖",
     "screenSize": 15.6,
     "weightKg": 1.7,
@@ -1617,7 +1617,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/X1504VA-0611B100U/01.webp",
+    "image": "/laptop-images/model-gallery/X1504VA-0611B100U/01.webp",
     "imageKind": "產品圖",
     "screenSize": 15.6,
     "weightKg": 1.7,
@@ -1667,7 +1667,7 @@ export const laptops: Laptop[] = [
       "office",
       "creator"
     ],
-    "image": "public/laptop-images/model-gallery/UX8406CA-0042I285H/01.webp",
+    "image": "/laptop-images/model-gallery/UX8406CA-0042I285H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.35,
@@ -1718,7 +1718,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX8407AA-0083I358H/01.webp",
+    "image": "/laptop-images/model-gallery/UX8407AA-0083I358H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.65,
@@ -1772,7 +1772,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/UX8407AA-0103I378H/01.webp",
+    "image": "/laptop-images/model-gallery/UX8407AA-0103I378H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.65,
@@ -1824,7 +1824,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/S3607CA-0182G225H/01.webp",
+    "image": "/laptop-images/model-gallery/S3607CA-0182G225H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.7,
@@ -1874,7 +1874,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/UX3607OA-0032D94100/01.webp",
+    "image": "/laptop-images/model-gallery/UX3607OA-0032D94100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.2,
@@ -1924,7 +1924,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX3607QA-0052D26100/01.webp",
+    "image": "/laptop-images/model-gallery/UX3607QA-0052D26100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.1,
@@ -1974,7 +1974,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX3607QA-0062G26100/01.webp",
+    "image": "/laptop-images/model-gallery/UX3607QA-0062G26100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.1,
@@ -2023,7 +2023,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX3407QA-0232D26100/01.webp",
+    "image": "/laptop-images/model-gallery/UX3407QA-0232D26100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 980,
@@ -2072,7 +2072,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX3407QA-0202G26100/01.webp",
+    "image": "/laptop-images/model-gallery/UX3407QA-0202G26100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 980,
@@ -2126,7 +2126,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX3407NA-0112D88100/01.webp",
+    "image": "/laptop-images/model-gallery/UX3407NA-0112D88100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 990,
@@ -2180,7 +2180,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX3407NA-0122G88100/01.webp",
+    "image": "/laptop-images/model-gallery/UX3407NA-0122G88100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 990,
@@ -2225,7 +2225,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX3407QA-0242D26100/01.webp",
+    "image": "/laptop-images/model-gallery/UX3407QA-0242D26100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 899,
@@ -2270,7 +2270,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/UX3407QA-0212G26100/01.webp",
+    "image": "/laptop-images/model-gallery/UX3407QA-0212G26100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 899,
@@ -2468,7 +2468,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/S3607NA-0062B88100/01.webp",
+    "image": "/laptop-images/model-gallery/S3607NA-0062B88100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.74,
@@ -2518,7 +2518,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/S3607QA-0042G26100/01.webp",
+    "image": "/laptop-images/model-gallery/S3607QA-0042G26100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.74,
@@ -2568,7 +2568,7 @@ export const laptops: Laptop[] = [
       "office",
       "creator"
     ],
-    "image": "public/laptop-images/model-gallery/TP3407AA-0033G355/01.webp",
+    "image": "/laptop-images/model-gallery/TP3407AA-0033G355/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.57,
@@ -2617,7 +2617,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/TP5408QA-0033B26100/01.webp",
+    "image": "/laptop-images/model-gallery/TP5408QA-0033B26100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.39,
@@ -2665,7 +2665,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/S3407QA-0042G26100/01.webp",
+    "image": "/laptop-images/model-gallery/S3407QA-0042G26100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.49,
@@ -2714,7 +2714,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/S5408QA-0168B26101/01.webp",
+    "image": "/laptop-images/model-gallery/S5408QA-0168B26101/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.28,
@@ -2768,7 +2768,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/X1607CA-0021B225H/01.webp",
+    "image": "/laptop-images/model-gallery/X1607CA-0021B225H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.88,
@@ -2820,7 +2820,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/X1607AA-0031B325/01.webp",
+    "image": "/laptop-images/model-gallery/X1607AA-0031B325/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.88,
@@ -2873,7 +2873,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/H7606GP-0023K465/01.webp",
+    "image": "/laptop-images/model-gallery/H7606GP-0023K465/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.85,
@@ -2926,7 +2926,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/HN7306EA-0033K395/01.webp",
+    "image": "/laptop-images/model-gallery/HN7306EA-0033K395/01.webp",
     "imageKind": "產品圖",
     "screenSize": 13.3,
     "weightKg": 1.39,
@@ -2975,7 +2975,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/HT7407NA-0033K88100/01.webp",
+    "image": "/laptop-images/model-gallery/HT7407NA-0033K88100/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 0.79,
@@ -3021,7 +3021,7 @@ export const laptops: Laptop[] = [
       "office",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/X1704MA-0031B320/01.webp",
+    "image": "/laptop-images/model-gallery/X1704MA-0031B320/01.webp",
     "imageKind": "產品圖",
     "screenSize": 17.3,
     "weightKg": 2.1,
@@ -3110,7 +3110,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/X1404MA-0051B320/01.webp",
+    "image": "/laptop-images/model-gallery/X1404MA-0051B320/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.4,
@@ -3153,7 +3153,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/X1404MA-0061W320/01.webp",
+    "image": "/laptop-images/model-gallery/X1404MA-0061W320/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.4,
@@ -3196,7 +3196,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/X1404VA-0381B120U/01.webp",
+    "image": "/laptop-images/model-gallery/X1404VA-0381B120U/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.4,
@@ -3239,7 +3239,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/X1404VA-0421W120U/01.webp",
+    "image": "/laptop-images/model-gallery/X1404VA-0421W120U/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.4,
@@ -3289,7 +3289,7 @@ export const laptops: Laptop[] = [
       "office",
       "creator"
     ],
-    "image": "public/laptop-images/model-gallery/T3201M5A-0023W8792/01.webp",
+    "image": "/laptop-images/model-gallery/T3201M5A-0023W8792/01.webp",
     "imageKind": "產品圖",
     "screenSize": 12.2,
     "weightKg": 0.532,
@@ -3345,7 +3345,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/GX651AX-0022B386H-NBLO/01.webp",
+    "image": "/laptop-images/model-gallery/GX651AX-0022B386H-NBLO/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.95,
@@ -3401,7 +3401,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/GU606AX-0048H386H-NBLO/01.webp",
+    "image": "/laptop-images/model-gallery/GU606AX-0048H386H-NBLO/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.95,
@@ -3503,7 +3503,7 @@ export const laptops: Laptop[] = [
       "creator",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/G835LXG-0081A290HX-NBLM/01.webp",
+    "image": "/laptop-images/model-gallery/G835LXG-0081A290HX-NBLM/01.webp",
     "imageKind": "產品圖",
     "screenSize": 18,
     "weightKg": 3.73,
@@ -3559,7 +3559,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/G815LW-0071G290HX-NBLM/01.webp",
+    "image": "/laptop-images/model-gallery/G815LW-0071G290HX-NBLM/01.webp",
     "imageKind": "產品圖",
     "screenSize": 18,
     "weightKg": 3.2,
@@ -3614,7 +3614,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/GU405AR-0028H386H-NBLO/01.webp",
+    "image": "/laptop-images/model-gallery/GU405AR-0028H386H-NBLO/01.webp",
     "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.58,
@@ -3666,7 +3666,7 @@ export const laptops: Laptop[] = [
       "creator",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/G815LP-0071C290HX-NBL/01.webp",
+    "image": "/laptop-images/model-gallery/G815LP-0071C290HX-NBL/01.webp",
     "imageKind": "產品圖",
     "screenSize": 18,
     "weightKg": 3.2,
@@ -3715,7 +3715,7 @@ export const laptops: Laptop[] = [
       "gaming",
       "large"
     ],
-    "image": "public/laptop-images/model-gallery/FX610JH-0031D14450HX/01.webp",
+    "image": "/laptop-images/model-gallery/FX610JH-0031D14450HX/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 2.2,
@@ -3767,7 +3767,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/FX607VU-0103A210H/01.webp",
+    "image": "/laptop-images/model-gallery/FX607VU-0103A210H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 2.2,
@@ -3820,7 +3820,7 @@ export const laptops: Laptop[] = [
       "study",
       "office"
     ],
-    "image": "public/laptop-images/model-gallery/FX707VJB-0032A210H/01.webp",
+    "image": "/laptop-images/model-gallery/FX707VJB-0032A210H/01.webp",
     "imageKind": "產品圖",
     "screenSize": 17,
     "weightKg": 2.6,

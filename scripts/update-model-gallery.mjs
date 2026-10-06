@@ -86,7 +86,7 @@ async function convertImage(source, destination) {
 }
 
 function toWebPath(...segments) {
-  return segments.join("/");
+  return `/${segments.join("/")}`;
 }
 
 async function main() {
@@ -117,7 +117,7 @@ async function main() {
       const fileName = `${String(index + 1).padStart(2, "0")}.webp`;
       const outputPath = path.join(outputDir, fileName);
       await convertImage(selected[index], outputPath);
-      webPaths.push(toWebPath("public", "laptop-images", "model-gallery", folder, fileName));
+      webPaths.push(toWebPath("laptop-images", "model-gallery", folder, fileName));
     }
 
     if (webPaths.length) {

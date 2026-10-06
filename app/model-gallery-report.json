@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-06T04:08:09.397Z",
+  "generatedAt": "2026-10-06T15:44:45.883Z",
   "sourceRoot": "D:\\校園筆電寢具專案\\ASUS\\202605PIC",
   "totalModels": 77,
-  "matchedModels": 66,
+  "matchedModels": 77,
   "maxImages": 4,
   "report": [
     {
@@ -157,27 +157,47 @@
     },
     {
       "model": "S5652MA-0062S350",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0062S350酷玩銀\\P1.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0062S350酷玩銀\\P2.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0062S350酷玩銀\\P3.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0062S350酷玩銀\\P4.jpg"
+      ]
     },
     {
       "model": "S5652MA-0072G350",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0072G350夜幕灰\\P5.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0072G350夜幕灰\\P6.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0072G350夜幕灰\\P7.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0072G350夜幕灰\\P8.jpg"
+      ]
     },
     {
       "model": "S5452MA-0072G350",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0072G350夜幕灰\\P1.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0072G350夜幕灰\\P2.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0072G350夜幕灰\\P3.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0072G350夜幕灰\\P4.jpg"
+      ]
     },
     {
       "model": "V3607VJ-0151K240H",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\V3607VJ-0151K240H靜謐黑\\P1.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\V3607VJ-0151K240H靜謐黑\\P2.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\V3607VJ-0151K240H靜謐黑\\P3.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\V3607VJ-0151K240H靜謐黑\\P4.jpg"
+      ]
     },
     {
       "model": "X1407QA-0041D26100",
@@ -192,15 +212,25 @@
     },
     {
       "model": "UX3480AA-0052B355",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3480AA-0052B355極地藍\\P5.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3480AA-0052B355極地藍\\P6.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3480AA-0052B355極地藍\\P7.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3480AA-0052B355極地藍\\P8.jpg"
+      ]
     },
     {
       "model": "UX3480AA-0022B325",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3480AA-0022B325極地藍\\P5.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3480AA-0022B325極地藍\\P6.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3480AA-0022B325極地藍\\P7.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UX3480AA-0022B325極地藍\\P8.jpg"
+      ]
     },
     {
       "model": "UM3406GA-0042K430H",
@@ -478,21 +508,36 @@
     },
     {
       "model": "S5608QA-0148B26101",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5608QA-0148B26101率性藍\\P5.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5608QA-0148B26101率性藍\\P6.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5608QA-0148B26101率性藍\\P7.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5608QA-0148B26101率性藍\\P8.jpg"
+      ]
     },
     {
       "model": "S5608QA-0158G26101",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5608QA-0158G26101夜幕灰\\P1.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5608QA-0158G26101夜幕灰\\P2.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5608QA-0158G26101夜幕灰\\P3.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5608QA-0158G26101夜幕灰\\P4.jpg"
+      ]
     },
     {
       "model": "S5608QA-0128B26101",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5608QA-0128B26101率性藍\\P5.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5608QA-0128B26101率性藍\\P6.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5608QA-0128B26101率性藍\\P7.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5608QA-0128B26101率性藍\\P8.jpg"
+      ]
     },
     {
       "model": "S3607NA-0062B88100",
@@ -628,9 +673,14 @@
     },
     {
       "model": "X1704MA-0041B304",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 5,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\X1704MA-0041B304午夜藍\\P1.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\X1704MA-0041B304午夜藍\\P2.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\X1704MA-0041B304午夜藍\\P3.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\X1704MA-0041B304午夜藍\\P4.jpg"
+      ]
     },
     {
       "model": "X1404MA-0051B320",
@@ -710,9 +760,14 @@
     },
     {
       "model": "G835LXG-0181A290HX-NBLM",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\G835LXG-0181A290HX-NBLM闇夜黑\\P1.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\G835LXG-0181A290HX-NBLM闇夜黑\\P2.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\G835LXG-0181A290HX-NBLM闇夜黑\\P3.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\G835LXG-0181A290HX-NBLM闇夜黑\\P4.jpg"
+      ]
     },
     {
       "model": "G835LXG-0081A290HX-NBLM",

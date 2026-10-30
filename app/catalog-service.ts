@@ -171,6 +171,8 @@ function parseStorageGB(value: string) {
 
 function deriveGpuTier(gpu: string) {
   const text = gpu.toLowerCase();
+  if (text.includes("5090")) return 5090;
+  if (text.includes("5080")) return 5080;
   if (text.includes("5070")) return 5070;
   if (text.includes("5060")) return 5060;
   if (text.includes("4070")) return 4070;
@@ -295,10 +297,10 @@ function buildLaptopFromRow(
   const weightKg = parseWeightKg(weight) ?? fallback?.weightKg ?? null;
   const ramGB = parseRamGB(memory) ?? fallback?.ramGB ?? null;
   const storageGB = parseStorageGB(storage) ?? fallback?.storageGB ?? null;
-  const rtx = fallback?.rtx ?? /rtx/i.test(gpu);
-  const oled = fallback?.oled ?? /oled/i.test(display);
-  const ai = fallback?.ai ?? /ai|xdna|core ultra/i.test(cpu);
-  const gpuTier = fallback?.gpuTier ?? deriveGpuTier(gpu);
+  const rtx = /rtx/i.test(gpu);
+  const oled = /oled/i.test(display);
+  const ai = /ai|xdna|core ultra/i.test(cpu);
+  const gpuTier = deriveGpuTier(gpu);
   const image = resolvePrimaryImage(model, fallback?.image ?? "", imageFiles);
 
   const next: Laptop = {

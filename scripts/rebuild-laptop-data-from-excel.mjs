@@ -71,6 +71,8 @@ function parseStorageGB(value) {
 
 function deriveGpuTier(gpu) {
   const text = String(gpu ?? "").toLowerCase();
+  if (text.includes("5090")) return 5090;
+  if (text.includes("5080")) return 5080;
   if (text.includes("5070")) return 5070;
   if (text.includes("5060")) return 5060;
   if (text.includes("5050")) return 5050;

@@ -360,7 +360,7 @@ export default function HomePage() {
             const gpuCategory = getGpuCategory(laptop);
             const ramCategory = getRamCategory(laptop);
             return (
-              ["rtx-4050", "rtx-4060", "rtx-4070", "rtx-5060", "rtx-5070"].includes(gpuCategory) &&
+              laptop.gpuTier >= 4050 &&
               ["16g", "16g-2", "32g", "32g-2", "64g", "128g"].includes(ramCategory)
             );
           }

@@ -454,5 +454,65 @@ window.modelGalleryMap = {
     "/laptop-images/model-gallery/FX707VJB-0032A210H/02.webp",
     "/laptop-images/model-gallery/FX707VJB-0032A210H/03.webp",
     "/laptop-images/model-gallery/FX707VJB-0032A210H/04.webp"
+  ],
+  "G614PR-0074C8940HX-NBL": [
+    "/laptop-images/model-gallery/G614PR-0074C8940HX-NBL/01.webp",
+    "/laptop-images/model-gallery/G614PR-0074C8940HX-NBL/02.webp",
+    "/laptop-images/model-gallery/G614PR-0074C8940HX-NBL/03.webp",
+    "/laptop-images/model-gallery/G614PR-0074C8940HX-NBL/04.webp"
+  ],
+  "G614PW-0034C8940HX-NBL": [
+    "/laptop-images/model-gallery/G614PW-0034C8940HX-NBL/01.webp",
+    "/laptop-images/model-gallery/G614PW-0034C8940HX-NBL/02.webp",
+    "/laptop-images/model-gallery/G614PW-0034C8940HX-NBL/03.webp",
+    "/laptop-images/model-gallery/G614PW-0034C8940HX-NBL/04.webp"
+  ],
+  "G814PP-0064C8940HX-NBL": [
+    "/laptop-images/model-gallery/G814PP-0064C8940HX-NBL/01.webp",
+    "/laptop-images/model-gallery/G814PP-0064C8940HX-NBL/02.webp",
+    "/laptop-images/model-gallery/G814PP-0064C8940HX-NBL/03.webp",
+    "/laptop-images/model-gallery/G814PP-0064C8940HX-NBL/04.webp"
+  ],
+  "FA608PP-0071A8940HX": [
+    "/laptop-images/model-gallery/FA608PP-0071A8940HX/01.webp",
+    "/laptop-images/model-gallery/FA608PP-0071A8940HX/02.webp",
+    "/laptop-images/model-gallery/FA608PP-0071A8940HX/03.webp",
+    "/laptop-images/model-gallery/FA608PP-0071A8940HX/04.webp"
+  ],
+  "GA403GM-0092H465H-NBLO": [
+    "/laptop-images/model-gallery/GA403GM-0092H465H-NBLO/01.webp",
+    "/laptop-images/model-gallery/GA403GM-0092H465H-NBLO/02.webp",
+    "/laptop-images/model-gallery/GA403GM-0092H465H-NBLO/03.webp",
+    "/laptop-images/model-gallery/GA403GM-0092H465H-NBLO/04.webp"
+  ],
+  "G614PM-0044C8940HX-NBL": [
+    "/laptop-images/model-gallery/G614PM-0044C8940HX-NBL/01.webp",
+    "/laptop-images/model-gallery/G614PM-0044C8940HX-NBL/02.webp",
+    "/laptop-images/model-gallery/G614PM-0044C8940HX-NBL/03.webp",
+    "/laptop-images/model-gallery/G614PM-0044C8940HX-NBL/04.webp"
+  ],
+  "FA808UM-0031A260H": [
+    "/laptop-images/model-gallery/FA808UM-0031A260H/01.webp",
+    "/laptop-images/model-gallery/FA808UM-0031A260H/02.webp",
+    "/laptop-images/model-gallery/FA808UM-0031A260H/03.webp",
+    "/laptop-images/model-gallery/FA808UM-0031A260H/04.webp"
+  ],
+  "FA608PMR-0041A8940HX": [
+    "/laptop-images/model-gallery/FA608PMR-0041A8940HX/01.webp",
+    "/laptop-images/model-gallery/FA608PMR-0041A8940HX/02.webp",
+    "/laptop-images/model-gallery/FA608PMR-0041A8940HX/03.webp",
+    "/laptop-images/model-gallery/FA608PMR-0041A8940HX/04.webp"
+  ],
+  "FA808UH-0021A260H": [
+    "/laptop-images/model-gallery/FA808UH-0021A260H/01.webp",
+    "/laptop-images/model-gallery/FA808UH-0021A260H/02.webp",
+    "/laptop-images/model-gallery/FA808UH-0021A260H/03.webp",
+    "/laptop-images/model-gallery/FA808UH-0021A260H/04.webp"
+  ],
+  "FA608UHI-0061A260H": [
+    "/laptop-images/model-gallery/FA608UHI-0061A260H/01.webp",
+    "/laptop-images/model-gallery/FA608UHI-0061A260H/02.webp",
+    "/laptop-images/model-gallery/FA608UHI-0061A260H/03.webp",
+    "/laptop-images/model-gallery/FA608UHI-0061A260H/04.webp"
   ]
 };

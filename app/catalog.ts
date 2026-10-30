@@ -80,12 +80,16 @@ const gpuOptionLabels: Record<string, string> = {
   "rtx-3050": "RTX 3050",
   "rtx-4050": "RTX 4050",
   "rtx-5050": "RTX 5050",
+  "rtx-4060": "RTX 4060",
+  "rtx-4070": "RTX 4070",
   "rtx-5060": "RTX 5060",
   "rtx-5070": "RTX 5070",
+  "rtx-5080": "RTX 5080",
+  "rtx-5090": "RTX 5090",
   other: "其他等級",
 };
 
-const gpuOptionOrder = ["igpu", "rtx-3050", "rtx-4050", "rtx-5050", "rtx-5060", "rtx-5070", "other"];
+const gpuOptionOrder = ["igpu", "rtx-3050", "rtx-4050", "rtx-4060", "rtx-4070", "rtx-5050", "rtx-5060", "rtx-5070", "rtx-5080", "rtx-5090", "other"];
 
 export function getGpuOptions(laptops: Laptop[]): FilterOption[] {
   const present = new Set<string>();
@@ -304,6 +308,8 @@ export function getScreenCategory(laptop: Laptop) {
 export function getGpuCategory(laptop: Laptop) {
   const value = normalizeText(`${laptop.gpu} ${laptop.gpuTier ?? ""}`);
 
+  if (value.includes("5090")) return "rtx-5090";
+  if (value.includes("5080")) return "rtx-5080";
   if (value.includes("5050")) return "rtx-5050";
   if (value.includes("3050")) return "rtx-3050";
   if (value.includes("4050")) return "rtx-4050";
@@ -311,6 +317,7 @@ export function getGpuCategory(laptop: Laptop) {
   if (value.includes("4070")) return "rtx-4070";
   if (value.includes("5060")) return "rtx-5060";
   if (value.includes("5070")) return "rtx-5070";
+  if (value.includes("rtx")) return "other";
   return "igpu";
 }
 

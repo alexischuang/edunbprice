@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-30T04:10:52.848Z",
+  "generatedAt": "2026-11-02T10:26:49.413Z",
   "sourceRoot": "D:\\校園筆電寢具專案\\ASUS\\202605PIC",
-  "totalModels": 98,
+  "totalModels": 102,
   "matchedModels": 87,
   "maxImages": 4,
   "report": [
@@ -178,6 +178,18 @@
       ]
     },
     {
+      "model": "S5652MA-0082G320",
+      "matched": 0,
+      "exported": 0,
+      "sources": []
+    },
+    {
+      "model": "S5652MA-0092S320",
+      "matched": 0,
+      "exported": 0,
+      "sources": []
+    },
+    {
       "model": "S5452MA-0072G350",
       "matched": 4,
       "exported": 4,
@@ -190,6 +202,18 @@
     },
     {
       "model": "S5452MA-0082S350",
+      "matched": 0,
+      "exported": 0,
+      "sources": []
+    },
+    {
+      "model": "S5452MA-0112G320",
+      "matched": 0,
+      "exported": 0,
+      "sources": []
+    },
+    {
+      "model": "S5452MA-0122S320",
       "matched": 0,
       "exported": 0,
       "sources": []

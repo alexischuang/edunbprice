@@ -977,7 +977,7 @@ export const laptops: Laptop[] = [
     "id": "laptop-018",
     "barcode": "4711636748704",
     "model": "S5452MA-0082S350",
-    "title": "S5452MA-0082S350(Intel core 7 350/16G/512G/14吋WUXGA IPS )",
+    "title": "S5452MA-0082S350酷玩銀(Intel core 7 350/16G/512G/14吋WUXGA IPS )",
     "family": "S5452MA",
     "cpu": "Intel Core 7 Processor 350 1.5 GHz (6MB Cache, up to 4.8 GHz, 6 cores, 6 Threads); Intel NPU up to 17TOPS",
     "memory": "16GB LPDDR5X on board (Max 16GB)",
@@ -1019,7 +1019,7 @@ export const laptops: Laptop[] = [
     "gpuTier": 0,
     "performance": 2,
     "valueScore": 16,
-    "searchText": "s5452ma 0082s350 s5452ma 0082s350 intel core 7 350 16g 512g 14吋wuxga ips s5452ma intel core 7 processor 350 1 5 ghz 6mb cache up to 4 8 ghz 6 cores 6 threads intel npu up to 17tops 16gb lpddr5x on board max 16gb 512gb m 2 nvme pcie 4 0 ssd intel graphics 14吋 wuxga 1920 x 1200 16 10 ips level 60hz 300nits 100 srgb 霧面非觸控螢幕 1 20 kg 兩年國際保固 首年完美保固 有線光學滑鼠 usb 背包 4711636748704 ai 加速 輕薄便攜 大螢幕 ai 加速 輕薄便攜 大螢幕 study office creator"
+    "searchText": "s5452ma 0082s350 s5452ma 0082s350酷玩銀 intel core 7 350 16g 512g 14吋wuxga ips s5452ma intel core 7 processor 350 1 5 ghz 6mb cache up to 4 8 ghz 6 cores 6 threads intel npu up to 17tops 16gb lpddr5x on board max 16gb 512gb m 2 nvme pcie 4 0 ssd intel graphics 14吋 wuxga 1920 x 1200 16 10 ips level 60hz 300nits 100 srgb 霧面非觸控螢幕 1 20 kg 兩年國際保固 首年完美保固 有線光學滑鼠 usb 背包 4711636748704 ai 加速 輕薄便攜 大螢幕 ai 加速 輕薄便攜 大螢幕 study office creator"
   },
   {
     "id": "laptop-021",
@@ -1316,7 +1316,7 @@ export const laptops: Laptop[] = [
     "id": "laptop-023",
     "barcode": "4711636665810",
     "model": "UM5606GA-0052G445H",
-    "title": "UM5606GA-0052G445H",
+    "title": "UM5606GA-0052G445H霧岩灰 (Ryzen AI 7 445/32G/1TB/16吋 3K OLED 120Hz/W11)",
     "family": "UM5606GA",
     "cpu": "AMD Ryzen AI 7 445 2.0GHz (up to 4.6GHz, 6 cores, 12 Threads); AMD XDNA NPU up to 50TOPS",
     "memory": "32GB LPDDR5X on board",
@@ -1362,13 +1362,13 @@ export const laptops: Laptop[] = [
     "gpuTier": 0,
     "performance": 13,
     "valueScore": 23,
-    "searchText": "um5606ga 0052g445h um5606ga 0052g445h um5606ga amd ryzen ai 7 445 2 0ghz up to 4 6ghz 6 cores 12 threads amd xdna npu up to 50tops 32gb lpddr5x on board 1tb m 2 nvme pcie 4 0 ssd amd radeon graphics 16吋 3k 2880 x 1800 oled 16 10 120hz 500nits 100 dci p3 非觸控 1 50 kg 兩年國際保固 首年完美保固 保護包 4711636665810 ai 加速 獨顯效能 oled 大螢幕 ai 加速 獨顯效能 oled 大螢幕 study office gaming creator large"
+    "searchText": "um5606ga 0052g445h um5606ga 0052g445h霧岩灰 ryzen ai 7 445 32g 1tb 16吋 3k oled 120hz w11 um5606ga amd ryzen ai 7 445 2 0ghz up to 4 6ghz 6 cores 12 threads amd xdna npu up to 50tops 32gb lpddr5x on board 1tb m 2 nvme pcie 4 0 ssd amd radeon graphics 16吋 3k 2880 x 1800 oled 16 10 120hz 500nits 100 dci p3 非觸控 1 50 kg 兩年國際保固 首年完美保固 保護包 4711636665810 ai 加速 獨顯效能 oled 大螢幕 ai 加速 獨顯效能 oled 大螢幕 study office gaming creator large"
   },
   {
     "id": "laptop-024",
     "barcode": "4711636665803",
     "model": "UM5606GA-0062W445H",
-    "title": "UM5606GA-0062W445H",
+    "title": "UM5606GA-0062W445H暖煦白 (Ryzen AI 7 445/32G/1TB/16吋 3K OLED 120Hz/W11)",
     "family": "UM5606GA",
     "cpu": "AMD Ryzen AI 7 445 2.0GHz (up to 4.6GHz, 6 cores, 12 Threads); AMD XDNA NPU up to 50TOPS",
     "memory": "32GB LPDDR5X on board",
@@ -1414,7 +1414,7 @@ export const laptops: Laptop[] = [
     "gpuTier": 0,
     "performance": 13,
     "valueScore": 23,
-    "searchText": "um5606ga 0062w445h um5606ga 0062w445h um5606ga amd ryzen ai 7 445 2 0ghz up to 4 6ghz 6 cores 12 threads amd xdna npu up to 50tops 32gb lpddr5x on board 1tb m 2 nvme pcie 4 0 ssd amd radeon graphics 16吋 3k 2880 x 1800 oled 16 10 120hz 500nits 100 dci p3 非觸控 1 50 kg 兩年國際保固 首年完美保固 保護包 4711636665803 ai 加速 獨顯效能 oled 大螢幕 ai 加速 獨顯效能 oled 大螢幕 study office gaming creator large"
+    "searchText": "um5606ga 0062w445h um5606ga 0062w445h暖煦白 ryzen ai 7 445 32g 1tb 16吋 3k oled 120hz w11 um5606ga amd ryzen ai 7 445 2 0ghz up to 4 6ghz 6 cores 12 threads amd xdna npu up to 50tops 32gb lpddr5x on board 1tb m 2 nvme pcie 4 0 ssd amd radeon graphics 16吋 3k 2880 x 1800 oled 16 10 120hz 500nits 100 dci p3 非觸控 1 50 kg 兩年國際保固 首年完美保固 保護包 4711636665803 ai 加速 獨顯效能 oled 大螢幕 ai 加速 獨顯效能 oled 大螢幕 study office gaming creator large"
   },
   {
     "id": "laptop-056",
@@ -3184,7 +3184,7 @@ export const laptops: Laptop[] = [
     "id": "laptop-061",
     "barcode": "4711636756105",
     "model": "H7607BA-8888KN1X20",
-    "title": "H7607BA-8888KN1X20",
+    "title": "H7607BA-8888KN1X20曜夜黑 (NVIDIA RTX Spark N1X/128G/2TB/16吋 4K OLED 120Hz觸控/W11 Pro)",
     "family": "H7607BA",
     "cpu": "NVIDIA RTX Spark N1X (20-core CPU / 6144-core GPU)",
     "memory": "128GB LPDDR5X on board",
@@ -3232,13 +3232,13 @@ export const laptops: Laptop[] = [
     "gpuTier": 1000,
     "performance": 18,
     "valueScore": 12,
-    "searchText": "h7607ba 8888kn1x20 h7607ba 8888kn1x20 h7607ba nvidia rtx spark n1x 20 core cpu 6144 core gpu 128gb lpddr5x on board 2tb m 2 nvme pcie 4 0 ssd nvidia blackwell rtx 6144 core gpu 16吋 uhd 3840 x 2400 oled 16 10 觸控 120hz hdr峰值1600nits 100 dci p3 1 77 kg 三年國際保固 首年完美保固 無線光學滑鼠 保護包 4711636756105 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 study office gaming creator large"
+    "searchText": "h7607ba 8888kn1x20 h7607ba 8888kn1x20曜夜黑 nvidia rtx spark n1x 128g 2tb 16吋 4k oled 120hz觸控 w11 pro h7607ba nvidia rtx spark n1x 20 core cpu 6144 core gpu 128gb lpddr5x on board 2tb m 2 nvme pcie 4 0 ssd nvidia blackwell rtx 6144 core gpu 16吋 uhd 3840 x 2400 oled 16 10 觸控 120hz hdr峰值1600nits 100 dci p3 1 77 kg 三年國際保固 首年完美保固 無線光學滑鼠 保護包 4711636756105 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 study office gaming creator large"
   },
   {
     "id": "laptop-062",
     "barcode": "4711636756112",
     "model": "H7607BA-6666WN1X20",
-    "title": "H7607BA-6666WN1X20",
+    "title": "H7607BA-6666WN1X20皓月銀 (NVIDIA RTX Spark N1X/128G/2TB/16吋 4K OLED 120Hz觸控/W11 Pro)",
     "family": "H7607BA",
     "cpu": "NVIDIA RTX Spark N1X (20-core CPU / 6144-core GPU)",
     "memory": "128GB LPDDR5X on board",
@@ -3286,13 +3286,13 @@ export const laptops: Laptop[] = [
     "gpuTier": 1000,
     "performance": 18,
     "valueScore": 12,
-    "searchText": "h7607ba 6666wn1x20 h7607ba 6666wn1x20 h7607ba nvidia rtx spark n1x 20 core cpu 6144 core gpu 128gb lpddr5x on board 2tb m 2 nvme pcie 4 0 ssd nvidia blackwell rtx 6144 core gpu 16吋 uhd 3840 x 2400 oled 16 10 觸控 120hz hdr峰值1600nits 100 dci p3 1 77 kg 三年國際保固 首年完美保固 無線光學滑鼠 保護包 4711636756112 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 study office gaming creator large"
+    "searchText": "h7607ba 6666wn1x20 h7607ba 6666wn1x20皓月銀 nvidia rtx spark n1x 128g 2tb 16吋 4k oled 120hz觸控 w11 pro h7607ba nvidia rtx spark n1x 20 core cpu 6144 core gpu 128gb lpddr5x on board 2tb m 2 nvme pcie 4 0 ssd nvidia blackwell rtx 6144 core gpu 16吋 uhd 3840 x 2400 oled 16 10 觸控 120hz hdr峰值1600nits 100 dci p3 1 77 kg 三年國際保固 首年完美保固 無線光學滑鼠 保護包 4711636756112 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 study office gaming creator large"
   },
   {
     "id": "laptop-063",
     "barcode": "4711636756082",
     "model": "H7407BA-1288KN1X20",
-    "title": "H7407BA-1288KN1X20",
+    "title": "H7407BA-1288KN1X20曜夜黑 (NVIDIA RTX Spark N1X/128G/1TB/14吋 3K OLED 120Hz觸控/W11 Pro)",
     "family": "H7407BA",
     "cpu": "NVIDIA RTX Spark N1X (20-core CPU / 6144-core GPU)",
     "memory": "128GB LPDDR5X on board",
@@ -3339,13 +3339,13 @@ export const laptops: Laptop[] = [
     "gpuTier": 1000,
     "performance": 18,
     "valueScore": 12,
-    "searchText": "h7407ba 1288kn1x20 h7407ba 1288kn1x20 h7407ba nvidia rtx spark n1x 20 core cpu 6144 core gpu 128gb lpddr5x on board 1tb m 2 nvme pcie 4 0 ssd nvidia blackwell rtx 6144 core gpu 14吋 3k 2880 x 1800 oled 16 10 觸控 120hz hdr峰值1600nits 100 dci p3 1 48 kg 三年國際保固 首年完美保固 無線光學滑鼠 保護包 4711636756082 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 study office gaming creator"
+    "searchText": "h7407ba 1288kn1x20 h7407ba 1288kn1x20曜夜黑 nvidia rtx spark n1x 128g 1tb 14吋 3k oled 120hz觸控 w11 pro h7407ba nvidia rtx spark n1x 20 core cpu 6144 core gpu 128gb lpddr5x on board 1tb m 2 nvme pcie 4 0 ssd nvidia blackwell rtx 6144 core gpu 14吋 3k 2880 x 1800 oled 16 10 觸控 120hz hdr峰值1600nits 100 dci p3 1 48 kg 三年國際保固 首年完美保固 無線光學滑鼠 保護包 4711636756082 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 study office gaming creator"
   },
   {
     "id": "laptop-064",
     "barcode": "4711636756099",
     "model": "H7407BA-1688WN1X20",
-    "title": "H7407BA-1688WN1X20",
+    "title": "H7407BA-1688WN1X20皓月銀 (NVIDIA RTX Spark N1X/128G/1TB/14吋 3K OLED 120Hz觸控/W11 Pro)",
     "family": "H7407BA",
     "cpu": "NVIDIA RTX Spark N1X (20-core CPU / 6144-core GPU)",
     "memory": "128GB LPDDR5X on board",
@@ -3392,13 +3392,13 @@ export const laptops: Laptop[] = [
     "gpuTier": 1000,
     "performance": 18,
     "valueScore": 12,
-    "searchText": "h7407ba 1688wn1x20 h7407ba 1688wn1x20 h7407ba nvidia rtx spark n1x 20 core cpu 6144 core gpu 128gb lpddr5x on board 1tb m 2 nvme pcie 4 0 ssd nvidia blackwell rtx 6144 core gpu 14吋 3k 2880 x 1800 oled 16 10 觸控 120hz hdr峰值1600nits 100 dci p3 1 48 kg 三年國際保固 首年完美保固 無線光學滑鼠 保護包 4711636756099 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 study office gaming creator"
+    "searchText": "h7407ba 1688wn1x20 h7407ba 1688wn1x20皓月銀 nvidia rtx spark n1x 128g 1tb 14吋 3k oled 120hz觸控 w11 pro h7407ba nvidia rtx spark n1x 20 core cpu 6144 core gpu 128gb lpddr5x on board 1tb m 2 nvme pcie 4 0 ssd nvidia blackwell rtx 6144 core gpu 14吋 3k 2880 x 1800 oled 16 10 觸控 120hz hdr峰值1600nits 100 dci p3 1 48 kg 三年國際保固 首年完美保固 無線光學滑鼠 保護包 4711636756099 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 ai 加速 獨顯效能 oled 輕薄便攜 大螢幕 study office gaming creator"
   },
   {
     "id": "laptop-065",
     "barcode": "4711636748773",
     "model": "H7606WX-8888KHX370",
-    "title": "H7606WX-8888KHX370",
+    "title": "H7606WX-8888KHX370曜夜黑 (Ryzen AI 9 HX 370/64G/4TB/16吋 4K OLED 120Hz觸控/W11 Pro)",
     "family": "H7606WX",
     "cpu": "AMD Ryzen AI 9 HX 370 2.0GHz (up to 5.1GHz, 12 cores, 24 Threads); NPU 50TOPS",
     "memory": "64GB LPDDR5X on board",
@@ -3444,7 +3444,7 @@ export const laptops: Laptop[] = [
     "gpuTier": 5090,
     "performance": 30,
     "valueScore": 20,
-    "searchText": "h7606wx 8888khx370 h7606wx 8888khx370 h7606wx amd ryzen ai 9 hx 370 2 0ghz up to 5 1ghz 12 cores 24 threads npu 50tops 64gb lpddr5x on board 4tb 2tb x 2 m 2 nvme pcie 4 0 ssd nvidia geforce rtx 5090 laptop gpu 24gb gddr7 16吋 4k 3840 x 2400 oled 16 10 觸控 120hz hdr峰值1600nits 100 dci p3 1 95 kg 兩年國際保固 首年完美保固 無線光學滑鼠 背包 4711636748773 ai 加速 獨顯效能 oled 大螢幕 ai 加速 獨顯效能 oled 大螢幕 study office gaming creator large"
+    "searchText": "h7606wx 8888khx370 h7606wx 8888khx370曜夜黑 ryzen ai 9 hx 370 64g 4tb 16吋 4k oled 120hz觸控 w11 pro h7606wx amd ryzen ai 9 hx 370 2 0ghz up to 5 1ghz 12 cores 24 threads npu 50tops 64gb lpddr5x on board 4tb 2tb x 2 m 2 nvme pcie 4 0 ssd nvidia geforce rtx 5090 laptop gpu 24gb gddr7 16吋 4k 3840 x 2400 oled 16 10 觸控 120hz hdr峰值1600nits 100 dci p3 1 95 kg 兩年國際保固 首年完美保固 無線光學滑鼠 背包 4711636748773 ai 加速 獨顯效能 oled 大螢幕 ai 加速 獨顯效能 oled 大螢幕 study office gaming creator large"
   },
   {
     "id": "laptop-047",
@@ -4998,7 +4998,7 @@ export const laptops: Laptop[] = [
     "id": "laptop-097",
     "barcode": "4711636157483",
     "model": "ALLY-RC73XA-0031AZ2E",
-    "title": "ALLY-RC73XA-0031AZ2E",
+    "title": "ALLY-RC73XA-0031AZ2E黑色電競掌機 (Ryzen AI Z2 Extreme/24G/1TB/7吋 FHD 120Hz/W11)",
     "family": "ALLY",
     "cpu": "AMD Ryzen AI Z2 Extreme 2.0GHz (up to 5.0GHz, 8 cores, 16 Threads); NPU up to 50TOPS",
     "memory": "24GB LPDDR5X on board",
@@ -5041,13 +5041,13 @@ export const laptops: Laptop[] = [
     "gpuTier": 0,
     "performance": 15,
     "valueScore": 22,
-    "searchText": "ally rc73xa 0031az2e ally rc73xa 0031az2e ally amd ryzen ai z2 extreme 2 0ghz up to 5 0ghz 8 cores 16 threads npu up to 50tops 24gb lpddr5x on board 1tb pcie 4 0 nvme m 2 ssd 2280 amd radeon graphics 7吋 fhd 1920 x 1080 ips level 觸控 120hz 500nits freesync premium 715 g 兩年保固 65w type c ac adapter 4711636157483 ai 加速 獨顯效能 大螢幕 ai 加速 獨顯效能 大螢幕 study office gaming creator"
+    "searchText": "ally rc73xa 0031az2e ally rc73xa 0031az2e黑色電競掌機 ryzen ai z2 extreme 24g 1tb 7吋 fhd 120hz w11 ally amd ryzen ai z2 extreme 2 0ghz up to 5 0ghz 8 cores 16 threads npu up to 50tops 24gb lpddr5x on board 1tb pcie 4 0 nvme m 2 ssd 2280 amd radeon graphics 7吋 fhd 1920 x 1080 ips level 觸控 120hz 500nits freesync premium 715 g 兩年保固 65w type c ac adapter 4711636157483 ai 加速 獨顯效能 大螢幕 ai 加速 獨顯效能 大螢幕 study office gaming creator"
   },
   {
     "id": "laptop-098",
     "barcode": "4711636150798",
     "model": "ALLY-RC73YA-0021WZZ1",
-    "title": "ALLY-RC73YA-0021WZZ1",
+    "title": "ALLY-RC73YA-0021WZZ1白色電競掌機 (Ryzen Z2 A/16G/512G/7吋 FHD 120Hz/W11)",
     "family": "ALLY",
     "cpu": "AMD Ryzen Z2 A 2.8GHz (up to 3.8GHz, 4 cores, 8 Threads)",
     "memory": "16GB LPDDR5X on board",
@@ -5085,6 +5085,6 @@ export const laptops: Laptop[] = [
     "gpuTier": 0,
     "performance": 5,
     "valueScore": 17,
-    "searchText": "ally rc73ya 0021wzz1 ally rc73ya 0021wzz1 ally amd ryzen z2 a 2 8ghz up to 3 8ghz 4 cores 8 threads 16gb lpddr5x on board 512gb pcie 4 0 nvme m 2 ssd amd radeon graphics 7吋 fhd 1920 x 1080 ips level 觸控 120hz 500nits freesync premium 670 g 兩年保固 65w type c ac adapter 4711636150798 獨顯效能 獨顯效能 study office gaming"
+    "searchText": "ally rc73ya 0021wzz1 ally rc73ya 0021wzz1白色電競掌機 ryzen z2 a 16g 512g 7吋 fhd 120hz w11 ally amd ryzen z2 a 2 8ghz up to 3 8ghz 4 cores 8 threads 16gb lpddr5x on board 512gb pcie 4 0 nvme m 2 ssd amd radeon graphics 7吋 fhd 1920 x 1080 ips level 觸控 120hz 500nits freesync premium 670 g 兩年保固 65w type c ac adapter 4711636150798 獨顯效能 獨顯效能 study office gaming"
   }
 ];

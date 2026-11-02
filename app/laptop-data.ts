@@ -1350,8 +1350,8 @@ export const laptops: Laptop[] = [
       "creator",
       "large"
     ],
-    "image": "",
-    "imageKind": "缺圖",
+    "image": "/laptop-images/model-gallery/UM5606GA-0052G445H/01.webp",
+    "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.5,
     "ramGB": 32,
@@ -3274,8 +3274,8 @@ export const laptops: Laptop[] = [
       "creator",
       "large"
     ],
-    "image": "",
-    "imageKind": "缺圖",
+    "image": "/laptop-images/model-gallery/H7607BA-6666WN1X20/01.webp",
+    "imageKind": "產品圖",
     "screenSize": 16,
     "weightKg": 1.77,
     "ramGB": 128,
@@ -3327,8 +3327,8 @@ export const laptops: Laptop[] = [
       "gaming",
       "creator"
     ],
-    "image": "",
-    "imageKind": "缺圖",
+    "image": "/laptop-images/model-gallery/H7407BA-1288KN1X20/01.webp",
+    "imageKind": "產品圖",
     "screenSize": 14,
     "weightKg": 1.48,
     "ramGB": 128,

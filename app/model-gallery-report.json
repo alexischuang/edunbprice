@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-02T11:28:24.841Z",
+  "generatedAt": "2026-11-02T11:38:41.258Z",
   "sourceRoot": "D:\\校園筆電寢具專案\\ASUS\\202605PIC",
   "totalModels": 102,
-  "matchedModels": 99,
+  "matchedModels": 102,
   "maxImages": 4,
   "report": [
     {
@@ -286,9 +286,11 @@
     },
     {
       "model": "UM5606GA-0052G445H",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 1,
+      "exported": 1,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UM5606GA-0052G445H霧岩灰\\official.jpg"
+      ]
     },
     {
       "model": "UM5606GA-0062W445H",
@@ -703,15 +705,19 @@
     },
     {
       "model": "H7607BA-6666WN1X20",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 1,
+      "exported": 1,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\H7607BA-6666WN1X20皓月銀\\official.jpg"
+      ]
     },
     {
       "model": "H7407BA-1288KN1X20",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 1,
+      "exported": 1,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\H7407BA-1288KN1X20曜夜黑\\official.jpg"
+      ]
     },
     {
       "model": "H7407BA-1688WN1X20",

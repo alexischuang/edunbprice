@@ -148,6 +148,9 @@ window.modelGalleryMap = {
     "/laptop-images/model-gallery/UX3480AA-0022B325/03.webp",
     "/laptop-images/model-gallery/UX3480AA-0022B325/04.webp"
   ],
+  "UM5606GA-0052G445H": [
+    "/laptop-images/model-gallery/UM5606GA-0052G445H/01.webp"
+  ],
   "UM5606GA-0062W445H": [
     "/laptop-images/model-gallery/UM5606GA-0062W445H/01.webp"
   ],
@@ -368,6 +371,12 @@ window.modelGalleryMap = {
   ],
   "H7607BA-8888KN1X20": [
     "/laptop-images/model-gallery/H7607BA-8888KN1X20/01.webp"
+  ],
+  "H7607BA-6666WN1X20": [
+    "/laptop-images/model-gallery/H7607BA-6666WN1X20/01.webp"
+  ],
+  "H7407BA-1288KN1X20": [
+    "/laptop-images/model-gallery/H7407BA-1288KN1X20/01.webp"
   ],
   "H7407BA-1688WN1X20": [
     "/laptop-images/model-gallery/H7407BA-1688WN1X20/01.webp"

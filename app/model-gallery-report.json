@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-02T10:26:49.413Z",
+  "generatedAt": "2026-11-02T11:08:02.193Z",
   "sourceRoot": "D:\\校園筆電寢具專案\\ASUS\\202605PIC",
   "totalModels": 102,
-  "matchedModels": 87,
+  "matchedModels": 99,
   "maxImages": 4,
   "report": [
     {
@@ -179,15 +179,25 @@
     },
     {
       "model": "S5652MA-0082G320",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0082G320夜幕灰\\ASUS_Vivobook S16_S5652MA_Product photo_1G_Matte Gray_01.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0082G320夜幕灰\\ASUS_Vivobook S16_S5652MA_Product photo_1G_Matte Gray_05.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0082G320夜幕灰\\ASUS_Vivobook S16_S5652MA_Product photo_1G_Matte Gray_06.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0082G320夜幕灰\\ASUS_Vivobook S16_S5652MA_Product photo_1G_Matte Gray_24.jpg"
+      ]
     },
     {
       "model": "S5652MA-0092S320",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0092S320酷玩銀\\P1.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0092S320酷玩銀\\P2.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0092S320酷玩銀\\P3.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5652MA-0092S320酷玩銀\\P4.jpg"
+      ]
     },
     {
       "model": "S5452MA-0072G350",
@@ -202,21 +212,33 @@
     },
     {
       "model": "S5452MA-0082S350",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 1,
+      "exported": 1,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0082S350酷玩銀\\official.jpg"
+      ]
     },
     {
       "model": "S5452MA-0112G320",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0112G320夜幕灰\\P1.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0112G320夜幕灰\\P2.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0112G320夜幕灰\\P3.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0112G320夜幕灰\\P4.jpg"
+      ]
     },
     {
       "model": "S5452MA-0122S320",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 5,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0122S320酷玩銀\\official.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0122S320酷玩銀\\P1.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0122S320酷玩銀\\P2.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\S5452MA-0122S320酷玩銀\\P3.jpg"
+      ]
     },
     {
       "model": "V3607VJ-0151K240H",
@@ -270,9 +292,11 @@
     },
     {
       "model": "UM5606GA-0062W445H",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 1,
+      "exported": 1,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\UM5606GA-0062W445H暖煦白\\official.jpg"
+      ]
     },
     {
       "model": "UM3406GA-0042K430H",
@@ -671,9 +695,11 @@
     },
     {
       "model": "H7607BA-8888KN1X20",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 1,
+      "exported": 1,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\H7607BA-8888KN1X20曜夜黑\\official.jpg"
+      ]
     },
     {
       "model": "H7607BA-6666WN1X20",
@@ -689,15 +715,19 @@
     },
     {
       "model": "H7407BA-1688WN1X20",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 1,
+      "exported": 1,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\H7407BA-1688WN1X20皓月銀\\official.jpg"
+      ]
     },
     {
       "model": "H7606WX-8888KHX370",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 1,
+      "exported": 1,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\H7606WX-8888KHX370曜夜黑\\official.jpg"
+      ]
     },
     {
       "model": "H7606GP-0023K465",
@@ -1030,21 +1060,30 @@
     },
     {
       "model": "FA506NCG-0202B155H",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 4,
+      "exported": 4,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCG-0202B155H曜石黑\\01-FX506_L.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCG-0202B155H曜石黑\\06-FX506_L.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCG-0202B155H曜石黑\\11-FX506_L.jpg",
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\FA506NCG-0202B155H曜石黑\\21-FX506.jpg"
+      ]
     },
     {
       "model": "ALLY-RC73XA-0031AZ2E",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 1,
+      "exported": 1,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\ALLY-RC73XA-0031AZ2E黑色\\official.jpg"
+      ]
     },
     {
       "model": "ALLY-RC73YA-0021WZZ1",
-      "matched": 0,
-      "exported": 0,
-      "sources": []
+      "matched": 1,
+      "exported": 1,
+      "sources": [
+        "..\\..\\校園筆電寢具專案\\ASUS\\202605PIC\\ALLY-RC73YA-0021WZZ1白色\\official.jpg"
+      ]
     }
   ]
 }
